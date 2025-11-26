@@ -165,7 +165,7 @@ const (
 	LastDiscarderEventType = FileChdirEventType
 
 	// LastApproverEventType is the last event that accepts approvers
-	LastApproverEventType = SetSockOptEventType
+	LastApproverEventType = SocketEventType
 
 	// CustomEventType represents a custom event type
 	CustomEventType EventType = iota
