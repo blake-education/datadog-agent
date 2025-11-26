@@ -147,6 +147,8 @@ const (
 	PivotRootEventType
 	// NopEventType nop event
 	NopEventType
+	// SocketEventType is sent when a socket is created
+	SocketEventType
 	// MaxKernelEventType is used internally to get the maximum number of kernel events.
 	MaxKernelEventType
 
@@ -344,6 +346,8 @@ func (t EventType) String() string {
 		return "pivot_root"
 	case NopEventType:
 		return "nop"
+	case SocketEventType:
+		return "socket"
 	default:
 		return "unknown"
 	}
