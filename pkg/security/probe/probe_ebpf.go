@@ -1638,6 +1638,12 @@ func (p *EBPFProbe) handleRegularEvent(event *model.Event, offset int, dataLen u
 		if event.SetSockOpt.IsFilterTruncated {
 			p.BPFFilterTruncated.Add(1)
 		}
+
+	case model.SocketEventType:
+		if !p.regularUnmarshalEvent(&event.Socket, eventType, offset, dataLen, data) {
+			return false
+		}
+
 	case model.SetrlimitEventType:
 		if !p.regularUnmarshalEvent(&event.Setrlimit, eventType, offset, dataLen, data) {
 			return false

@@ -249,6 +249,12 @@ struct syscall_cache_t {
         } accept;
 
         struct {
+            int domain;
+            int type;
+            int protocol;
+        } socket;
+
+        struct {
             struct dentry *dentry;
             struct path *path;
             struct file_t file;
