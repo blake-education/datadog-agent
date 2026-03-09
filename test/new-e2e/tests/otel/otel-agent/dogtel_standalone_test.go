@@ -22,6 +22,44 @@ import (
 //go:embed config/dogtel-standalone.yml
 var dogtelStandaloneConfig string
 
+// dogtelStandaloneHelmValues is the base Helm values block used by every dogtel
+// standalone test suite. It enables the otel-agent (DD_OTEL_STANDALONE=true) and
+// disables the core agent's competing data-collection features so the otel-agent
+// is the sole telemetry source.
+//
+// Note: the Datadog Helm chart unconditionally includes the core agent container
+// in the DaemonSet pod — it cannot be removed via chart values. Disabling the
+// features below is the correct way to achieve a "standalone otel-agent only"
+// deployment until a future chart version supports omitting the core agent.
+const dogtelStandaloneHelmValues = `
+datadog:
+  otelCollector:
+    useStandaloneImage: false
+  # Disable core agent collection features – otel-agent handles all telemetry.
+  apm:
+    portEnabled: false
+    socketEnabled: false
+    instrumentation:
+      enabled: false
+  logs:
+    enabled: false
+    containerCollectAll: false
+    containerCollectUsingFiles: false
+  processAgent:
+    processCollection: false
+    containerCollection: false
+  helmCheck:
+    enabled: false
+  kubeStateMetricsCore:
+    enabled: false
+agents:
+  containers:
+    otelAgent:
+      env:
+        - name: DD_OTEL_STANDALONE
+          value: 'true'
+`
+
 // dogtelStandaloneTestSuite tests the dogtelextension running in standalone mode
 // (DD_OTEL_STANDALONE=true). In this mode the extension starts its own workloadmeta
 // store, tagger, and tagger gRPC server, providing Kubernetes infrastructure
@@ -35,20 +73,7 @@ type dogtelStandaloneTestSuite struct {
 // mode via DD_OTEL_STANDALONE=true, and loads the dogtel-standalone OTel config
 // which includes the dogtelextension with a tagger gRPC server on port 15555.
 func TestOTelAgentDogtelExtensionStandalone(t *testing.T) {
-	values := `
-datadog:
-  otelCollector:
-    useStandaloneImage: false
-  logs:
-    containerCollectAll: false
-    containerCollectUsingFiles: false
-agents:
-  containers:
-    otelAgent:
-      env:
-        - name: DD_OTEL_STANDALONE
-          value: 'true'
-`
+	values := dogtelStandaloneHelmValues
 	t.Parallel()
 	e2e.Run(t, &dogtelStandaloneTestSuite{},
 		e2e.WithProvisioner(provkindvm.Provisioner(

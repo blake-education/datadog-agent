@@ -44,20 +44,7 @@ type dogtelSecretsTestSuite struct {
 // initially). The actual secrets test redeploys via UpdateEnv after creating the
 // K8s secret, ensuring the secret exists before the agent starts.
 func TestOTelAgentDogtelSecretsStandalone(t *testing.T) {
-	values := `
-datadog:
-  otelCollector:
-    useStandaloneImage: false
-  logs:
-    containerCollectAll: false
-    containerCollectUsingFiles: false
-agents:
-  containers:
-    otelAgent:
-      env:
-        - name: DD_OTEL_STANDALONE
-          value: 'true'
-`
+	values := dogtelStandaloneHelmValues
 	t.Parallel()
 	e2e.Run(t, &dogtelSecretsTestSuite{},
 		e2e.WithProvisioner(provkindvm.Provisioner(
@@ -98,13 +85,10 @@ func (s *dogtelSecretsTestSuite) TestDogtelSecretsResolution() {
 	})
 
 	// 2. Redeploy otel-agent with secrets backend command, ENC[] hostname, and volume mount.
-	values := `
-datadog:
-  otelCollector:
-    useStandaloneImage: false
-  logs:
-    containerCollectAll: false
-    containerCollectUsingFiles: false
+	// Start from the shared standalone values and layer the secrets-specific additions.
+	// secretsValues layers the volume mount and extra env vars on top of the shared
+	// standalone base values (dogtelStandaloneHelmValues).
+	secretsValues := `
 agents:
   volumes:
     - name: dogtel-secrets
@@ -113,8 +97,6 @@ agents:
   containers:
     otelAgent:
       env:
-        - name: DD_OTEL_STANDALONE
-          value: 'true'
         - name: DD_SECRET_BACKEND_COMMAND
           value: /readsecret_multiple_providers.sh
         - name: DD_HOSTNAME
@@ -126,7 +108,8 @@ agents:
 	s.UpdateEnv(provkindvm.Provisioner(
 		provkindvm.WithRunOptions(
 			scenkindvm.WithAgentOptions(
-				kubernetesagentparams.WithHelmValues(values),
+				kubernetesagentparams.WithHelmValues(dogtelStandaloneHelmValues),
+				kubernetesagentparams.WithHelmValues(secretsValues),
 				kubernetesagentparams.WithOTelAgent(),
 				kubernetesagentparams.WithOTelConfig(dogtelStandaloneConfig),
 			),
