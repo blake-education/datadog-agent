@@ -21,6 +21,8 @@ import (
 	"github.com/DataDog/datadog-agent/comp/core/hostname/hostnameinterface"
 	ipcmock "github.com/DataDog/datadog-agent/comp/core/ipc/mock"
 	logmock "github.com/DataDog/datadog-agent/comp/core/log/mock"
+	secrets "github.com/DataDog/datadog-agent/comp/core/secrets/def"
+	secretnooptypes "github.com/DataDog/datadog-agent/comp/core/secrets/noop-impl/types"
 	"github.com/DataDog/datadog-agent/comp/core/telemetry/noopsimpl"
 	agentmetrics "github.com/DataDog/datadog-agent/pkg/metrics"
 	serializermock "github.com/DataDog/datadog-agent/pkg/serializer/mocks"
@@ -166,4 +168,43 @@ func TestSendLivenessMetric_UsesHostname(t *testing.T) {
 	assert.Equal(t, "otel.dogtel_extension.running", captured[0].Name)
 	assert.Equal(t, "expected-host", captured[0].Host)
 	assert.Equal(t, 1.0, captured[0].Points[0].Value)
+}
+
+// TestIsSecretsNoop_WithNoopImpl verifies that the noop impl is detected.
+func TestIsSecretsNoop_WithNoopImpl(t *testing.T) {
+	var s secrets.Component = &secretnooptypes.SecretNoop{}
+	assert.True(t, isSecretsNoop(s))
+}
+
+// TestIsSecretsNoop_WithNilSecrets verifies that a nil component returns false.
+func TestIsSecretsNoop_WithNilSecrets(t *testing.T) {
+	assert.False(t, isSecretsNoop(nil))
+}
+
+// TestStart_StandaloneMode_NoopSecretsWarning verifies that Start succeeds even
+// when the noop secrets impl is injected in standalone mode (the warning is logged
+// but does not prevent startup).
+func TestStart_StandaloneMode_NoopSecretsWarning(t *testing.T) {
+	cfg := createDefaultConfig().(*Config)
+	cfg.EnableTaggerServer = false
+
+	hostname, _ := hostnameinterface.NewMock("test-host")
+	sz := serializermock.NewMetricSerializer(t)
+	sz.On("SendIterableSeries", mock.Anything).Return(nil)
+
+	ext := &dogtelExtension{
+		config:     cfg,
+		log:        logmock.New(t),
+		coreConfig: configmock.NewMockWithOverrides(t, map[string]interface{}{"otel_standalone": true}),
+		serializer: sz,
+		hostname:   hostname,
+		telemetry:  noopsimpl.GetCompatComponent(),
+		ipc:        ipcmock.New(t),
+		// Deliberately inject the noop impl to simulate a misconfiguration.
+		secrets: &secretnooptypes.SecretNoop{},
+	}
+
+	// Start should succeed; the warning is logged but not fatal.
+	err := ext.Start(context.Background(), nil)
+	require.NoError(t, err)
 }

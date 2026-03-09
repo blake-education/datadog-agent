@@ -19,6 +19,7 @@ import (
 	ipc "github.com/DataDog/datadog-agent/comp/core/ipc/def"
 	log "github.com/DataDog/datadog-agent/comp/core/log/def"
 	secrets "github.com/DataDog/datadog-agent/comp/core/secrets/def"
+	secretnooptypes "github.com/DataDog/datadog-agent/comp/core/secrets/noop-impl/types"
 	tagger "github.com/DataDog/datadog-agent/comp/core/tagger/def"
 	"github.com/DataDog/datadog-agent/comp/core/telemetry"
 	workloadmeta "github.com/DataDog/datadog-agent/comp/core/workloadmeta/def"
@@ -68,6 +69,14 @@ func (e *dogtelExtension) Start(_ context.Context, _ component.Host) error {
 	}
 
 	e.log.Info("Starting dogtelextension in standalone mode")
+
+	// Warn if the noop secrets implementation is wired in standalone mode.
+	// In standalone mode command.go selects secretsfx.Module() (real impl); finding
+	// the noop here indicates a misconfiguration and ENC[] handles will not be resolved.
+	if isSecretsNoop(e.secrets) {
+		e.log.Warn("dogtelextension: secrets component is noop — ENC[] handles in OTel config will NOT be resolved")
+		e.log.Warn("Ensure secretsfx.Module() (not secretsnoopfx.Module()) is wired when DD_OTEL_STANDALONE=true")
+	}
 
 	// Start tagger gRPC server if enabled
 	if e.config.EnableTaggerServer {
@@ -135,4 +144,15 @@ func (e *dogtelExtension) Shutdown(_ context.Context) error {
 // GetTaggerServerPort implements dogtelextension.Component
 func (e *dogtelExtension) GetTaggerServerPort() int {
 	return e.taggerServerPort
+}
+
+// isSecretsNoop reports whether s is the noop secrets implementation.
+// In standalone mode the real secretsfx should always be injected; finding
+// the noop indicates a wiring mistake and secrets handles won't be resolved.
+func isSecretsNoop(s secrets.Component) bool {
+	if s == nil {
+		return false
+	}
+	_, ok := s.(*secretnooptypes.SecretNoop)
+	return ok
 }
