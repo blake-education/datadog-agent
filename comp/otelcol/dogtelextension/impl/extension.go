@@ -8,8 +8,10 @@ package dogtelextensionimpl
 import (
 	"context"
 	"net"
+	"time"
 
 	"go.opentelemetry.io/collector/component"
+	"go.opentelemetry.io/collector/pdata/pcommon"
 	"google.golang.org/grpc"
 
 	coreconfig "github.com/DataDog/datadog-agent/comp/core/config"
@@ -21,6 +23,8 @@ import (
 	"github.com/DataDog/datadog-agent/comp/core/telemetry"
 	workloadmeta "github.com/DataDog/datadog-agent/comp/core/workloadmeta/def"
 	"github.com/DataDog/datadog-agent/comp/metadata/runner"
+	dogtelmetrics "github.com/DataDog/datadog-agent/comp/otelcol/dogtelextension/impl/metrics"
+	agentmetrics "github.com/DataDog/datadog-agent/pkg/metrics"
 	"github.com/DataDog/datadog-agent/pkg/serializer"
 )
 
@@ -38,6 +42,9 @@ type dogtelExtension struct {
 	ipc          ipc.Component
 	telemetry    telemetry.Component
 	secrets      secrets.Component
+
+	// Build info for metric tags
+	buildInfo component.BuildInfo
 
 	// Metadata components (created by extension)
 	metadataRunner runner.Component
@@ -78,7 +85,34 @@ func (e *dogtelExtension) Start(_ context.Context, _ component.Host) error {
 	e.log.Infof("dogtelextension started successfully (tagger_port=%d, metadata_enabled=%t)",
 		e.taggerServerPort, e.config.EnableMetadataCollection)
 
+	// Send liveness metric to indicate the extension is running
+	if err := e.sendLivenessMetric(context.Background()); err != nil {
+		e.log.Warnf("Failed to send liveness metric: %v", err)
+	}
+
 	return nil
+}
+
+// sendLivenessMetric sends a gauge metric indicating the extension is running.
+func (e *dogtelExtension) sendLivenessMetric(ctx context.Context) error {
+	hostname := e.hostname.GetSafe(ctx)
+	now := pcommon.NewTimestampFromTime(time.Now())
+	buildTags := dogtelmetrics.TagsFromBuildInfo(e.buildInfo)
+	serie := dogtelmetrics.CreateLivenessSerie(hostname, uint64(now), buildTags)
+
+	var serieErr error
+	agentmetrics.Serialize(
+		agentmetrics.NewIterableSeries(func(_ *agentmetrics.Serie) {}, 200, 4000),
+		agentmetrics.NewIterableSketches(func(_ *agentmetrics.SketchSeries) {}, 200, 4000),
+		func(seriesSink agentmetrics.SerieSink, _ agentmetrics.SketchesSink) {
+			seriesSink.Append(serie)
+		},
+		func(serieSource agentmetrics.SerieSource) {
+			serieErr = e.serializer.SendIterableSeries(serieSource)
+		},
+		func(_ agentmetrics.SketchesSource) {},
+	)
+	return serieErr
 }
 
 // Shutdown implements extension.Extension

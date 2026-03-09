@@ -87,8 +87,8 @@ func NewFactoryForAgent(
 	return extension.NewFactory(
 		Type,
 		createDefaultConfig,
-		func(_ context.Context, _ extension.Settings, cfg component.Config) (extension.Extension, error) {
-			return newExtension(cfg.(*Config), components)
+		func(_ context.Context, params extension.Settings, cfg component.Config) (extension.Extension, error) {
+			return newExtension(cfg.(*Config), components, params.BuildInfo)
 		},
 		stability,
 	)
@@ -124,6 +124,7 @@ func NewExtension(reqs Requires) (dogtelextension.Component, error) {
 		ipc:          reqs.IPC,
 		telemetry:    reqs.Telemetry,
 		secrets:      reqs.Secrets,
+		buildInfo:    component.BuildInfo{},
 	}, nil
 }
 
@@ -143,6 +144,7 @@ func createDefaultConfig() component.Config {
 func newExtension(
 	cfg *Config,
 	components *componentHolder,
+	buildInfo component.BuildInfo,
 ) (dogtelextension.Component, error) {
 	// Validate configuration
 	if err := cfg.Validate(); err != nil {
@@ -161,6 +163,7 @@ func newExtension(
 		telemetry:    components.telemetry,
 		secrets:      components.secrets,
 		coreConfig:   components.config,
+		buildInfo:    buildInfo,
 	}
 
 	return ext, nil
