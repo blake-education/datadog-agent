@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field, field_validator
 
 DEVICE_MODES = ("physical", "mig", "vgpu")
 
@@ -26,9 +26,15 @@ class Support(BaseModel):
         return value
 
 
+class Aggregation(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    type: str
+
+
 class Metric(BaseModel):
     model_config = ConfigDict(extra="forbid")
     type: str | None = None
+    aggregation: Aggregation | None = None
     tagsets: list[str]
     custom_tags: list[str] = Field(default_factory=list)
     support: Support = Field(default_factory=Support)
@@ -65,6 +71,19 @@ class ArchitecturesSpec(BaseModel):
                 if mode not in unsupported:
                     combos.append(GPUConfig(architecture=arch_name.lower(), device_mode=mode, is_known=True))
         return combos
+
+
+class AggregationDefinition(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    description: str = ""
+    time_aggregator: str
+    group_aggregator: str = Field(validation_alias=AliasChoices("group-aggregator", "group_aggregator", "group_aggregation"))
+    granularity_aggregator: str = ""
+
+
+class AggregationsSpec(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    aggregations: dict[str, AggregationDefinition]
 
 
 @dataclass(slots=True)

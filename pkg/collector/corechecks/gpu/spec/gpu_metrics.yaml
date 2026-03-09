@@ -10,6 +10,7 @@
 #       - unsupported_architectures: [<architecture_name>, ...] (the list of architectures that do not support the metric)
 #       - device_modes: {mig: bool, physical: bool, vgpu: bool} (a map describing whether each device mode supports the metric)
 metric_prefix: gpu
+
 tagsets:
   container:
     tags:
@@ -24,10 +25,13 @@ tagsets:
     tags:
       - pid
       - nspid
+
 metrics:
   clock.speed.graphics:
     tagsets:
       - device
+    aggregation:
+      type: sensor_data
     support:
       unsupported_architectures: []
       device_modes:
@@ -37,6 +41,8 @@ metrics:
   clock.speed.graphics.max:
     tagsets:
       - device
+    aggregation:
+      type: sensor_data
     support:
       unsupported_architectures: []
       device_modes:
@@ -46,6 +52,8 @@ metrics:
   clock.speed.memory:
     tagsets:
       - device
+    aggregation:
+      type: sensor_data
     support:
       unsupported_architectures: []
       device_modes:
@@ -55,6 +63,8 @@ metrics:
   clock.speed.memory.max:
     tagsets:
       - device
+    aggregation:
+      type: sensor_data
     support:
       unsupported_architectures: []
       device_modes:
@@ -64,6 +74,8 @@ metrics:
   clock.speed.sm:
     tagsets:
       - device
+    aggregation:
+      type: sensor_data
     support:
       unsupported_architectures: []
       device_modes:
@@ -73,6 +85,8 @@ metrics:
   clock.speed.sm.max:
     tagsets:
       - device
+    aggregation:
+      type: sensor_data
     support:
       unsupported_architectures: []
       device_modes:
@@ -82,6 +96,8 @@ metrics:
   clock.speed.video:
     tagsets:
       - device
+    aggregation:
+      type: sensor_data
     support:
       unsupported_architectures:
         - fermi
@@ -92,6 +108,8 @@ metrics:
   clock.speed.video.max:
     tagsets:
       - device
+    aggregation:
+      type: sensor_data
     support:
       unsupported_architectures:
         - fermi
@@ -102,6 +120,8 @@ metrics:
   clock.throttle_reasons.applications_clocks_setting:
     tagsets:
       - device
+    aggregation:
+      type: sensor_data
     support:
       unsupported_architectures:
         - fermi
@@ -112,6 +132,8 @@ metrics:
   clock.throttle_reasons.display_clock_setting:
     tagsets:
       - device
+    aggregation:
+      type: sensor_data
     support:
       unsupported_architectures:
         - fermi
@@ -122,6 +144,8 @@ metrics:
   clock.throttle_reasons.gpu_idle:
     tagsets:
       - device
+    aggregation:
+      type: sensor_data
     support:
       unsupported_architectures:
         - fermi
@@ -132,6 +156,8 @@ metrics:
   clock.throttle_reasons.none:
     tagsets:
       - device
+    aggregation:
+      type: sensor_data
     support:
       unsupported_architectures:
         - fermi
@@ -142,6 +168,8 @@ metrics:
   clock.throttle_reasons.sw_power_cap:
     tagsets:
       - device
+    aggregation:
+      type: sensor_data
     support:
       unsupported_architectures:
         - fermi
@@ -152,6 +180,8 @@ metrics:
   clock.throttle_reasons.sw_thermal_slowdown:
     tagsets:
       - device
+    aggregation:
+      type: sensor_data
     support:
       unsupported_architectures:
         - fermi
@@ -162,6 +192,8 @@ metrics:
   clock.throttle_reasons.sync_boost:
     tagsets:
       - device
+    aggregation:
+      type: sensor_data
     support:
       unsupported_architectures:
         - fermi
@@ -174,6 +206,8 @@ metrics:
       - device
       - process
       - container
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures: []
       device_modes:
@@ -183,6 +217,8 @@ metrics:
   decoder_active:
     tagsets:
       - device
+    aggregation:
+      type: relative_activity
     support:
       unsupported_architectures:
         - fermi
@@ -193,6 +229,8 @@ metrics:
   device.total:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures: []
       device_modes:
@@ -202,6 +240,8 @@ metrics:
   device.unhealthy:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures: []
       device_modes:
@@ -211,6 +251,8 @@ metrics:
   dram_active:
     tagsets:
       - device
+    aggregation:
+      type: relative_activity
     support:
       unsupported_architectures:
         - fermi
@@ -221,6 +263,8 @@ metrics:
   encoder_active:
     tagsets:
       - device
+    aggregation:
+      type: relative_activity
     support:
       unsupported_architectures:
         - fermi
@@ -233,6 +277,8 @@ metrics:
       - device
     custom_tags:
       - memory_location
+    aggregation:
+      type: lifetime_error
     support:
       unsupported_architectures: []
       device_modes:
@@ -244,6 +290,8 @@ metrics:
       - device
     custom_tags:
       - memory_location
+    aggregation:
+      type: lifetime_error
     support:
       unsupported_architectures: []
       device_modes:
@@ -253,6 +301,8 @@ metrics:
   errors.xid.total:
     tagsets:
       - device
+    aggregation:
+      type: lifetime_error
     support:
       unsupported_architectures: []
       device_modes:
@@ -262,6 +312,8 @@ metrics:
   fan_speed:
     tagsets:
       - device
+    aggregation:
+      type: sensor_data
     support:
       unsupported_architectures: []
       device_modes:
@@ -271,6 +323,8 @@ metrics:
   fp16_active:
     tagsets:
       - device
+    aggregation:
+      type: relative_activity
     support:
       unsupported_architectures:
         - fermi
@@ -288,6 +342,8 @@ metrics:
   fp32_active:
     tagsets:
       - device
+    aggregation:
+      type: relative_activity
     support:
       unsupported_architectures:
         - fermi
@@ -305,6 +361,8 @@ metrics:
   fp64_active:
     tagsets:
       - device
+    aggregation:
+      type: relative_activity
     support:
       unsupported_architectures:
         - fermi
@@ -322,6 +380,8 @@ metrics:
   gr_engine_active:
     tagsets:
       - device
+    aggregation:
+      type: relative_activity
     support:
       unsupported_architectures:
         - fermi
@@ -332,6 +392,8 @@ metrics:
   integer_active:
     tagsets:
       - device
+    aggregation:
+      type: relative_activity
     support:
       unsupported_architectures:
         - fermi
@@ -349,6 +411,8 @@ metrics:
   memory.bar1.free:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures:
         - fermi
@@ -359,6 +423,8 @@ metrics:
   memory.bar1.total:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures:
         - fermi
@@ -369,6 +435,8 @@ metrics:
   memory.bar1.used:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures:
         - fermi
@@ -379,6 +447,8 @@ metrics:
   memory.free:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures:
         - fermi
@@ -393,6 +463,8 @@ metrics:
       - device
       - process
       - container
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures: []
       device_modes:
@@ -402,6 +474,8 @@ metrics:
   memory.reserved:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures:
         - fermi
@@ -414,6 +488,8 @@ metrics:
   memory.temperature:
     tagsets:
       - device
+    aggregation:
+      type: sensor_data
     support:
       unsupported_architectures:
         - fermi
@@ -430,6 +506,8 @@ metrics:
   nvlink.count.active:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures:
         - fermi
@@ -442,6 +520,8 @@ metrics:
   nvlink.count.inactive:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures:
         - fermi
@@ -454,6 +534,8 @@ metrics:
   nvlink.count.total:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures:
         - fermi
@@ -466,6 +548,8 @@ metrics:
   nvlink.errors.crc.data:
     tagsets:
       - device
+    aggregation:
+      type: lifetime_error
     support:
       unsupported_architectures:
         - fermi
@@ -479,6 +563,8 @@ metrics:
   nvlink.errors.crc.flit:
     tagsets:
       - device
+    aggregation:
+      type: lifetime_error
     support:
       unsupported_architectures:
         - fermi
@@ -492,6 +578,8 @@ metrics:
   nvlink.errors.ecc:
     tagsets:
       - device
+    aggregation:
+      type: lifetime_error
     support:
       unsupported_architectures:
         - fermi
@@ -505,6 +593,8 @@ metrics:
   nvlink.errors.recovery:
     tagsets:
       - device
+    aggregation:
+      type: lifetime_error
     support:
       unsupported_architectures:
         - fermi
@@ -518,6 +608,8 @@ metrics:
   nvlink.errors.replay:
     tagsets:
       - device
+    aggregation:
+      type: lifetime_error
     support:
       unsupported_architectures:
         - fermi
@@ -531,6 +623,8 @@ metrics:
   nvlink.nvswitch_connected:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures:
         - fermi
@@ -544,6 +638,8 @@ metrics:
   nvlink.speed:
     tagsets:
       - device
+    aggregation:
+      type: sensor_data
     support:
       unsupported_architectures:
         - fermi
@@ -557,6 +653,8 @@ metrics:
   nvlink.throughput.data.rx:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures:
         - fermi
@@ -570,6 +668,8 @@ metrics:
   nvlink.throughput.data.tx:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures:
         - fermi
@@ -583,6 +683,8 @@ metrics:
   nvlink.throughput.raw.rx:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures:
         - fermi
@@ -596,6 +698,8 @@ metrics:
   nvlink.throughput.raw.tx:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures:
         - fermi
@@ -609,6 +713,8 @@ metrics:
   pci.replay_counter:
     tagsets:
       - device
+    aggregation:
+      type: lifetime_error
     support:
       unsupported_architectures:
         - fermi
@@ -619,6 +725,8 @@ metrics:
   pci.throughput.rx:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures:
         - fermi
@@ -629,6 +737,8 @@ metrics:
   pci.throughput.tx:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures:
         - fermi
@@ -639,6 +749,8 @@ metrics:
   performance_state:
     tagsets:
       - device
+    aggregation:
+      type: sensor_data
     support:
       unsupported_architectures: []
       device_modes:
@@ -648,6 +760,8 @@ metrics:
   power.management_limit:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures: []
       device_modes:
@@ -657,6 +771,8 @@ metrics:
   power.usage:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures: []
       device_modes:
@@ -668,6 +784,8 @@ metrics:
       - device
       - process
       - container
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures: []
       device_modes:
@@ -679,6 +797,8 @@ metrics:
       - device
       - process
       - container
+    aggregation:
+      type: relative_activity
     support:
       unsupported_architectures:
         - fermi
@@ -691,6 +811,8 @@ metrics:
       - device
       - process
       - container
+    aggregation:
+      type: relative_activity
     support:
       unsupported_architectures:
         - fermi
@@ -703,6 +825,8 @@ metrics:
       - device
       - process
       - container
+    aggregation:
+      type: relative_activity
     support:
       unsupported_architectures:
         - fermi
@@ -715,6 +839,8 @@ metrics:
       - device
       - process
       - container
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures: []
       device_modes:
@@ -726,6 +852,8 @@ metrics:
       - device
       - process
       - container
+    aggregation:
+      type: relative_activity
     support:
       unsupported_architectures: []
       device_modes:
@@ -735,6 +863,8 @@ metrics:
   remapped_rows.correctable:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures:
         - fermi
@@ -750,6 +880,8 @@ metrics:
   remapped_rows.failed:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures:
         - fermi
@@ -765,6 +897,8 @@ metrics:
   remapped_rows.pending:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures:
         - fermi
@@ -780,6 +914,8 @@ metrics:
   remapped_rows.uncorrectable:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures:
         - fermi
@@ -795,6 +931,8 @@ metrics:
   slowdown_temperature:
     tagsets:
       - device
+    aggregation:
+      type: sensor_data
     support:
       unsupported_architectures:
         - fermi
@@ -805,6 +943,8 @@ metrics:
   sm_active:
     tagsets:
       - device
+    aggregation:
+      type: relative_activity
     support:
       unsupported_architectures: []
       device_modes:
@@ -814,6 +954,8 @@ metrics:
   sm_occupancy:
     tagsets:
       - device
+    aggregation:
+      type: relative_activity
     support:
       unsupported_architectures:
         - fermi
@@ -831,6 +973,8 @@ metrics:
   sm_utilization:
     tagsets:
       - device
+    aggregation:
+      type: relative_activity
     support:
       unsupported_architectures:
         - fermi
@@ -848,6 +992,8 @@ metrics:
   temperature:
     tagsets:
       - device
+    aggregation:
+      type: sensor_data
     support:
       unsupported_architectures: []
       device_modes:
@@ -857,6 +1003,8 @@ metrics:
   tensor_active:
     tagsets:
       - device
+    aggregation:
+      type: relative_activity
     support:
       unsupported_architectures:
         - fermi
@@ -874,6 +1022,8 @@ metrics:
   total_energy_consumption:
     tagsets:
       - device
+    aggregation:
+      type: absolute_usage
     support:
       unsupported_architectures:
         - fermi
