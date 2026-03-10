@@ -10,8 +10,8 @@ import (
 	"encoding/json"
 	"regexp"
 	"testing"
-  
-  "github.com/DataDog/datadog-agent/test/e2e-framework/components/datadog/agentparams"
+
+	"github.com/DataDog/datadog-agent/test/e2e-framework/components/datadog/agentparams"
 	"github.com/DataDog/datadog-agent/test/e2e-framework/components/os"
 	"github.com/DataDog/datadog-agent/test/e2e-framework/scenarios/aws/ec2"
 
