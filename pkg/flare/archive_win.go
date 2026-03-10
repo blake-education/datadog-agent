@@ -357,7 +357,7 @@ func getWindowsData(fb flaretypes.FlareBuilder) error {
 	getServiceStatus(fb)               //nolint:errcheck
 	getDatadogRegistry(fb)             //nolint:errcheck
 	getEventLogConfig(fb)              //nolint:errcheck
-  getDDUserGroupsAndRightsStatus(fb) //nolint:errcheck
+	getDDUserGroupsAndRightsStatus(fb) //nolint:errcheck
 	getIISData(fb)                     //nolint:errcheck
 	return nil
 }
