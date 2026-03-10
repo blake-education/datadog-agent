@@ -19,7 +19,7 @@ import (
 
 	"github.com/DataDog/viper"
 	"go.uber.org/fx"
-	"gopkg.in/yaml.v2"
+	"go.yaml.in/yaml/v2"
 
 	api "github.com/DataDog/datadog-agent/comp/api/api/def"
 	"github.com/DataDog/datadog-agent/comp/core/config"
@@ -179,12 +179,13 @@ func (ia *inventoryagent) initData() {
 	}
 
 	ia.data["agent_version"] = version.AgentVersion
+	ia.data["package_version"] = version.AgentPackageVersion
 	ia.data["agent_startup_time_ms"] = pkgconfigsetup.StartTime.UnixMilli()
 	ia.data["flavor"] = flavor.GetFlavor()
 
 	infraMode := scrub(ia.conf.GetString("infrastructure_mode"))
 	// agent-configuration: This validation should be done by the Config once we have such mechanism
-	if !slices.Contains([]string{"full", "end_user_device", "basic"}, infraMode) {
+	if !slices.Contains([]string{"full", "end_user_device", "basic", "none"}, infraMode) {
 		ia.log.Warnf("invalid value for 'infrastructure_mode': '%s' (defaulting to 'full')", infraMode)
 		infraMode = "full"
 	}
@@ -244,6 +245,7 @@ func (ia *inventoryagent) fetchCoreAgentMetadata() {
 	ia.data["feature_logs_enabled"] = ia.conf.GetBool("logs_enabled")
 	ia.data["feature_imdsv2_enabled"] = ia.conf.GetBool("ec2_prefer_imdsv2")
 	ia.data["feature_remote_configuration_enabled"] = ia.conf.GetBool("remote_configuration.enabled")
+	ia.data["feature_remote_updates_enabled"] = ia.conf.GetBool("remote_updates")
 	ia.data["feature_container_images_enabled"] = ia.conf.GetBool("container_image.enabled")
 
 	ia.data["feature_csm_vm_containers_enabled"] = ia.conf.GetBool("sbom.enabled") && ia.conf.GetBool("container_image.enabled") && ia.conf.GetBool("sbom.container_image.enabled")
@@ -495,7 +497,7 @@ func (ia *inventoryagent) getConfigs(data agentMetadata) {
 				}
 			}
 		}
-		if yaml, err := ia.marshalAndScrub(ia.conf.AllSettings()); err == nil {
+		if yaml, err := ia.marshalAndScrub(ia.conf.AllSettingsWithoutSecrets()); err == nil {
 			data["full_configuration"] = yaml
 		}
 	}
@@ -512,10 +514,6 @@ func (ia *inventoryagent) getPayload() marshaler.JSONMarshaler {
 	maps.Copy(data, ia.data)
 
 	ia.getConfigs(data)
-
-	if !ia.conf.GetBool("inventories_diagnostics_enabled") {
-		delete(data, "diagnostics")
-	}
 
 	return &Payload{
 		Hostname:  ia.hostname,

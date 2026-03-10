@@ -88,6 +88,10 @@ namespace WixSetup.Datadog_Agent
 
         public ManagedAction DDCreateFolders { get; }
 
+        public ManagedAction RunPreRemoveHook { get; }
+
+        public ManagedAction RunPostInstallHook { get; }
+
         /// <summary>
         /// Registers and sequences our custom actions
         /// </summary>
@@ -496,8 +500,11 @@ namespace WixSetup.Datadog_Agent
                            "DD_INSTALLER_REGISTRY_URL=[DD_INSTALLER_REGISTRY_URL]," +
                            "DD_APM_INSTRUMENTATION_ENABLED=[DD_APM_INSTRUMENTATION_ENABLED]," +
                            "DD_APM_INSTRUMENTATION_LIBRARIES=[DD_APM_INSTRUMENTATION_LIBRARIES]," +
+                           "DD_INSTALLER_DEFAULT_PKG_VERSION_DATADOG_APM_INJECT=[DD_INSTALLER_DEFAULT_PKG_VERSION_DATADOG_APM_INJECT]," +
                            "DD_REMOTE_UPDATES=[DD_REMOTE_UPDATES]," +
-                           "FLEET_INSTALL=[FLEET_INSTALL]");
+                           "DD_INFRASTRUCTURE_MODE=[DD_INFRASTRUCTURE_MODE]," +
+                           "FLEET_INSTALL=[FLEET_INSTALL]," +
+                           "DD_OTELCOLLECTOR_ENABLED=[DD_OTELCOLLECTOR_ENABLED]");
 
             RollbackOciPackages = new CustomAction<CustomActions>(
                     new Id(nameof(RollbackOciPackages)),
@@ -523,7 +530,7 @@ namespace WixSetup.Datadog_Agent
                     CustomActions.PurgeOciPackages,
                     // Check the return value to prevent removing datadog-installer.exe if purge fails.
                     // We will need to use the datadog-installer.exe to cleanup packages if purge fails.
-                    // To skip purging entirely, set the PURGE property to 0.
+                    // To skip purging entirely, set the KEEP_INSTALLED_PACKAGES property to 1.
                     Return.check,
                     When.Before,
                     new Step(CleanupOnUninstall.Id),
@@ -533,7 +540,7 @@ namespace WixSetup.Datadog_Agent
                 Execute = Execute.deferred,
                 Impersonate = false
             }
-                .SetProperties("PROJECTLOCATION=[PROJECTLOCATION],SITE=[SITE],APIKEY=[APIKEY],PURGE=[PURGE]");
+                .SetProperties("PROJECTLOCATION=[PROJECTLOCATION],SITE=[SITE],APIKEY=[APIKEY],KEEP_INSTALLED_PACKAGES=[KEEP_INSTALLED_PACKAGES],FLEET_INSTALL=[FLEET_INSTALL]");
 
             WriteInstallInfo = new CustomAction<CustomActions>(
                     new Id(nameof(WriteInstallInfo)),
@@ -583,7 +590,7 @@ namespace WixSetup.Datadog_Agent
                 Impersonate = false
             }
                 .SetProperties("DDAGENTUSER_PROCESSED_PASSWORD=[DDAGENTUSER_PROCESSED_PASSWORD], " +
-                               "DDAGENTUSER_PROCESSED_FQ_NAME=[DDAGENTUSER_PROCESSED_FQ_NAME], ")
+                               "DDAGENTUSER_PROCESSED_FQ_NAME=[DDAGENTUSER_PROCESSED_FQ_NAME]")
                 .HideTarget(true);
 
             ConfigureServicesRollback = new CustomAction<CustomActions>(
@@ -598,7 +605,7 @@ namespace WixSetup.Datadog_Agent
                 Execute = Execute.rollback,
                 Impersonate = false
             }
-                .SetProperties("DDAGENTUSER_PROCESSED_FQ_NAME=[DDAGENTUSER_PROCESSED_FQ_NAME], ")
+                .SetProperties("DDAGENTUSER_PROCESSED_FQ_NAME=[DDAGENTUSER_PROCESSED_FQ_NAME]")
                 .HideTarget(true);
 
             // WiX built-in StopServices only stops services if the component is changing.
@@ -630,7 +637,8 @@ namespace WixSetup.Datadog_Agent
             {
                 Execute = Execute.deferred,
                 Impersonate = false
-            };
+            }
+                .SetProperties("DD_INSTALL_ONLY=[DD_INSTALL_ONLY]");
 
             // Rollback StartDDServices stops the the services so that any file locks are released.
             StartDDServicesRollback = new CustomAction<CustomActions>(
@@ -715,6 +723,57 @@ namespace WixSetup.Datadog_Agent
                 Execute = Execute.deferred,
                 Impersonate = false
             }.SetProperties("APPLICATIONDATADIRECTORY=[APPLICATIONDATADIRECTORY]");
+
+            // Installer package hooks (prerm / postinst)
+            // These call datadog-installer.exe prerm/postinst, mirroring the deb/rpm maintainer
+            // scripts so that the installer can perform install/uninstall work in Go.
+            // Currently used for agent extension save/restore; will be extended for other
+            // installer-managed tasks in the future.
+            // Skipped when FLEET_INSTALL=1 (fleet automation runs its own hooks).
+
+            // Pre-remove hook: runs before the agent is uninstalled or upgraded.
+            // Uses UPGRADINGPRODUCTCODE to determine if this is an upgrade or a full uninstall.
+            RunPreRemoveHook = new CustomAction<CustomActions>(
+                    new Id(nameof(RunPreRemoveHook)),
+                    CustomActions.RunPreRemoveHook,
+                    Return.ignore,
+                    When.Before,
+                    new Step(PurgeOciPackages.Id),
+                    Conditions.RemovingForUpgrade | Conditions.Uninstalling
+                )
+            {
+                Execute = Execute.deferred,
+                Impersonate = false
+            }
+                .SetProperties("PROJECTLOCATION=[PROJECTLOCATION], " +
+                               "FLEET_INSTALL=[FLEET_INSTALL], " +
+                               "UPGRADINGPRODUCTCODE=[UPGRADINGPRODUCTCODE], " +
+                               "DD_INSTALLER_REGISTRY_URL=[DD_INSTALLER_REGISTRY_URL], " +
+                               "DD_INSTALLER_REGISTRY_AUTH=[DD_INSTALLER_REGISTRY_AUTH], " +
+                               "DD_INSTALLER_REGISTRY_USERNAME=[DD_INSTALLER_REGISTRY_USERNAME], " +
+                               "DD_INSTALLER_REGISTRY_PASSWORD=[DD_INSTALLER_REGISTRY_PASSWORD]")
+                .HideTarget(true);
+
+            // Post-install hook: runs after the new agent is installed or upgraded
+            RunPostInstallHook = new CustomAction<CustomActions>(
+                    new Id(nameof(RunPostInstallHook)),
+                    CustomActions.RunPostInstallHook,
+                    Return.ignore,
+                    When.After,
+                    new Step(InstallOciPackages.Id),
+                    Condition.NOT(Conditions.Uninstalling | Conditions.RemovingForUpgrade)
+                )
+            {
+                Execute = Execute.deferred,
+                Impersonate = false
+            }
+                .SetProperties("PROJECTLOCATION=[PROJECTLOCATION], " +
+                               "FLEET_INSTALL=[FLEET_INSTALL], " +
+                               "DD_INSTALLER_REGISTRY_URL=[DD_INSTALLER_REGISTRY_URL], " +
+                               "DD_INSTALLER_REGISTRY_AUTH=[DD_INSTALLER_REGISTRY_AUTH], " +
+                               "DD_INSTALLER_REGISTRY_USERNAME=[DD_INSTALLER_REGISTRY_USERNAME], " +
+                               "DD_INSTALLER_REGISTRY_PASSWORD=[DD_INSTALLER_REGISTRY_PASSWORD]")
+                .HideTarget(true);
         }
     }
 }

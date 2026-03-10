@@ -12,6 +12,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	configcomp "github.com/DataDog/datadog-agent/comp/core/config"
+	"github.com/DataDog/datadog-agent/pkg/config/structure"
 
 	workloadfilter "github.com/DataDog/datadog-agent/comp/core/workloadfilter/def"
 )
@@ -83,7 +84,7 @@ func TestGetProductConfigs(t *testing.T) {
 	// Check global product
 	globalRules, exists := results[workloadfilter.ProductGlobal]
 	require.True(t, exists)
-	assert.Len(t, globalRules[workloadfilter.ServiceType], 1)
+	assert.Len(t, globalRules[workloadfilter.KubeServiceType], 1)
 }
 
 func TestConsolidateRulesByProduct(t *testing.T) {
@@ -129,7 +130,7 @@ cel_workload_exclude:
 `
 	configComponent := configcomp.NewMockFromYAML(t, yamlConfig)
 	var filterConfig []workloadfilter.RuleBundle
-	err := configComponent.UnmarshalKey("cel_workload_exclude", &filterConfig)
+	err := structure.UnmarshalKey(configComponent, "cel_workload_exclude", &filterConfig)
 
 	require.NoError(t, err)
 	assert.Len(t, filterConfig, 2)
