@@ -722,6 +722,7 @@ func startAgent(
 
 	diagnosecatalog.Register(diagnose.AgentAccountCheck, func(_ diagnose.Config) []diagnose.Diagnosis {
 		return agentaccountcheck.Diagnose()
+	})
 	diagnosecatalog.Register(diagnose.HealthPlatformIssues, func(diagCfg diagnose.Config) []diagnose.Diagnosis {
 		if !cfg.GetBool("health_platform.enabled") {
 			return nil
