@@ -540,7 +540,7 @@ func newHTTPPassthroughPipeline(
 			"X-Datadog-Additional-Tags": fmt.Sprintf("host:%s,agent_version:%s", hostname, version.AgentVersion),
 		}
 		for i := range endpoints.Endpoints {
-			endpoints.Endpoints[i].ExtraHTTPHeaders = extraHeaders
+			endpoints.Endpoints[i].ExtraHeaders = extraHeaders
 		}
 	}
 

@@ -12,13 +12,13 @@ import (
 
 	"google.golang.org/protobuf/proto"
 
+	"github.com/DataDog/agent-payload/v5/statefulpb"
 	"github.com/DataDog/datadog-agent/pkg/logs/message"
 	"github.com/DataDog/datadog-agent/pkg/logs/patterns/automaton"
 	"github.com/DataDog/datadog-agent/pkg/logs/patterns/clustering"
 	"github.com/DataDog/datadog-agent/pkg/logs/patterns/processor"
 	"github.com/DataDog/datadog-agent/pkg/logs/patterns/tags"
 	"github.com/DataDog/datadog-agent/pkg/logs/patterns/token"
-	"github.com/DataDog/datadog-agent/pkg/proto/pbgo/statefulpb"
 )
 
 const nanoToMillis = 1000000
@@ -90,8 +90,12 @@ func (mt *MessageTranslator) processMessage(msg *message.Message, outputChan cha
 
 	ts := getMessageTimestamp(msg)
 
-	// Get message content
+	// Get message content - prefer PreEncodedContent (rendered bytes before JSON wrapping)
+	// when available (set by JSONEncoder for gRPC dual-send path).
 	content := msg.GetContent()
+	if len(msg.PreEncodedContent) > 0 {
+		content = msg.PreEncodedContent
+	}
 	if len(content) == 0 {
 		return
 	}
@@ -212,13 +216,18 @@ func (mt *MessageTranslator) buildTagSet(msg *message.Message) (*statefulpb.TagS
 	return tagSet, allTagsString, dictID, isNew
 }
 
-// getMessageTimestamp returns the timestamp for the message, preferring ServerlessExtra.Timestamp
+// getMessageTimestamp returns the timestamp for the message.
+// It prefers EncodedTimestampMs (set by the JSON encoder for HTTP dual-send) so that the gRPC
+// path uses the exact same millisecond timestamp, keeping UUID derivation consistent across both
+// transports. Falls back to ServerlessExtra.Timestamp and then time.Now().
 func getMessageTimestamp(msg *message.Message) time.Time {
-	ts := time.Now().UTC()
-	if !msg.ServerlessExtra.Timestamp.IsZero() {
-		ts = msg.ServerlessExtra.Timestamp
+	if msg.MessageMetadata.EncodedTimestampMs != 0 {
+		return time.UnixMilli(msg.MessageMetadata.EncodedTimestampMs).UTC()
 	}
-	return ts
+	if !msg.ServerlessExtra.Timestamp.IsZero() {
+		return msg.ServerlessExtra.Timestamp
+	}
+	return time.Now().UTC()
 }
 
 // tokenizeMessage tokenizes the message content string
@@ -277,7 +286,7 @@ func (mt *MessageTranslator) sendDictEntryDefine(outputChan chan *message.Statef
 
 // sendStructuredLog creates and sends a StructuredLog datum
 func (mt *MessageTranslator) sendStructuredLog(outputChan chan *message.StatefulMessage, msg *message.Message, timestamp int64, patternID uint64, dynamicValues []*statefulpb.DynamicValue, tagSet *statefulpb.TagSet, jsonContext []byte) {
-	logDatum := buildStructuredLog(timestamp, patternID, dynamicValues, tagSet, jsonContext)
+	logDatum := buildStructuredLog(timestamp, patternID, dynamicValues, tagSet, jsonContext, msg.MessageMetadata.DualSendUUID)
 
 	tlmPipelinePatternLogsProcessed.Inc(mt.pipelineName)
 	tlmPipelinePatternLogsProcessedBytes.Add(float64(proto.Size(logDatum)), mt.pipelineName)
@@ -357,21 +366,46 @@ func (mt *MessageTranslator) encodeDynamicValue(value string) (*statefulpb.Dynam
 	}, dictID, isNew
 }
 
-// buildStructuredLog creates a Datum containing a StructuredLog
-func buildStructuredLog(timestamp int64, patternID uint64, dynamicValues []*statefulpb.DynamicValue, tagSet *statefulpb.TagSet, jsonContext []byte) *statefulpb.Datum {
+// buildRawLog creates a Datum containing a raw (unstructured) log entry.
+func buildRawLog(content string, timestamp time.Time, tagSet *statefulpb.TagSet, uuid string) *statefulpb.Datum {
+	ts := timestamp.UnixNano() / nanoToMillis
+	log := &statefulpb.Log{
+		Timestamp: ts,
+		Content: &statefulpb.Log_Raw{
+			Raw: content,
+		},
+		Tags: tagSet,
+	}
+	if uuid != "" {
+		log.Uuid = &uuid
+	}
 	return &statefulpb.Datum{
 		Data: &statefulpb.Datum_Logs{
-			Logs: &statefulpb.Log{
-				Timestamp: timestamp,
-				Content: &statefulpb.Log_Structured{
-					Structured: &statefulpb.StructuredLog{
-						PatternId:     patternID,
-						DynamicValues: dynamicValues,
-						JsonContext:   jsonContext,
-					},
-				},
-				Tags: tagSet,
+			Logs: log,
+		},
+	}
+}
+
+// buildStructuredLog creates a Datum containing a StructuredLog
+func buildStructuredLog(timestamp int64, patternID uint64, dynamicValues []*statefulpb.DynamicValue, tagSet *statefulpb.TagSet, jsonContext []byte, uuid string) *statefulpb.Datum {
+	log := &statefulpb.Log{
+		Timestamp: timestamp,
+		Content: &statefulpb.Log_Structured{
+			Structured: &statefulpb.StructuredLog{
+				PatternId:     patternID,
+				DynamicValues: dynamicValues,
+				JsonContext:   jsonContext,
 			},
+		},
+		Tags: tagSet,
+	}
+	if uuid != "" {
+		log.Uuid = &uuid
+	}
+
+	return &statefulpb.Datum{
+		Data: &statefulpb.Datum_Logs{
+			Logs: log,
 		},
 	}
 }
