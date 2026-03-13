@@ -110,6 +110,7 @@ use (
 	pkg/logs/metrics
 	pkg/logs/pipeline
 	pkg/logs/processor
+	pkg/logs/re2
 	pkg/logs/sender
 	pkg/logs/sources
 	pkg/logs/status/statusinterface

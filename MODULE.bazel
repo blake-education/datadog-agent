@@ -270,6 +270,12 @@ bazel_dep(name = "rules_rs", version = "0.0.27")
 
 include("//deps:crates.MODULE.bazel")
 
+##############################
+## C / C++ base libraries  ##
+##############################
+
+bazel_dep(name = "abseil-cpp", version = "20250814.0")
+
 #########################
 ## Native dependencies ##
 #########################
