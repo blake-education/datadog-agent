@@ -204,8 +204,9 @@ func convertToEvent(container *podman.Container) workloadmeta.CollectorEvent {
 			Image:      image,
 			NetworkIPs: networkIPs(container),
 			PID:        container.State.PID,
-			Ports:      ports,
-			Runtime:    workloadmeta.ContainerRuntimePodman,
+			Ports:     ports,
+			Runtime:   workloadmeta.ContainerRuntimePodman,
+			SandboxID: container.Config.Pod,
 			State: workloadmeta.ContainerState{
 				Running:    container.State.State == podman.ContainerStateRunning,
 				Status:     status(container.State.State),
