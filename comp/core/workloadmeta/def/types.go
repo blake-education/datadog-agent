@@ -657,8 +657,8 @@ type Container struct {
 	CgroupPath string
 	// SandboxID is the identifier of the sandbox this container belongs to.
 	// Populated from containerd's container info SandboxID field.
-	SandboxID string
-	RestartCount  int
+	SandboxID    string
+	RestartCount int
 }
 
 // GetID implements Entity#GetID.
