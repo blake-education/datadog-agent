@@ -447,13 +447,12 @@ func (k *KubeASCheck) controlPlaneHealthCheck(sender sender.Sender) error {
 	)
 
 	for component, ready := range map[string]bool{"apiserver": apiServerReady, "etcd": etcdReady} {
+		status = servicecheck.ServiceCheckCritical
+		message = component + " not ready"
 
 		if ready {
 			status = servicecheck.ServiceCheckOK
 			message = "ok"
-		} else {
-			status = servicecheck.ServiceCheckCritical
-			message = component + " not ready"
 		}
 
 		sender.ServiceCheck(KubeControlPaneCheck, status, "", []string{"component:" + component}, message)
