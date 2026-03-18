@@ -16,6 +16,7 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/DataDog/datadog-agent/comp/host-profiler/collector/impl/params"
 	"go.opentelemetry.io/collector/confmap"
 	"go.opentelemetry.io/collector/confmap/xconfmap"
 	"go.uber.org/zap/exp/zapslog"
@@ -48,12 +49,14 @@ var resourceDetectionDefaultConfig = confMap{
 //   - If hostprofiler::symbol_uploader::enabled == true, convert api_key/app_key to strings in each endpoint
 //   - If no hostprofiler is used & configured, add minimal one with symbol_uploader: false
 //   - remove ddprofiling & hpflare extensions
-type converterWithoutAgent struct{}
+type converterWithoutAgent struct {
+	params params.CollectorParams
+}
 
-func newConverterWithoutAgent(convSettings confmap.ConverterSettings) confmap.Converter {
+func newConverterWithoutAgent(convSettings confmap.ConverterSettings, p params.CollectorParams) confmap.Converter {
 	logger := convSettings.Logger
 	slog.SetDefault(slog.New(zapslog.NewHandler(logger.Core())))
-	return &converterWithoutAgent{}
+	return &converterWithoutAgent{params: p}
 }
 
 func (c *converterWithoutAgent) Convert(_ context.Context, conf *confmap.Conf) error {
@@ -512,8 +515,12 @@ func (c *converterWithoutAgent) addInternalHealthMetricsPipeline(conf confMap, p
 	}
 
 	// Build metrics pipeline (uses resourcedetection instead of infraattributes)
+	metricsPipelineReceivers := []any{reservedPrometheusReceiver}
+	if c.params.GetGoRuntimeMetrics() {
+		metricsPipelineReceivers = append(metricsPipelineReceivers, "otlp")
+	}
 	metricsPipeline := confMap{
-		"receivers": []any{reservedPrometheusReceiver},
+		"receivers": metricsPipelineReceivers,
 		"processors": []any{
 			reservedFilterProcessor,
 			defaultResourceDetectionName, // Use resourcedetection for standalone mode
