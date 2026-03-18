@@ -52,6 +52,11 @@
         "matchManagers": ["docker-compose"],
         "matchFileNames": ["**/testdata/**", "**/fixtures/**", "**/testfixtures/**", "pkg/collector/corechecks/oracle/compose/**"],
         "enabled": false
+      },
+      {
+        "matchManagers": ["dockerfile", "docker-compose"],
+        "matchDepNames": ["golang"],
+        "enabled": false
       }
     ],
     "pre-commit": {
