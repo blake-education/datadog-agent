@@ -37,7 +37,7 @@ jobs:
       uses: anthropics/claude-code-action@cd77b50d2b0808657f8e6774085c8bf54484351c # v1.0.72
       with:
         anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-        claude_args : --allowedTools "Read,Write"
+        claude_args : --allowedTools "Read(issue_details.json),Write(claude.txt)"
         github_token: ${{ github.token }}
         prompt: |
           # Datadog Agent - Intelligent Issue Triage System
