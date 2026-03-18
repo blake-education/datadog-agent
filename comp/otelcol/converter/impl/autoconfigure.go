@@ -76,6 +76,9 @@ func (c *ddConverter) enhanceConfig(conf *confmap.Conf) {
 		addPrometheusReceiver(conf, findInternalMetricsAddress(conf))
 	}
 
+	// opamp instance UID persistence
+	c.ensureOpampInstanceUID(conf)
+
 	// add datadog agent sourced config
 	addCoreAgentConfig(conf, c.coreConfig)
 }
