@@ -29,6 +29,7 @@ GO_VERSION_REFERENCES: list[tuple[str, str, str, bool]] = [
     ("./test/fakeintake/docs/README.md", "[Golang ", "]", False),
     ("./cmd/process-agent/README.md", "`go >= ", "`", False),
     ("./pkg/logs/launchers/windowsevent/README.md", "install go ", "+,", False),
+    ("./tools/host-profiler/Dockerfile", "FROM golang:", "-trixie", True),
     ("./.wwhrd.yml", "raw.githubusercontent.com/golang/go/go", "/LICENSE", True),
     ("./go.work", "go ", "", True),
 ]
@@ -94,7 +95,7 @@ def update_go(
     res = ctx.run("go version")
     if res and res.stdout.startswith(f"go version go{version} "):
         print("Updating the code in pkg/template...")
-        bazel("run", "//pkg/template:generate")
+        bazel(ctx, "run", "//pkg/template:generate")
         print("Running the tidy task...")
         tidy(ctx)
     else:
