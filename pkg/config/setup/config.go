@@ -1980,6 +1980,7 @@ func logsagent(config pkgconfigmodel.Setup) {
 	}
 	// add global processing rules that are applied on all logs
 	config.BindEnv("logs_config.processing_rules") //nolint:forbidigo // TODO: replace by 'SetDefaultAndBindEnv'
+	config.BindEnvAndSetDefault("logs_config.use_re2_regex", true)
 	// enforce the agent to use files to collect container logs on kubernetes environment
 	config.BindEnvAndSetDefault("logs_config.k8s_container_use_file", false)
 	// Tail a container's logs by querying the kubelet's API
