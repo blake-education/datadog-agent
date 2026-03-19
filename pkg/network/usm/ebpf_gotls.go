@@ -168,8 +168,8 @@ func newGoTLS(mgr *manager.Manager, c *config.Config) (protocols.Protocol, error
 	prog.inspector = &goTLSBinaryInspector{
 		structFieldsLookupFunctions: structFieldsLookupFunctions,
 		paramLookupFunctions:        paramLookupFunctions,
-		binAnalysisMetric:           telemetryimpl.GetCompatComponent().NewCounter("usm.go_tls.analysis_time", libtelemetry.OptPrometheus),
-		binNoSymbolsMetric:          telemetryimpl.GetCompatComponent().NewCounter("usm.go_tls.missing_symbols", libtelemetry.OptPrometheus),
+		binAnalysisMetric:           libtelemetry.NewCounter("usm.go_tls.analysis_time", libtelemetry.OptPrometheus),
+		binNoSymbolsMetric:          libtelemetry.NewCounter("usm.go_tls.missing_symbols", libtelemetry.OptPrometheus),
 	}
 
 	prog.procMon = monitor.GetProcessMonitor()

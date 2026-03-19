@@ -17,6 +17,7 @@ import (
 )
 
 // MockModule provides a telemetry mock module for use within this package's tests.
+// This cannot use comp/core/telemetry/mock to avoid a circular import: mock imports telemetryimpl.
 func MockModule() fxutil.Module {
 	return fxutil.Component(
 		fx.Provide(func(lc fx.Lifecycle) telemetry.Mock {
