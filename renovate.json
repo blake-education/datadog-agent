@@ -1,6 +1,6 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "enabledManagers": ["custom.regex", "pre-commit", "github-actions", "dockerfile", "docker-compose", "cargo"],
+    "enabledManagers": ["custom.regex", "pre-commit", "github-actions", "dockerfile", "docker-compose", "cargo", "bazelisk"],
     "labels": ["dependencies", "changelog/no-changelog", "qa/no-code-change"],
     "stopUpdatingLabel": "stop-updating",
     "platformCommit": "enabled",
@@ -51,6 +51,11 @@
       {
         "matchManagers": ["docker-compose"],
         "matchFileNames": ["**/testdata/**", "**/fixtures/**", "**/testfixtures/**", "pkg/collector/corechecks/oracle/compose/**"],
+        "enabled": false
+      },
+      {
+        "matchManagers": ["bazelisk"],
+        "matchUpdateTypes": ["major"],
         "enabled": false
       }
     ],
