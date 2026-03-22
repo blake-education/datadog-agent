@@ -12,7 +12,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/DataDog/datadog-agent/pkg/network/tracer"
+	pkgconfigsetup "github.com/DataDog/datadog-agent/pkg/config/setup"
 	"github.com/DataDog/datadog-agent/pkg/system-probe/api/module"
 	"github.com/DataDog/datadog-agent/pkg/system-probe/config"
 	"github.com/DataDog/datadog-agent/pkg/system-probe/utils"
@@ -28,7 +28,13 @@ func init() { registerModule(NetworkTracer) }
 var NetworkTracer = &module.Factory{
 	Name:      config.NetworkTracerModule,
 	Fn:        createNetworkTracerModule,
-	NeedsEBPF: tracer.NeedsEBPF,
+	NeedsEBPF: networkTracerNeedsEBPF,
+}
+
+// networkTracerNeedsEBPF returns true if the network tracer requires eBPF
+// (i.e. eBPF-less mode is not enabled).
+func networkTracerNeedsEBPF() bool {
+	return !pkgconfigsetup.SystemProbe().GetBool("network_config.enable_ebpfless")
 }
 
 func (nt *networkTracerModule) platformRegister(httpMux *module.Router) error {
