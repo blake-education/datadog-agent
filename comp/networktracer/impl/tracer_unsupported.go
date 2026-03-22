@@ -1,0 +1,64 @@
+// Unless explicitly stated otherwise all files in this repository are licensed
+// under the Apache License Version 2.0.
+// This product includes software developed at Datadog (https://www.datadoghq.com/).
+// Copyright 2016-present Datadog, Inc.
+
+//go:build !linux_bpf
+
+// Package networktracerImpl implements the networktracer component.
+package networktracerImpl
+
+import (
+	"errors"
+
+	compdef "github.com/DataDog/datadog-agent/comp/def"
+	networktracer "github.com/DataDog/datadog-agent/comp/networktracer/def"
+	"github.com/DataDog/datadog-agent/pkg/network"
+)
+
+// ErrNotSupported is returned by the stub component on platforms where the
+// eBPF-based network tracer is not available.
+var ErrNotSupported = errors.New("network tracer is not supported on this platform")
+
+// Requires defines the fx dependencies for the networktracer stub component.
+type Requires struct {
+	Lifecycle compdef.Lifecycle
+}
+
+// Provides defines the output of the networktracer stub component.
+type Provides struct {
+	Comp networktracer.Component
+}
+
+// unsupportedTracer is a no-op implementation returned on unsupported platforms.
+type unsupportedTracer struct{}
+
+// NewComponent creates a stub networktracer component that returns ErrNotSupported on all calls.
+func NewComponent(_ Requires) (Provides, error) {
+	return Provides{Comp: &unsupportedTracer{}}, nil
+}
+
+// GetActiveConnections always returns ErrNotSupported on unsupported platforms.
+func (u *unsupportedTracer) GetActiveConnections(_ string) (*network.Connections, func(), error) {
+	return nil, nil, ErrNotSupported
+}
+
+// RegisterClient always returns ErrNotSupported on unsupported platforms.
+func (u *unsupportedTracer) RegisterClient(_ string) error {
+	return ErrNotSupported
+}
+
+// GetStats always returns nil on unsupported platforms.
+func (u *unsupportedTracer) GetStats() map[string]interface{} {
+	return nil
+}
+
+// Pause always returns ErrNotSupported on unsupported platforms.
+func (u *unsupportedTracer) Pause() error {
+	return ErrNotSupported
+}
+
+// Resume always returns ErrNotSupported on unsupported platforms.
+func (u *unsupportedTracer) Resume() error {
+	return ErrNotSupported
+}
