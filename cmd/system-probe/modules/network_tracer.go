@@ -10,13 +10,13 @@ package modules
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"strings"
 	"sync/atomic"
 	"time"
 
+	networktracer "github.com/DataDog/datadog-agent/comp/networktracer/def"
 	"github.com/DataDog/datadog-agent/pkg/network"
 	networkconfig "github.com/DataDog/datadog-agent/pkg/network/config"
 	"github.com/DataDog/datadog-agent/pkg/network/encoding/marshal"
@@ -29,7 +29,7 @@ import (
 )
 
 // ErrSysprobeUnsupported is the unsupported error prefix, for error-class matching from callers
-var ErrSysprobeUnsupported = errors.New("system-probe unsupported")
+var ErrSysprobeUnsupported = fmt.Errorf("system-probe unsupported")
 
 const inactivityLogDuration = 10 * time.Minute
 const inactivityRestartDuration = 20 * time.Minute
@@ -38,7 +38,7 @@ const maxConntrackDumpSize = 3000
 func createNetworkTracerModule(_ *sysconfigtypes.Config, deps module.FactoryDependencies) (module.Module, error) {
 	ncfg := networkconfig.New()
 
-	// Checking whether the current OS + kernel version is supported by the tracer
+	// Checking whether the current OS + kernel version is supported by the tracer.
 	if supported, err := tracer.IsTracerSupportedByOS(ncfg.ExcludedBPFLinuxVersions); !supported {
 		return nil, fmt.Errorf("%w: %s", ErrSysprobeUnsupported, err)
 	}
@@ -50,15 +50,13 @@ func createNetworkTracerModule(_ *sysconfigtypes.Config, deps module.FactoryDepe
 		log.Info("enabling universal service monitoring (USM)")
 	}
 
-	t, err := tracer.NewTracer(ncfg, deps.Telemetry, deps.Statsd)
-	if err != nil {
-		return nil, err
-	}
-
 	ctx, cancel := context.WithCancel(context.Background())
-	var connsSender sender.Sender
+	var (
+		connsSender sender.Sender
+		err         error
+	)
 	if ncfg.DirectSend {
-		connsSender, err = sender.New(ctx, t, sender.Dependencies{
+		connsSender, err = sender.New(ctx, deps.NetworkTracer, sender.Dependencies{
 			Config:         deps.CoreConfig,
 			Logger:         deps.Log,
 			Sysprobeconfig: deps.SysprobeConfig,
@@ -69,14 +67,13 @@ func createNetworkTracerModule(_ *sysconfigtypes.Config, deps module.FactoryDepe
 			NPCollector:    deps.NPCollector,
 		})
 		if err != nil {
-			t.Stop()
 			cancel()
 			return nil, fmt.Errorf("create direct sender: %s", err)
 		}
 	}
 
-	return &networkTracer{
-		tracer:      t,
+	return &networkTracerModule{
+		tracer:      deps.NetworkTracer,
 		cfg:         ncfg,
 		connsSender: connsSender,
 		ctx:         ctx,
@@ -84,10 +81,10 @@ func createNetworkTracerModule(_ *sysconfigtypes.Config, deps module.FactoryDepe
 	}, nil
 }
 
-var _ module.Module = &networkTracer{}
+var _ module.Module = &networkTracerModule{}
 
-type networkTracer struct {
-	tracer       *tracer.Tracer
+type networkTracerModule struct {
+	tracer       networktracer.Component
 	cfg          *networkconfig.Config
 	restartTimer *time.Timer
 	connsSender  sender.Sender
@@ -95,13 +92,12 @@ type networkTracer struct {
 	cancelFunc   context.CancelFunc
 }
 
-func (nt *networkTracer) GetStats() map[string]any {
-	stats, _ := nt.tracer.GetStats()
-	return stats
+func (nt *networkTracerModule) GetStats() map[string]any {
+	return nt.tracer.GetStats()
 }
 
-// Register all networkTracer endpoints
-func (nt *networkTracer) Register(httpMux *module.Router) error {
+// Register all networkTracerModule endpoints
+func (nt *networkTracerModule) Register(httpMux *module.Router) error {
 	if !nt.cfg.DirectSend {
 		var runCounter atomic.Uint64
 
@@ -190,27 +186,19 @@ func (nt *networkTracer) Register(httpMux *module.Router) error {
 	httpMux.HandleFunc("/debug/conntrack/cached", func(w http.ResponseWriter, req *http.Request) {
 		ctx, cancelFunc := context.WithTimeout(req.Context(), 30*time.Second)
 		defer cancelFunc()
-		table, err := nt.tracer.DebugCachedConntrack(ctx)
-		if err != nil {
+		if err := nt.tracer.DebugCachedConntrack(ctx, w, maxConntrackDumpSize); err != nil {
 			log.Errorf("unable to retrieve cached conntrack table: %s", err)
 			w.WriteHeader(500)
-			return
 		}
-
-		writeConntrackTable(table, w)
 	})
 
 	httpMux.HandleFunc("/debug/conntrack/host", func(w http.ResponseWriter, req *http.Request) {
 		ctx, cancelFunc := context.WithTimeout(req.Context(), 10*time.Second)
 		defer cancelFunc()
-		table, err := nt.tracer.DebugHostConntrack(ctx)
-		if err != nil {
+		if err := nt.tracer.DebugHostConntrack(ctx, w, maxConntrackDumpSize); err != nil {
 			log.Errorf("unable to retrieve host conntrack table: %s", err)
 			w.WriteHeader(500)
-			return
 		}
-
-		writeConntrackTable(table, w)
 	})
 
 	httpMux.HandleFunc("/debug/process_cache", func(w http.ResponseWriter, r *http.Request) {
@@ -232,11 +220,11 @@ func (nt *networkTracer) Register(httpMux *module.Router) error {
 }
 
 // Close will stop all system probe activities
-func (nt *networkTracer) Close() {
+func (nt *networkTracerModule) Close() {
 	if nt.connsSender != nil {
 		nt.connsSender.Stop()
 	}
-	nt.tracer.Stop()
+	// tracer lifecycle (Stop) is managed by the fx component; no explicit Stop call needed here.
 	nt.cancelFunc()
 }
 
@@ -282,12 +270,4 @@ func writeDisabledProtocolMessage(protocolName string, w http.ResponseWriter) {
 	// We are marshaling a static string, so we can ignore the error
 	buf, _ := json.Marshal(outputString)
 	w.Write(buf)
-}
-
-func writeConntrackTable(table *tracer.DebugConntrackTable, w http.ResponseWriter) {
-	err := table.WriteTo(w, maxConntrackDumpSize)
-	if err != nil {
-		log.Errorf("unable to dump conntrack: %s", err)
-		w.WriteHeader(500)
-	}
 }

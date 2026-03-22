@@ -9,7 +9,9 @@
 package networktracerImpl
 
 import (
+	"context"
 	"errors"
+	"io"
 
 	compdef "github.com/DataDog/datadog-agent/comp/def"
 	networktracer "github.com/DataDog/datadog-agent/comp/networktracer/def"
@@ -61,4 +63,34 @@ func (u *unsupportedTracer) Pause() error {
 // Resume always returns ErrNotSupported on unsupported platforms.
 func (u *unsupportedTracer) Resume() error {
 	return ErrNotSupported
+}
+
+// DebugNetworkMaps always returns ErrNotSupported on unsupported platforms.
+func (u *unsupportedTracer) DebugNetworkMaps() (*network.Connections, error) {
+	return nil, ErrNotSupported
+}
+
+// DebugNetworkState always returns ErrNotSupported on unsupported platforms.
+func (u *unsupportedTracer) DebugNetworkState(_ string) (interface{}, error) {
+	return nil, ErrNotSupported
+}
+
+// DebugEBPFMaps always returns ErrNotSupported on unsupported platforms.
+func (u *unsupportedTracer) DebugEBPFMaps(_ io.Writer, _ ...string) error {
+	return ErrNotSupported
+}
+
+// DebugCachedConntrack always returns ErrNotSupported on unsupported platforms.
+func (u *unsupportedTracer) DebugCachedConntrack(_ context.Context, _ io.Writer, _ int) error {
+	return ErrNotSupported
+}
+
+// DebugHostConntrack always returns ErrNotSupported on unsupported platforms.
+func (u *unsupportedTracer) DebugHostConntrack(_ context.Context, _ io.Writer, _ int) error {
+	return ErrNotSupported
+}
+
+// DebugDumpProcessCache always returns ErrNotSupported on unsupported platforms.
+func (u *unsupportedTracer) DebugDumpProcessCache(_ context.Context) (interface{}, error) {
+	return nil, ErrNotSupported
 }

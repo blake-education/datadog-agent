@@ -31,7 +31,7 @@ var NetworkTracer = &module.Factory{
 	NeedsEBPF: tracer.NeedsEBPF,
 }
 
-func (nt *networkTracer) platformRegister(httpMux *module.Router) error {
+func (nt *networkTracerModule) platformRegister(httpMux *module.Router) error {
 	httpMux.HandleFunc("/network_id", utils.WithConcurrencyLimit(utils.DefaultMaxConcurrentRequests, func(w http.ResponseWriter, req *http.Request) {
 		id, err := getNetworkID(req.Context())
 		if err != nil {

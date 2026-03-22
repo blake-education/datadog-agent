@@ -6,7 +6,12 @@
 // Package networktracer defines the component interface for network connection tracing.
 package networktracer
 
-import "github.com/DataDog/datadog-agent/pkg/network"
+import (
+	"context"
+	"io"
+
+	"github.com/DataDog/datadog-agent/pkg/network"
+)
 
 // team: network-monitoring
 
@@ -28,4 +33,23 @@ type Component interface {
 
 	// Resume resumes eBPF-based connection tracking.
 	Resume() error
+
+	// DebugNetworkMaps returns all active connections for debugging purposes.
+	// The caller is responsible for calling network.Reclaim on the returned connections.
+	DebugNetworkMaps() (*network.Connections, error)
+
+	// DebugNetworkState returns the internal connection state for the given client.
+	DebugNetworkState(clientID string) (interface{}, error)
+
+	// DebugEBPFMaps writes the content of all eBPF maps (or a subset identified by maps) to w.
+	DebugEBPFMaps(w io.Writer, maps ...string) error
+
+	// DebugCachedConntrack writes the cached conntrack table to w, limited to maxSize entries.
+	DebugCachedConntrack(ctx context.Context, w io.Writer, maxSize int) error
+
+	// DebugHostConntrack writes the host conntrack table to w, limited to maxSize entries.
+	DebugHostConntrack(ctx context.Context, w io.Writer, maxSize int) error
+
+	// DebugDumpProcessCache returns the content of the process cache.
+	DebugDumpProcessCache(ctx context.Context) (interface{}, error)
 }
