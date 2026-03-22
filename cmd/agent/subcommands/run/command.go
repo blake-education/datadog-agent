@@ -36,7 +36,6 @@ import (
 	fxinstrumentation "github.com/DataDog/datadog-agent/comp/core/fxinstrumentation/fx"
 	logondurationfx "github.com/DataDog/datadog-agent/comp/logonduration/fx"
 	traceroute "github.com/DataDog/datadog-agent/comp/networkpath/traceroute/def"
-	remotetraceroute "github.com/DataDog/datadog-agent/comp/networkpath/traceroute/fx-remote"
 	ssistatusfx "github.com/DataDog/datadog-agent/comp/updater/ssistatus/fx"
 	workloadselectionfx "github.com/DataDog/datadog-agent/comp/workloadselection/fx"
 
@@ -145,7 +144,7 @@ import (
 	"github.com/DataDog/datadog-agent/comp/ndmtmp"
 	"github.com/DataDog/datadog-agent/comp/netflow"
 	netflowServer "github.com/DataDog/datadog-agent/comp/netflow/server"
-	"github.com/DataDog/datadog-agent/comp/networkpath"
+	"github.com/DataDog/datadog-agent/comp/network"
 	"github.com/DataDog/datadog-agent/comp/otelcol"
 	otelcollector "github.com/DataDog/datadog-agent/comp/otelcol/collector/def"
 	"github.com/DataDog/datadog-agent/comp/otelcol/logsagentpipeline"
@@ -153,7 +152,6 @@ import (
 	"github.com/DataDog/datadog-agent/comp/process"
 	processAgent "github.com/DataDog/datadog-agent/comp/process/agent"
 	processagentStatusImpl "github.com/DataDog/datadog-agent/comp/process/status/statusimpl"
-	rdnsquerierfx "github.com/DataDog/datadog-agent/comp/rdnsquerier/fx"
 	remoteconfig "github.com/DataDog/datadog-agent/comp/remote-config"
 	"github.com/DataDog/datadog-agent/comp/remote-config/rcclient"
 	"github.com/DataDog/datadog-agent/comp/remote-config/rcservice/rcserviceimpl"
@@ -519,7 +517,7 @@ func getSharedFxOption() fx.Option {
 		}),
 		ndmtmp.Bundle(),
 		netflow.Bundle(),
-		rdnsquerierfx.Module(),
+		network.Bundle(),
 		snmptraps.Bundle(),
 		snmpscanfx.Module(),
 		snmpscanmanagerfx.Module(),
@@ -560,8 +558,6 @@ func getSharedFxOption() fx.Option {
 		}),
 		settingsimpl.Module(),
 		agenttelemetryfx.Module(),
-		remotetraceroute.Module(),
-		networkpath.Bundle(),
 		syntheticsTestsfx.Module(),
 		remoteagentregistryfx.Module(),
 		haagentfx.Module(),
