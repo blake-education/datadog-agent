@@ -21,7 +21,6 @@ import (
 	networkconfig "github.com/DataDog/datadog-agent/pkg/network/config"
 	"github.com/DataDog/datadog-agent/pkg/network/encoding/marshal"
 	"github.com/DataDog/datadog-agent/pkg/network/sender"
-	"github.com/DataDog/datadog-agent/pkg/network/tracer"
 	"github.com/DataDog/datadog-agent/pkg/system-probe/api/module"
 	sysconfigtypes "github.com/DataDog/datadog-agent/pkg/system-probe/config/types"
 	"github.com/DataDog/datadog-agent/pkg/system-probe/utils"
@@ -36,12 +35,11 @@ const inactivityRestartDuration = 20 * time.Minute
 const maxConntrackDumpSize = 3000
 
 func createNetworkTracerModule(_ *sysconfigtypes.Config, deps module.FactoryDependencies) (module.Module, error) {
-	ncfg := networkconfig.New()
-
-	// Checking whether the current OS + kernel version is supported by the tracer.
-	if supported, err := tracer.IsTracerSupportedByOS(ncfg.ExcludedBPFLinuxVersions); !supported {
-		return nil, fmt.Errorf("%w: %s", ErrSysprobeUnsupported, err)
+	if !deps.NetworkTracer.IsSupported() {
+		return nil, fmt.Errorf("%w: network tracer not supported on this platform or kernel", ErrSysprobeUnsupported)
 	}
+
+	ncfg := networkconfig.New()
 
 	if ncfg.NPMEnabled {
 		log.Info("enabling network performance monitoring (NPM)")

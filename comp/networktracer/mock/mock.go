@@ -30,6 +30,7 @@ type mockTracer struct {
 	debugCachedConntrack  func(ctx context.Context, w io.Writer, maxSize int) error
 	debugHostConntrack    func(ctx context.Context, w io.Writer, maxSize int) error
 	debugDumpProcessCache func(ctx context.Context) (interface{}, error)
+	isSupported           func() bool
 }
 
 // Mock returns a mock networktracer component that returns zero values by default.
@@ -49,6 +50,7 @@ func Mock(_ *testing.T) networktracer.Component {
 		debugCachedConntrack:  func(_ context.Context, _ io.Writer, _ int) error { return nil },
 		debugHostConntrack:    func(_ context.Context, _ io.Writer, _ int) error { return nil },
 		debugDumpProcessCache: func(_ context.Context) (interface{}, error) { return nil, nil },
+		isSupported:           func() bool { return true },
 	}
 }
 
@@ -105,4 +107,9 @@ func (m *mockTracer) DebugHostConntrack(ctx context.Context, w io.Writer, maxSiz
 // DebugDumpProcessCache implements Component.
 func (m *mockTracer) DebugDumpProcessCache(ctx context.Context) (interface{}, error) {
 	return m.debugDumpProcessCache(ctx)
+}
+
+// IsSupported implements Component.
+func (m *mockTracer) IsSupported() bool {
+	return m.isSupported()
 }

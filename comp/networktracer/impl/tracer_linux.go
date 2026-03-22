@@ -135,6 +135,9 @@ func (ti *tracerImpl) DebugDumpProcessCache(ctx context.Context) (interface{}, e
 	return ti.t.DebugDumpProcessCache(ctx)
 }
 
+// IsSupported returns true since this implementation wraps a live eBPF tracer.
+func (ti *tracerImpl) IsSupported() bool { return true }
+
 // unsupportedKernelTracer is returned when the current kernel does not satisfy
 // the tracer's minimum version requirements. It is a no-op so that the fx graph
 // can start successfully; the module factory detects the unsupported condition
@@ -184,3 +187,5 @@ func (u *unsupportedKernelTracer) DebugHostConntrack(_ context.Context, _ io.Wri
 func (u *unsupportedKernelTracer) DebugDumpProcessCache(_ context.Context) (interface{}, error) {
 	return nil, fmt.Errorf("network tracer not supported: %w", u.reason)
 }
+
+func (u *unsupportedKernelTracer) IsSupported() bool { return false }

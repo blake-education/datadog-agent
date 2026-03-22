@@ -94,3 +94,6 @@ func (u *unsupportedTracer) DebugHostConntrack(_ context.Context, _ io.Writer, _
 func (u *unsupportedTracer) DebugDumpProcessCache(_ context.Context) (interface{}, error) {
 	return nil, ErrNotSupported
 }
+
+// IsSupported always returns false on unsupported platforms.
+func (u *unsupportedTracer) IsSupported() bool { return false }

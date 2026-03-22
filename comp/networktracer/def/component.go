@@ -52,4 +52,8 @@ type Component interface {
 
 	// DebugDumpProcessCache returns the content of the process cache.
 	DebugDumpProcessCache(ctx context.Context) (interface{}, error)
+
+	// IsSupported reports whether the tracer is operational on the current platform and kernel.
+	// Returns false on platforms where eBPF is unavailable or the kernel version is unsupported.
+	IsSupported() bool
 }
