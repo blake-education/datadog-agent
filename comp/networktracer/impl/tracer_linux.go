@@ -5,8 +5,8 @@
 
 //go:build linux_bpf
 
-// Package networktracerImpl implements the networktracer component.
-package networktracerImpl
+// Package networktracerimpl implements the networktracer component.
+package networktracerimpl
 
 import (
 	"context"
