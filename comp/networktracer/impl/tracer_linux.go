@@ -10,7 +10,6 @@ package networktracerimpl
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"io"
 
@@ -50,7 +49,7 @@ func NewComponent(reqs Requires) (Provides, error) {
 	ncfg := networkconfig.New()
 
 	if supported, reason := tracer.IsTracerSupportedByOS(ncfg.ExcludedBPFLinuxVersions); !supported {
-		return Provides{Comp: &unsupportedKernelTracer{reason: errors.New(reason)}}, nil
+		return Provides{Comp: &unsupportedKernelTracer{reason: reason}}, nil
 	}
 
 	t, err := tracer.NewTracer(ncfg, reqs.Telemetry, reqs.Statsd)
