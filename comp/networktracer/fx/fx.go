@@ -7,7 +7,7 @@
 package fx
 
 import (
-	networktracerImpl "github.com/DataDog/datadog-agent/comp/networktracer/impl"
+	networktracerimpl "github.com/DataDog/datadog-agent/comp/networktracer/impl"
 	"github.com/DataDog/datadog-agent/pkg/util/fxutil"
 )
 
@@ -15,7 +15,7 @@ import (
 func Module() fxutil.Module {
 	return fxutil.Component(
 		fxutil.ProvideComponentConstructor(
-			networktracerImpl.NewComponent,
+			networktracerimpl.NewComponent,
 		),
 	)
 }
