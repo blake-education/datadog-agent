@@ -62,7 +62,11 @@ func NewComponent(reqs Requires) (Provides, error) {
 	}
 
 	tlm := newSyntheticsTelemetry(reqs.Telemetry)
-	scheduler := newSyntheticsTestScheduler(configs, epForwarder, reqs.Logger, reqs.HostnameService, time.Now, reqs.Statsd, reqs.Traceroute, tlm)
+
+	onDemandPollerConfig := newOnDemandPollerConfig(reqs.AgentConfig)
+	poller := newOnDemandPoller(onDemandPollerConfig, reqs.HostnameService, reqs.Logger, time.Now)
+
+	scheduler := newSyntheticsTestScheduler(configs, epForwarder, reqs.Logger, reqs.HostnameService, time.Now, reqs.Statsd, reqs.Traceroute, tlm, poller)
 
 	var rcListener rctypes.ListenerProvider
 	rcListener.ListenerProvider = rctypes.RCListener{

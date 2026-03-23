@@ -53,7 +53,7 @@ func Test_SyntheticsTestScheduler_StartAndStop(t *testing.T) {
 		flushInterval:              100 * time.Millisecond,
 		syntheticsSchedulerEnabled: true,
 	}
-	scheduler := newSyntheticsTestScheduler(configs, nil, l, nil, time.Now, &teststatsd.Client{}, nil, newSyntheticsTelemetry(noopsimpl.GetCompatComponent()))
+	scheduler := newSyntheticsTestScheduler(configs, nil, l, nil, time.Now, &teststatsd.Client{}, nil, newSyntheticsTelemetry(noopsimpl.GetCompatComponent()), newTestPoller(t, l))
 	assert.Nil(t, err)
 	assert.False(t, scheduler.running)
 
@@ -424,7 +424,7 @@ func Test_SyntheticsTestScheduler_OnConfigUpdate(t *testing.T) {
 				return secondUpdateTime
 			}
 
-			scheduler := newSyntheticsTestScheduler(configs, nil, l, nil, timeNowFn, &teststatsd.Client{}, nil, newSyntheticsTelemetry(noopsimpl.GetCompatComponent()))
+			scheduler := newSyntheticsTestScheduler(configs, nil, l, nil, timeNowFn, &teststatsd.Client{}, nil, newSyntheticsTelemetry(noopsimpl.GetCompatComponent()), newTestPoller(t, l))
 			assert.False(t, scheduler.running)
 			applied := map[string]state.ApplyStatus{}
 			applyFunc := func(id string, status state.ApplyStatus) {
@@ -573,7 +573,7 @@ func Test_SyntheticsTestScheduler_Processing(t *testing.T) {
 			mockEpForwarder := eventplatformimpl.NewMockEventPlatformForwarder(ctrl)
 
 			ctx := context.TODO()
-			scheduler := newSyntheticsTestScheduler(configs, mockEpForwarder, l, &mockHostname{}, timeNowFn, &teststatsd.Client{}, &tracerouteRunner{tc.expectedRunTraceroute}, newSyntheticsTelemetry(noopsimpl.GetCompatComponent()))
+			scheduler := newSyntheticsTestScheduler(configs, mockEpForwarder, l, &mockHostname{}, timeNowFn, &teststatsd.Client{}, &tracerouteRunner{tc.expectedRunTraceroute}, newSyntheticsTelemetry(noopsimpl.GetCompatComponent()), newTestPoller(t, l))
 			assert.False(t, scheduler.running)
 
 			configs := map[string]state.RawConfig{}
@@ -658,6 +658,7 @@ func Test_SyntheticsTestScheduler_RunWorker_ProcessesTestCtxAndSendsResult(t *te
 				Destination: payload.NetworkPathDestination{Hostname: "dst", Port: 443},
 			}, nil
 		}},
+		onDemandPoller: newTestPoller(t, l),
 	}
 
 	gotCh := make(chan *workerResult, 1)
