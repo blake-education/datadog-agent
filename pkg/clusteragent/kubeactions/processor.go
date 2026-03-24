@@ -27,7 +27,7 @@ type ActionStoreInterface interface {
 	GetRecord(key ActionKey) (ActionRecord, bool)
 }
 
-// ActionProcessor processes Kubernetes actions from remote config
+// ActionProcessor processes Kubernetes actions from remote-config
 type ActionProcessor struct {
 	validator  *ActionValidator
 	registry   *ExecutorRegistry
