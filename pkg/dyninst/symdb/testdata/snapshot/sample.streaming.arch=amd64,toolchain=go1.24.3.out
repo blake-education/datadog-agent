@@ -1,5 +1,66 @@
 Main module: github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs
 Package: main
+	Function: Filter[...] (github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/lib.Filter[...]) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/lib/lib.go [39:46] injectible: [39-39], [41-43], [46-46]
+		Arg: items: .param0 (declared at line 39, available: [39-41])
+		Arg: pred: .param1 (declared at line 39, available: [39-46])
+		Arg: ~r0: .param2 (declared at line 39, available: )
+		Var: result: .param3 (declared at line 40, available: [39-46])
+		Scope: 41-46
+			Var: item: .param4 (declared at line 41, available: [42-46])
+	Function: MapOf[...].Delete.func1 (github.com/puzpuzpuz/xsync/v3.(*MapOf[...]).Delete.func1) in github.com/puzpuzpuz/xsync/v3@v3.5.1/mapof.go [328:328] injectible: [328-328]
+		Arg: value: .param49 (declared at line 327, available: [328-328])
+		Arg: loaded: bool (declared at line 327, available: [328-328])
+		Arg: ~r0: .param49 (declared at line 327, available: )
+		Arg: ~r1: bool (declared at line 327, available: )
+	Function: MapOf[...].LoadAndDelete.func1 (github.com/puzpuzpuz/xsync/v3.(*MapOf[...]).LoadAndDelete.func1) in github.com/puzpuzpuz/xsync/v3@v3.5.1/mapof.go [316:316] injectible: [316-316]
+		Arg: value: .param46 (declared at line 315, available: [316-316])
+		Arg: loaded: bool (declared at line 315, available: [316-316])
+		Arg: ~r0: .param46 (declared at line 315, available: )
+		Arg: ~r1: bool (declared at line 315, available: )
+	Function: MapOf[...].LoadAndStore.func1 (github.com/puzpuzpuz/xsync/v3.(*MapOf[...]).LoadAndStore.func1) in github.com/puzpuzpuz/xsync/v3@v3.5.1/mapof.go [233:234] injectible: [233-234]
+		Arg: ~p0: .param31 (declared at line 233, available: )
+		Arg: ~p1: bool (declared at line 233, available: )
+		Arg: ~r0: .param31 (declared at line 233, available: )
+		Arg: ~r1: bool (declared at line 233, available: )
+		Var: value: go.shape.*uint8 (declared at line 234, available: [234-234])
+	Function: MapOf[...].LoadOrCompute.func1 (github.com/puzpuzpuz/xsync/v3.(*MapOf[...]).LoadOrCompute.func1) in github.com/puzpuzpuz/xsync/v3@v3.5.1/mapof.go [253:254] injectible: [253-254]
+		Arg: ~p0: .param35 (declared at line 253, available: )
+		Arg: ~p1: bool (declared at line 253, available: )
+		Arg: ~r0: .param35 (declared at line 253, available: )
+		Arg: ~r1: bool (declared at line 253, available: )
+		Var: valueFn: func() go.shape.*uint8 (declared at line 254, available: [254-254])
+	Function: MapOf[...].LoadOrStore.func1 (github.com/puzpuzpuz/xsync/v3.(*MapOf[...]).LoadOrStore.func1) in github.com/puzpuzpuz/xsync/v3@v3.5.1/mapof.go [217:218] injectible: [217-218]
+		Arg: ~p0: .param28 (declared at line 217, available: )
+		Arg: ~p1: bool (declared at line 217, available: )
+		Arg: ~r0: .param28 (declared at line 217, available: )
+		Arg: ~r1: bool (declared at line 217, available: )
+		Var: value: go.shape.*uint8 (declared at line 218, available: [218-218])
+	Function: MapOf[...].LoadOrTryCompute.func1 (github.com/puzpuzpuz/xsync/v3.(*MapOf[...]).LoadOrTryCompute.func1) in github.com/puzpuzpuz/xsync/v3@v3.5.1/mapof.go [278:283] injectible: [278-281], [283-283]
+		Arg: ~p0: .param39 (declared at line 278, available: )
+		Arg: ~p1: bool (declared at line 278, available: )
+		Arg: ~r0: .param39 (declared at line 278, available: )
+		Arg: ~r1: bool (declared at line 278, available: )
+		Var: valueFn: func() (go.shape.*uint8, bool) (declared at line 279, available: [279-279])
+		Var: nv: .param39 (declared at line 279, available: [278-283])
+		Var: c: bool (declared at line 279, available: [280-283])
+	Function: MapOf[...].Store.func1 (github.com/puzpuzpuz/xsync/v3.(*MapOf[...]).Store.func1) in github.com/puzpuzpuz/xsync/v3@v3.5.1/mapof.go [203:204] injectible: [203-204]
+		Arg: ~p0: .param25 (declared at line 203, available: )
+		Arg: ~p1: bool (declared at line 203, available: )
+		Arg: ~r0: .param25 (declared at line 203, available: )
+		Arg: ~r1: bool (declared at line 203, available: )
+		Var: value: go.shape.*uint8 (declared at line 204, available: [204-204])
+	Function: Map[...] (github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/lib.Map[...]) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/lib/lib.go [31:32] injectible: [31-32]
+		Arg: box: .param0 (declared at line 31, available: [31-32])
+		Arg: f: .param1 (declared at line 31, available: [31-32])
+		Arg: ~r0: .param2 (declared at line 31, available: )
+	Function: copyBucketOf[...] (github.com/puzpuzpuz/xsync/v3.copyBucketOf[...]) in github.com/puzpuzpuz/xsync/v3@v3.5.1/mapof.go [559:579] injectible: [559-559], [565-565], [567-568], [570-574], [577-579]
+		Arg: b: *github.com/puzpuzpuz/xsync/v3.bucketOfPadded (declared at line 560, available: [559-579])
+		Arg: destTable: .param0 (declared at line 561, available: [559-579])
+		Arg: hasher: .param1 (declared at line 562, available: [559-579])
+		Arg: copied: int (declared at line 563, available: )
+		Var: rootb: *github.com/puzpuzpuz/xsync/v3.bucketOfPadded (declared at line 564, available: [559-579])
+		Scope: 559-579
+			Var: i: int (declared at line 567, available: [567-579])
 	Function: doNothing (main.doNothing) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/slices.go [12:12] injectible: [12-12]
 		Arg: x: []int (declared at line 12, available: [12-12])
 	Function: executeArrayFuncs (main.executeArrayFuncs) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/arrays.go [102:129] injectible: [102-117], [119-122], [124-124], [128-129]
@@ -17,9 +78,24 @@ Package: main
 		Var: esotericStack: main.esotericStack (declared at line 53, available: [51-69])
 	Function: executeEsoteric.func1 (main.executeEsoteric.func1) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/esoteric.go [58:58] injectible: [58-58]
 		Var: &capture: *int (declared at line 58, available: )
-	Function: executeGenericFuncs (main.executeGenericFuncs) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go [19:25] injectible: [19-19], [21-21], [24-25]
-		Var: y: main.typeWithGenerics[int] (declared at line 23, available: )
-		Var: x: main.typeWithGenerics[string] (declared at line 20, available: )
+	Function: executeGenericFuncs (main.executeGenericFuncs) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go [206:291] injectible: [206-206], [209-209], [211-211], [214-215], [219-219], [224-227], [231-232], [235-236], [239-242], [246-249], [255-255], [260-261], [266-271], [275-275], [279-279], [282-283], [286-287], [290-291]
+		Var: y: main.typeWithGenerics[int] (declared at line 210, available: )
+		Var: nestedInt: int (declared at line 283, available: [206-291])
+		Var: intBox: github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/lib.Box[int] (declared at line 274, available: )
+		Var: filtered: []int (declared at line 279, available: [206-291])
+		Var: nested: string (declared at line 282, available: [206-291])
+		Var: bs: main.bigStruct (declared at line 224, available: [206-291])
+		Var: s: string (declared at line 226, available: [206-291])
+		Var: p: main.Pair[string,int] (declared at line 239, available: [206-291])
+		Var: lgs: main.largeGenericType[string] (declared at line 248, available: [206-291])
+		Var: ts: main.tinyStruct (declared at line 268, available: [206-291])
+		Var: ii: int (declared at line 270, available: )
+		Var: lg: main.largeGenericType[int] (declared at line 246, available: )
+		Var: q: main.Pair[int,bool] (declared at line 241, available: )
+		Var: ss: main.smallStruct (declared at line 266, available: )
+	Function: executeGenericFuncs.func1 (main.executeGenericFuncs.func1) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go [279:279] injectible: [279-279]
+		Arg: x: int (declared at line 279, available: [279-279])
+		Arg: ~r0: bool (declared at line 279, available: )
 	Function: executeInlined (main.executeInlined) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/inlined.go [97:106] injectible: [97-98], [100-106]
 		Var: x: int (declared at line 99, available: )
 		Var: y: int (declared at line 100, available: [97-106])
@@ -166,19 +242,59 @@ Package: main
 		Var: result: map[string][]main.structWithMap (declared at line 110, available: [109-119])
 		Scope: 109-119
 			Var: i: int (declared at line 111, available: [109-119])
+	Function: genericContains[...] (main.genericContains[...]) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go [76:82] injectible: [76-79], [82-82]
+		Arg: haystack: .param0 (declared at line 76, available: [76-82])
+		Arg: needle: .param1 (declared at line 76, available: [76-82])
+		Arg: ~r0: bool (declared at line 76, available: )
+	Function: genericDeref[...] (main.genericDeref[...]) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go [92:92] injectible: [92-92]
+		Arg: p: .param0 (declared at line 91, available: [92-92])
+		Arg: ~r0: .param1 (declared at line 91, available: )
+	Function: genericDo[...] (main.genericDo[...]) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go [101:102] injectible: [101-102]
+		Arg: val: .param1 (declared at line 101, available: [101-102])
+		Arg: ~r0: string (declared at line 101, available: )
+	Function: genericMax[...] (main.genericMax[go.shape.string]) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go [131:132] injectible: [132-132]
+		Arg: a: go.shape.string (declared at line 0, available: )
+		Arg: b: go.shape.string (declared at line 0, available: )
+	Function: genericPtrIdentity[...] (main.genericPtrIdentity[...]) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go [169:169] injectible: [169-169]
+		Arg: p: .param0 (declared at line 168, available: [169-169])
+		Arg: ~r0: .param1 (declared at line 168, available: )
+	Function: genericSwap[...] (main.genericSwap[...]) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go [110:111] injectible: [110-111]
+		Arg: a: .param0 (declared at line 110, available: [110-111])
+		Arg: b: .param1 (declared at line 110, available: [110-111])
+		Arg: ~r0: .param1 (declared at line 110, available: )
+		Arg: ~r1: .param0 (declared at line 110, available: )
 	Function: init.0 (main.init.0) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/complex.go [133:133] injectible: [133-133]
 	Function: init.1 (main.init.1) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/complex.go [159:159] injectible: [159-159]
 	Function: init.2 (main.init.2) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/complex.go [197:197] injectible: [197-197]
-	Function: iterExample.rangeOverIterator-range1 (main.iterExample.rangeOverIterator-range1) in  [16:0] injectible: 
+	Function: iterExample.rangeOverIterator-range1 (main.iterExample.rangeOverIterator-range1) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/ranges.go [16:17] injectible: [17-17]
 		Arg: #r: bool (declared at line 0, available: )
 		Var: #tmpState: int (declared at line 0, available: )
-		Arg: value: int (declared at line 0, available: )
+		Arg: value: int (declared at line 0, available: [17-17])
+	Function: iterExample.rangeOverIterator.Values[...].func1 (main.iterExample.rangeOverIterator.Values[go.shape.[]int,go.shape.int].func1) in slices/iter.go [38:40] injectible: [39-40]
+		Var: v: go.shape.int (declared at line 39, available: [40-40])
+		Arg: yield: func(go.shape.int) bool (declared at line 0, available: )
 	Function: main (main.main) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/main.go [19:52] injectible: [19-20], [23-24], [26-38], [40-40], [42-43], [46-52]
 		Var: it: main.iterExample (declared at line 41, available: [19-52])
 		Var: t: github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/lib.v2.V2Type (declared at line 39, available: [19-52])
 	Function: main.WithService.func1 (main.main.WithService.func1) in github.com/DataDog/dd-trace-go/v2@v2.2.3-rc.1/ddtrace/tracer/option.go [986:989] injectible: [986-989]
 		Arg: c: *github.com/DataDog/dd-trace-go/v2/ddtrace/tracer.config (declared at line 986, available: [986-988])
 		Var: name: string (declared at line 987, available: [987-989])
+	Function: nestedGeneric[...] (main.nestedGeneric[...]) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go [200:200] injectible: [200-200]
+		Arg: box: .param0 (declared at line 199, available: [200-200])
+		Arg: ~r0: .param1 (declared at line 199, available: )
+	Function: newMapOfTable[...] (github.com/puzpuzpuz/xsync/v3.newMapOfTable[...]) in github.com/puzpuzpuz/xsync/v3@v3.5.1/mapof.go [132:149] injectible: [132-135], [137-138], [140-140], [143-147], [149-149]
+		Arg: minTableLen: int (declared at line 132, available: [132-149])
+		Arg: ~r0: .param0 (declared at line 132, available: )
+		Var: t: .param1 (declared at line 144, available: [132-149])
+		Var: counterLen: int (declared at line 137, available: [132-149])
+		Var: buckets: []github.com/puzpuzpuz/xsync/v3.bucketOfPadded (declared at line 133, available: [132-149])
+		Var: counter: []github.com/puzpuzpuz/xsync/v3.counterStripe (declared at line 143, available: [132-149])
+		Scope: 133-135
+			Var: i: int (declared at line 134, available: [133-143])
+	Function: outerFilter[...] (main.outerFilter[...]) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go [180:181] injectible: [180-181]
+		Arg: items: .param1 (declared at line 180, available: [180-181])
+		Arg: pred: .param2 (declared at line 180, available: [180-181])
+		Arg: ~r0: .param3 (declared at line 180, available: )
 	Function: returnGoroutineId (main.returnGoroutineId) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/other.go [40:46] injectible: [40-46]
 		Arg: ~r0: uint64 (declared at line 40, available: )
 		Var: n: uint64 (declared at line 45, available: [44-46])
@@ -819,6 +935,145 @@ Package: main
 		Arg: b: int (declared at line 368, available: [368-371])
 		Arg: ~r0: int (declared at line 368, available: )
 		Arg: ~r1: [0]int (declared at line 368, available: )
+	Function: wrapBox[...] (main.wrapBox[...]) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go [190:190] injectible: [190-190]
+		Arg: val: .param0 (declared at line 189, available: [190-190])
+		Arg: ~r0: .param1 (declared at line 189, available: )
+	Type: github.com/DataDog/dd-trace-go/v2/ddtrace/tracer.bucket[...]
+		Function: add (github.com/DataDog/dd-trace-go/v2/ddtrace/tracer.(*bucket[...]).add) in github.com/DataDog/dd-trace-go/v2@v2.2.3-rc.1/ddtrace/tracer/abandonedspans.go [45:48] injectible: [45-48]
+			Arg: b: .param0 (declared at line 45, available: [45-48])
+			Arg: k: .param1 (declared at line 45, available: [45-48])
+			Arg: v: .param2 (declared at line 45, available: [45-48])
+			Var: e: *container/list.Element (declared at line 46, available: [45-48])
+	Type: github.com/DataDog/dd-trace-go/v2/ddtrace/tracer.dynamicConfig[...]
+		Function: toTelemetry (github.com/DataDog/dd-trace-go/v2/ddtrace/tracer.(*dynamicConfig[...]).toTelemetry) in github.com/DataDog/dd-trace-go/v2@v2.2.3-rc.1/ddtrace/tracer/dynamic_config.go [80:86] injectible: [80-86]
+			Arg: dc: .param8 (declared at line 80, available: [80-81], [82-86])
+			Arg: ~r0: github.com/DataDog/dd-trace-go/v2/internal/telemetry.Configuration (declared at line 80, available: )
+			Arg: ~r0: github.com/DataDog/dd-trace-go/v2/internal/telemetry.Configuration (declared at line 80, available: )
+		Function: handleRC (github.com/DataDog/dd-trace-go/v2/ddtrace/tracer.(*dynamicConfig[...]).handleRC) in github.com/DataDog/dd-trace-go/v2@v2.2.3-rc.1/ddtrace/tracer/dynamic_config.go [72:76] injectible: [72-74], [76-76]
+			Arg: dc: .param6 (declared at line 72, available: [72-74])
+			Arg: val: .param7 (declared at line 72, available: [72-74])
+			Arg: ~r0: bool (declared at line 72, available: )
+		Function: reset (github.com/DataDog/dd-trace-go/v2/ddtrace/tracer.(*dynamicConfig[...]).reset) in github.com/DataDog/dd-trace-go/v2@v2.2.3-rc.1/ddtrace/tracer/dynamic_config.go [58:67] injectible: [58-62], [64-64], [66-67]
+			Arg: dc: .param5 (declared at line 58, available: [58-67])
+			Arg: ~r0: bool (declared at line 58, available: )
+			Arg: ~r0: bool (declared at line 58, available: )
+		Function: update (github.com/DataDog/dd-trace-go/v2/ddtrace/tracer.(*dynamicConfig[...]).update) in github.com/DataDog/dd-trace-go/v2@v2.2.3-rc.1/ddtrace/tracer/dynamic_config.go [46:54] injectible: [46-50], [52-54]
+			Arg: dc: .param3 (declared at line 46, available: [46-54])
+			Arg: val: .param4 (declared at line 46, available: [46-54])
+			Arg: origin: github.com/DataDog/dd-trace-go/v2/internal/telemetry/internal/transport.Origin (declared at line 46, available: [46-54])
+			Arg: ~r0: bool (declared at line 46, available: )
+			Arg: ~r0: bool (declared at line 46, available: )
+		Function: get (github.com/DataDog/dd-trace-go/v2/ddtrace/tracer.(*dynamicConfig[...]).get) in github.com/DataDog/dd-trace-go/v2@v2.2.3-rc.1/ddtrace/tracer/dynamic_config.go [39:42] injectible: [39-42]
+			Arg: dc: .param1 (declared at line 39, available: [39-40], [41-41], [42-42])
+			Arg: ~r0: .param2 (declared at line 39, available: )
+			Arg: ~r0: .param2 (declared at line 39, available: )
+	Type: github.com/puzpuzpuz/xsync/v3.MapOf[...]
+		Function: Stats (github.com/puzpuzpuz/xsync/v3.(*MapOf[...]).Stats) in github.com/puzpuzpuz/xsync/v3@v3.5.1/mapof.go [697:737] injectible: [697-701], [703-707], [709-711], [713-717], [720-722], [724-724], [727-728], [730-731], [733-734], [737-737]
+			Arg: m: .param77 (declared at line 697, available: [697-705])
+			Arg: ~r0: github.com/puzpuzpuz/xsync/v3.MapStats (declared at line 697, available: )
+			Var: table: .param78 (declared at line 703, available: [705-737])
+			Var: stats: github.com/puzpuzpuz/xsync/v3.MapStats (declared at line 698, available: [699-737])
+			Scope: 707-737
+				Var: i: int (declared at line 707, available: [709-710])
+		Function: Range (github.com/puzpuzpuz/xsync/v3.(*MapOf[...]).Range) in github.com/puzpuzpuz/xsync/v3@v3.5.1/mapof.go [598:634] injectible: [598-598], [601-605], [609-609], [611-613], [616-617], [623-626], [630-630], [632-632], [634-634]
+			Arg: m: .param68 (declared at line 598, available: [598-604])
+			Arg: f: .param69 (declared at line 598, available: [598-634])
+			Var: tablep: unsafe.Pointer (declared at line 602, available: [604-604])
+			Var: bentries: []unsafe.Pointer (declared at line 601, available: [604-634])
+			Var: table: .param70 (declared at line 603, available: [598-634])
+			Scope: 598-634
+				Var: i: int (declared at line 604, available: [598-634])
+		Function: resize (github.com/puzpuzpuz/xsync/v3.(*MapOf[...]).resize) in github.com/puzpuzpuz/xsync/v3@v3.5.1/mapof.go [501:674] injectible: [501-502], [504-508], [512-512], [514-515], [518-519], [521-521], [523-527], [529-530], [533-537], [539-540], [542-542], [545-548], [552-557], [674-674]
+			Arg: m: .param64 (declared at line 501, available: [501-512])
+			Arg: knownTable: .param65 (declared at line 501, available: [501-512])
+			Arg: hint: github.com/puzpuzpuz/xsync/v3.mapResizeHint (declared at line 501, available: [501-674])
+			Var: newTable: .param66 (declared at line 517, available: [514-514], [523-523], [527-533], [542-674])
+			Var: table: .param67 (declared at line 518, available: [504-674])
+			Scope: 525-539
+				Var: shrinkThreshold: int64 (declared at line 526, available: [527-527])
+			Scope: 542-548
+				Var: i: int (declared at line 546, available: [546-674])
+		Function: waitForResize (github.com/puzpuzpuz/xsync/v3.(*MapOf[...]).waitForResize) in github.com/puzpuzpuz/xsync/v3@v3.5.1/mapof.go [493:499] injectible: [493-496], [498-499]
+			Arg: m: .param63 (declared at line 493, available: [493-499])
+		Function: doCompute (github.com/puzpuzpuz/xsync/v3.(*MapOf[...]).doCompute) in github.com/puzpuzpuz/xsync/v3@v3.5.1/mapof.go [64:477] injectible: [64-64], [335-335], [341-343], [348-348], [353-361], [364-364], [366-368], [370-370], [372-373], [376-382], [384-387], [394-396], [399-403], [405-406], [408-408], [410-415], [417-417], [420-420], [423-423], [425-425], [427-429], [431-431], [434-435], [438-441], [443-445], [447-451], [453-454], [456-457], [462-465], [468-477]
+			Arg: m: .param50 (declared at line 335, available: [64-477])
+			Arg: key: .param51 (declared at line 336, available: [64-477])
+			Arg: valueFn: .param52 (declared at line 337, available: [64-477])
+			Arg: loadIfExists: bool (declared at line 338, available: [64-477])
+			Arg: computeOnly: bool (declared at line 338, available: [64-477])
+			Arg: ~r0: .param53 (declared at line 339, available: )
+			Arg: ~r1: bool (declared at line 339, available: )
+			Scope: 342-457
+				Var: v: .param53 (declared at line 342, available: [353-355])
+				Var: ok: bool (declared at line 342, available: [353-438])
+			Scope: 335-477
+				Var: emptyb: *github.com/puzpuzpuz/xsync/v3.bucketOfPadded (declared at line 350, available: [64-477])
+				Var: emptyidx: int (declared at line 351, available: [64-477])
+				Var: table: .param54 (declared at line 353, available: [64-477])
+				Var: hash: uint64 (declared at line 355, available: [359-359])
+				Var: h1: uint64 (declared at line 356, available: [356-359])
+				Var: h2w: uint64 (declared at line 358, available: [64-477])
+				Var: bidx: uint64 (declared at line 359, available: [64-477])
+				Var: rootb: *github.com/puzpuzpuz/xsync/v3.bucketOfPadded (declared at line 360, available: [353-378])
+				Var: b: *github.com/puzpuzpuz/xsync/v3.bucketOfPadded (declared at line 375, available: [64-477])
+		Function: Delete (github.com/puzpuzpuz/xsync/v3.(*MapOf[...]).Delete) in github.com/puzpuzpuz/xsync/v3@v3.5.1/mapof.go [324:333] injectible: [324-325], [327-327], [333-333]
+			Arg: m: .param47 (declared at line 324, available: [324-333])
+			Arg: key: .param48 (declared at line 324, available: [324-333])
+		Function: LoadAndDelete (github.com/puzpuzpuz/xsync/v3.(*MapOf[...]).LoadAndDelete) in github.com/puzpuzpuz/xsync/v3@v3.5.1/mapof.go [312:315] injectible: [312-313], [315-315]
+			Arg: m: .param44 (declared at line 312, available: [312-315])
+			Arg: key: .param45 (declared at line 312, available: [312-315])
+			Arg: value: .param46 (declared at line 312, available: )
+			Arg: loaded: bool (declared at line 312, available: )
+		Function: LoadOrTryCompute (github.com/puzpuzpuz/xsync/v3.(*MapOf[...]).LoadOrTryCompute) in github.com/puzpuzpuz/xsync/v3@v3.5.1/mapof.go [272:278] injectible: [272-272], [276-276], [278-278]
+			Arg: m: .param36 (declared at line 272, available: [272-278])
+			Arg: key: .param37 (declared at line 273, available: [272-278])
+			Arg: valueFn: .param38 (declared at line 274, available: [272-278])
+			Arg: value: .param39 (declared at line 275, available: )
+			Arg: loaded: bool (declared at line 275, available: )
+		Function: LoadOrCompute (github.com/puzpuzpuz/xsync/v3.(*MapOf[...]).LoadOrCompute) in github.com/puzpuzpuz/xsync/v3@v3.5.1/mapof.go [250:253] injectible: [250-251], [253-253]
+			Arg: m: .param32 (declared at line 250, available: [250-253])
+			Arg: key: .param33 (declared at line 250, available: [250-253])
+			Arg: valueFn: .param34 (declared at line 250, available: [250-253])
+			Arg: actual: .param35 (declared at line 250, available: )
+			Arg: loaded: bool (declared at line 250, available: )
+		Function: LoadAndStore (github.com/puzpuzpuz/xsync/v3.(*MapOf[...]).LoadAndStore) in github.com/puzpuzpuz/xsync/v3@v3.5.1/mapof.go [230:233] injectible: [230-231], [233-233]
+			Arg: m: .param29 (declared at line 230, available: [230-233])
+			Arg: key: .param30 (declared at line 230, available: [230-233])
+			Arg: value: .param31 (declared at line 230, available: [230-233])
+			Arg: actual: .param31 (declared at line 230, available: )
+			Arg: loaded: bool (declared at line 230, available: )
+		Function: LoadOrStore (github.com/puzpuzpuz/xsync/v3.(*MapOf[...]).LoadOrStore) in github.com/puzpuzpuz/xsync/v3@v3.5.1/mapof.go [214:217] injectible: [214-215], [217-217]
+			Arg: m: .param26 (declared at line 214, available: [214-217])
+			Arg: key: .param27 (declared at line 214, available: [214-217])
+			Arg: value: .param28 (declared at line 214, available: [214-217])
+			Arg: actual: .param28 (declared at line 214, available: )
+			Arg: loaded: bool (declared at line 214, available: )
+		Function: Store (github.com/puzpuzpuz/xsync/v3.(*MapOf[...]).Store) in github.com/puzpuzpuz/xsync/v3@v3.5.1/mapof.go [200:209] injectible: [200-201], [203-203], [209-209]
+			Arg: m: .param23 (declared at line 200, available: [200-209])
+			Arg: key: .param24 (declared at line 200, available: [200-209])
+			Arg: value: .param25 (declared at line 200, available: [200-203])
+		Function: Load (github.com/puzpuzpuz/xsync/v3.(*MapOf[...]).Load) in github.com/puzpuzpuz/xsync/v3@v3.5.1/mapof.go [170:193] injectible: [170-176], [178-183], [185-186], [189-189], [191-193]
+			Arg: m: .param18 (declared at line 170, available: [170-176])
+			Arg: key: .param19 (declared at line 170, available: [170-193])
+			Arg: value: .param20 (declared at line 170, available: )
+			Arg: ok: bool (declared at line 170, available: )
+			Var: table: .param21 (declared at line 171, available: [170-193])
+			Var: hash: uint64 (declared at line 172, available: [175-175])
+			Var: h1: uint64 (declared at line 173, available: [173-175])
+			Var: h2w: uint64 (declared at line 174, available: [170-193])
+			Var: bidx: uint64 (declared at line 175, available: [173-176])
+			Var: b: *github.com/puzpuzpuz/xsync/v3.bucketOfPadded (declared at line 176, available: [176-193])
+			Scope: 176-193
+				Var: bptr: unsafe.Pointer (declared at line 191, available: [189-189])
+				Var: metaw: uint64 (declared at line 178, available: )
+				Var: markedw: uint64 (declared at line 179, available: [176-193])
+	Type: main.Pair[...]
+		Field: Key: string
+		Field: Value: int
+		Function: SetValue (main.(*Pair[...]).SetValue) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go [65:67] injectible: [65-67]
+			Arg: x: .param0 (declared at line 64, available: [65-67])
+			Arg: k: .param1 (declared at line 64, available: [65-67])
+			Arg: v: .param2 (declared at line 64, available: [65-67])
 	Type: main.aStruct
 		Field: aBool: bool
 		Field: aString: string
@@ -886,6 +1141,19 @@ Package: main
 	Type: main.iterExample
 		Function: rangeOverIterator (main.iterExample.rangeOverIterator) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/ranges.go [15:19] injectible: [15-16], [19-19]
 			Arg: ~p0: main.iterExample (declared at line 15, available: )
+	Type: main.largeGenericType[...]
+		Field: A: [16]uint8
+		Field: B: [16]uint8
+		Field: C: [16]uint8
+		Field: D: [16]uint8
+		Field: E: [16]uint8
+		Field: F: [16]uint8
+		Field: G: [16]uint8
+		Field: H: [16]uint8
+		Field: Value: string
+		Function: LargeGet (main.largeGenericType[...].LargeGet) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go [122:122] injectible: [122-122]
+			Arg: x: .param0 (declared at line 121, available: [122-122])
+			Arg: ~r0: .param1 (declared at line 121, available: )
 	Type: main.largeStruct
 		Field: a: int
 		Field: b: int
@@ -956,6 +1224,9 @@ Package: main
 		Field: i: int
 		Function: DoSomething (main.secondBehavior.DoSomething) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/interfaces.go [32:33] injectible: [32-33]
 			Arg: b: main.secondBehavior (declared at line 0, available: [32-33])
+	Type: main.smallStruct
+		Field: X: int
+		Field: Y: int
 	Type: main.somethingImpl
 		Function: Do (main.(*somethingImpl).Do) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/esoteric.go [21:21] injectible: [21-21]
 			Arg: s: *main.somethingImpl (declared at line 21, available: [21-21])
@@ -1032,8 +1303,16 @@ Package: main
 	Type: main.tierA
 		Field: a: int
 		Field: b: main.tierB
+	Type: main.tinyStruct
+		Field: Name: string
 	Type: main.triggerVerifierErrorForTesting
 	Type: main.typeAlias
+	Type: main.typeWithGenerics[...]
+		Field: Value: int
+		Function: Guess (main.typeWithGenerics[...].Guess) in github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go [56:56] injectible: [56-56]
+			Arg: x: .param0 (declared at line 55, available: [56-56])
+			Arg: value: .param1 (declared at line 55, available: [56-56])
+			Arg: ~r0: bool (declared at line 55, available: )
 	Type: main.wideStruct
 		Field: a: int
 		Field: b: int

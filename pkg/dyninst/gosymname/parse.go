@@ -525,7 +525,7 @@ func parsePtrRecvSegment(local string, start int) (segment, int) {
 	for i < len(local) {
 		if local[i] == '[' {
 			recvName = local[recvStart:i]
-			bracketEnd := matchBracket(local, i)
+			bracketEnd := MatchBracket(local, i)
 			if bracketEnd == -1 {
 				return segment{}, start
 			}
@@ -562,7 +562,7 @@ func parsePtrRecvSegment(local string, start int) (segment, int) {
 	for i < len(local) {
 		if local[i] == '[' {
 			methName = local[methStart:i]
-			bracketEnd := matchBracket(local, i)
+			bracketEnd := MatchBracket(local, i)
 			if bracketEnd == -1 {
 				return segment{}, start
 			}
@@ -635,7 +635,7 @@ func parseNameSegment(local string, start int) (string, *GenericParams, int) {
 	for i < len(local) {
 		if local[i] == '[' {
 			name := local[start:i]
-			bracketEnd := matchBracket(local, i)
+			bracketEnd := MatchBracket(local, i)
 			if bracketEnd == -1 {
 				// Unmatched bracket — treat rest as the name.
 				return local[start:], nil, len(local)

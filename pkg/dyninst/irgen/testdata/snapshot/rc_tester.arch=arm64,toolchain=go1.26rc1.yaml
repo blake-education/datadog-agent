@@ -68,6 +68,7 @@ Subprograms:
                 - Size: 8
                   Op: {CfaOffset: 16}
           Role: Parameter
+          DictIndex: -1
         - Name: r
           Type: 116 PointerType *net/http.Request
           Locations:
@@ -76,12 +77,14 @@ Subprograms:
             - Range: 0x8545f0..0x854790
               Pieces: [{Size: 8, Op: {CfaOffset: 24}}]
           Role: Parameter
+          DictIndex: -1
         - Name: span
           Type: 118 PointerType *github.com/DataDog/dd-trace-go/v2/ddtrace/tracer.Span
           Locations:
             - Range: 0x854604..0x854634
               Pieces: [{Size: 8, Op: {RegNo: 0, Shift: 0}}]
           Role: Local
+          DictIndex: -1
         - Name: '&buf'
           Type: 120 PointerType *bytes.Buffer
           Locations:
@@ -90,6 +93,8 @@ Subprograms:
             - Range: 0x8546d4..0x854790
               Pieces: [{Size: 8, Op: {CfaOffset: -120}}]
           Role: Local
+          DictIndex: -1
+      DictVar: null
     - ID: 2
       Name: main.LookAtTheRequest
       OutOfLinePCRanges: [0x854840..0x8548e0]
@@ -105,6 +110,8 @@ Subprograms:
                 - Size: 8
                   Op: {RegNo: 1, Shift: 0}
           Role: Parameter
+          DictIndex: -1
+      DictVar: null
 Types:
     - __kind: PointerType
       ID: 67
@@ -597,6 +604,7 @@ Types:
                   Variable: {subprogram: 1, index: 0, name: w}
                   Offset: 0
                   ByteSize: 16
+          DictIndex: -1
         - Name: r
           Offset: 17
           Kind: argument
@@ -607,6 +615,7 @@ Types:
                   Variable: {subprogram: 1, index: 1, name: r}
                   Offset: 0
                   ByteSize: 8
+          DictIndex: -1
     - __kind: EventRootType
       ID: 217
       Name: Probe[main.HandleHTTP]Return
@@ -626,6 +635,7 @@ Types:
                   Variable: {subprogram: 2, index: 0, name: path}
                   Offset: 0
                   ByteSize: 16
+          DictIndex: -1
     - __kind: EventRootType
       ID: 219
       Name: Probe[main.LookAtTheRequest]Return

@@ -237,6 +237,17 @@ func (g *generator) addEventHandler(
 	ops = append(ops, PrepareEventRootOp{
 		EventRootType: rootType,
 	})
+	// For generic shape functions, resolve dict entries right after
+	// preparing the event root. Each dict entry reads the dictionary
+	// pointer from a register, indexes into it, and writes the resolved
+	// runtime type into the event output.
+	for _, de := range rootType.DictEntries {
+		ops = append(ops, ProcessGoDictTypeOp{
+			DictIndex:    int32(de.DictIndex),
+			DictRegister: de.DictRegister,
+			OutputOffset: de.Offset,
+		})
+	}
 	for i := range rootType.Expressions {
 		exprFunctionID, err := g.addExpressionHandler(injectionPoint.PC, rootType, uint32(i))
 		if err != nil {
@@ -304,6 +315,19 @@ func (g *generator) addConditionHandler(
 		return nil, err
 	}
 	return id, nil
+}
+
+// findDictEntry returns the DictEntry matching the given dictIndex, or nil.
+func findDictEntry(rootType *ir.EventRootType, dictIndex int) *ir.DictEntry {
+	if dictIndex < 0 {
+		return nil
+	}
+	for i := range rootType.DictEntries {
+		if rootType.DictEntries[i].DictIndex == dictIndex {
+			return &rootType.DictEntries[i]
+		}
+	}
+	return nil
 }
 
 var encodeLocationLogLimiter = rate.NewLimiter(rate.Every(10*time.Minute), 10)
@@ -381,9 +405,21 @@ func (g *generator) addExpressionHandler(injectionPC uint64, rootType *ir.EventR
 		return nil, err
 	}
 	if needed {
-		ops = append(ops, CallOp{
-			FunctionID: typeFunctionID,
-		})
+		// For dict-resolved shape types, emit a dynamic dispatch that
+		// tries to call the concrete type's ProcessType, falling back
+		// to the shape type's.
+		rootExpr := rootType.Expressions[exprIdx]
+		dictEntry := findDictEntry(rootType, rootExpr.DictIndex)
+		if dictEntry != nil {
+			ops = append(ops, CallDictResolvedOp{
+				OutputOffset: dictEntry.Offset,
+				FallbackFunc: typeFunctionID,
+			})
+		} else {
+			ops = append(ops, CallOp{
+				FunctionID: typeFunctionID,
+			})
+		}
 	}
 	ops = append(ops, ReturnOp{})
 	err = g.addFunction(id, ops)

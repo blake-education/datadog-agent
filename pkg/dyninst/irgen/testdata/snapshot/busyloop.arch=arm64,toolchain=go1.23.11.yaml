@@ -19,6 +19,7 @@ Subprograms:
       OutOfLinePCRanges: [0xb5290..0xb52a0]
       InlinePCRanges: []
       Variables: []
+      DictVar: null
 Types:
     - __kind: PointerType
       ID: 39

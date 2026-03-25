@@ -28,6 +28,7 @@ import (
 	"github.com/DataDog/datadog-agent/pkg/dyninst/dwarf/dwarfutil"
 	"github.com/DataDog/datadog-agent/pkg/dyninst/dwarf/loclist"
 	"github.com/DataDog/datadog-agent/pkg/dyninst/gosym"
+	"github.com/DataDog/datadog-agent/pkg/dyninst/gosymname"
 	"github.com/DataDog/datadog-agent/pkg/dyninst/object"
 	"github.com/DataDog/datadog-agent/pkg/network/go/dwarfutils"
 	"github.com/DataDog/datadog-agent/pkg/util/log"
@@ -415,6 +416,15 @@ type compileUnitInfo struct {
 	outputPkg *Package
 }
 
+// hasFunctionQName returns true if the compile unit's output package already
+// has a function with the given qualified name. Used to dedup generic shape
+// instantiations that canonicalize to the same name.
+func (c *compileUnitInfo) hasFunctionQName(qname string) bool {
+	return slices.ContainsFunc(c.outputPkg.Functions, func(f Function) bool {
+		return f.QualifiedName == qname
+	})
+}
+
 // abstractFunction aggregates data for an inlined function.
 type abstractFunction struct {
 	// Set on initialization, by parsing abstract definition.
@@ -504,12 +514,13 @@ func (p *Package) maybeAddType(t godwarf.Type) error {
 		unescapedName = t.Common().Name
 	}
 
-	// Check if the type is already present.
-	if _, ok := p.Types[unescapedName]; ok {
+	canonicalName := gosymname.CanonicalizeGenerics(unescapedName)
+
+	if _, ok := p.Types[canonicalName]; ok {
 		return nil
 	}
 
-	// We don't support parametric types (generics).
+	// Skip parametric types (uninstantiated generics with type params).
 	if _, ok := t.(*godwarf.ParametricType); ok {
 		return nil
 	}
@@ -522,14 +533,13 @@ func (p *Package) maybeAddType(t godwarf.Type) error {
 		return fmt.Errorf("type unescapedName for non-pointer unexpectedly starting with '*': %s", unescapedName)
 	}
 
-	// Skip anonymous types, generic types, array types and structs
-	// corresponding to slices.
-	if strings.ContainsAny(unescapedName, "{<[") {
+	// Skip anonymous types, array types, and structs corresponding to slices.
+	if strings.ContainsAny(unescapedName, "{<") {
 		return nil
 	}
 
 	typ := &Type{
-		Name:   unescapedName,
+		Name:   canonicalName,
 		Fields: nil,
 		// Methods will be populated later, as we discover them in DWARF.
 		Methods: nil,
@@ -543,7 +553,7 @@ func (p *Package) maybeAddType(t godwarf.Type) error {
 		}
 	}
 
-	p.Types[unescapedName] = typ
+	p.Types[canonicalName] = typ
 	return nil
 }
 
@@ -1075,7 +1085,7 @@ func (b *packagesIterator) exploreCompileUnit(
 			if err != nil {
 				return nil, err
 			}
-			if !function.empty() {
+			if !function.empty() && !b.currentCompileUnit.hasFunctionQName(function.QualifiedName) {
 				b.currentCompileUnit.outputPkg.Functions = append(b.currentCompileUnit.outputPkg.Functions, function)
 			}
 		default:
@@ -1245,7 +1255,7 @@ func (b *packagesIterator) exploreSubprogram(
 
 	res := Function{
 		Name:            funcName.Name,
-		QualifiedName:   funcQualifiedName,
+		QualifiedName:   funcName.QualifiedName,
 		File:            fileName,
 		InjectibleLines: lineRanges,
 		Scope: Scope{
@@ -1271,6 +1281,12 @@ func (b *packagesIterator) exploreSubprogram(
 				Name: typeQualifiedName,
 			}
 			b.currentCompileUnit.outputPkg.Types[typeQualifiedName] = t
+		}
+		// For generic types, dedup methods by name (first shape wins).
+		for _, m := range t.Methods {
+			if m.Name == res.Name {
+				return Function{}, nil
+			}
 		}
 		t.Methods = append(t.Methods, res)
 		// We don't return a Function for methods.
@@ -1413,6 +1429,9 @@ func (b *packagesIterator) exploreInlinedCode(
 			if err != nil {
 				return err
 			}
+		case dwarf.TagTypedef:
+			// Typedefs in generic shape functions for dictionary type
+			// parameters (.param0, .param1). Skip.
 		default:
 			return fmt.Errorf("unexpected child tag %s in inlined instance at 0x%x", child.Tag, child.Offset)
 		}
@@ -1594,6 +1613,9 @@ func (b *packagesIterator) parseAbstractFunction(offset dwarf.Offset, reader *dw
 				Variable: v,
 				typeSize: uint32(typ.size),
 			}
+		case dwarf.TagTypedef:
+			// Typedefs in generic shape functions for dictionary type
+			// parameters (.param0, .param1). Skip.
 		default:
 			return nil, fmt.Errorf("unexpected child tag %s in abstract function at 0x%x", child.Tag, child.Offset)
 		}

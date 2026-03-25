@@ -1,0 +1,866 @@
+[
+  {
+    "service": "sample",
+    "ddsource": "dd_debugger",
+    "logger": {
+      "name": "",
+      "method": "main.genericContains[...]",
+      "version": 0,
+      "thread_id": "[goid]",
+      "thread_name": ""
+    },
+    "debugger": {
+      "snapshot": {
+        "id": "[id]",
+        "timestamp": "[ts]",
+        "language": "go",
+        "stack": [
+          {
+            "function": "main.genericContains[go.shape.string]",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 78
+          },
+          {
+            "function": "main.executeGenericFuncs",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 214
+          },
+          {
+            "function": "main.main",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/main.go",
+            "lineNumber": 47
+          },
+          {
+            "function": "runtime.main",
+            "fileName": "runtime/proc.go",
+            "lineNumber": "[lineNumber]"
+          },
+          {
+            "function": "runtime.goexit",
+            "fileName": "runtime/asm_[arch].s",
+            "lineNumber": "[lineNumber]"
+          }
+        ],
+        "probe": {
+          "id": "testGenericFuncContainsLine",
+          "location": {
+            "method": "main.genericContains[...]",
+            "file": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "line": 78
+          }
+        },
+        "captures": {
+          "lines": {
+            "78": {
+              "locals": {
+                "needle": {
+                  "type": "string",
+                  "value": "b"
+                },
+                "~r0": {
+                  "type": "bool",
+                  "notCapturedReason": "unavailable"
+                },
+                "v": {
+                  "type": "go.shape.string",
+                  "notCapturedReason": "unavailable"
+                }
+              }
+            }
+          }
+        }
+      },
+      "type": "snapshot"
+    },
+    "timestamp": "[ts]",
+    "message": "v={unavailable}"
+  },
+  {
+    "service": "sample",
+    "ddsource": "dd_debugger",
+    "logger": {
+      "name": "",
+      "method": "main.genericContains[...]",
+      "version": 0,
+      "thread_id": "[goid]",
+      "thread_name": ""
+    },
+    "debugger": {
+      "snapshot": {
+        "id": "[id]",
+        "timestamp": "[ts]",
+        "language": "go",
+        "stack": [
+          {
+            "function": "main.genericContains[go.shape.string]",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 78
+          },
+          {
+            "function": "main.executeGenericFuncs",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 214
+          },
+          {
+            "function": "main.main",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/main.go",
+            "lineNumber": 47
+          },
+          {
+            "function": "runtime.main",
+            "fileName": "runtime/proc.go",
+            "lineNumber": "[lineNumber]"
+          },
+          {
+            "function": "runtime.goexit",
+            "fileName": "runtime/asm_[arch].s",
+            "lineNumber": "[lineNumber]"
+          }
+        ],
+        "probe": {
+          "id": "testGenericFuncContainsLine",
+          "location": {
+            "method": "main.genericContains[...]",
+            "file": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "line": 78
+          }
+        },
+        "captures": {
+          "lines": {
+            "78": {
+              "locals": {
+                "needle": {
+                  "type": "go.shape.string",
+                  "value": "b"
+                },
+                "~r0": {
+                  "type": "bool",
+                  "notCapturedReason": "unavailable"
+                },
+                "v": {
+                  "type": "go.shape.string",
+                  "notCapturedReason": "unavailable"
+                }
+              }
+            }
+          }
+        }
+      },
+      "type": "snapshot"
+    },
+    "timestamp": "[ts]",
+    "message": "v={unavailable}"
+  },
+  {
+    "service": "sample",
+    "ddsource": "dd_debugger",
+    "logger": {
+      "name": "",
+      "method": "main.genericContains[...]",
+      "version": 0,
+      "thread_id": "[goid]",
+      "thread_name": ""
+    },
+    "debugger": {
+      "snapshot": {
+        "id": "[id]",
+        "timestamp": "[ts]",
+        "language": "go",
+        "stack": [
+          {
+            "function": "main.genericContains[go.shape.int]",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 78
+          },
+          {
+            "function": "main.executeGenericFuncs",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 215
+          },
+          {
+            "function": "main.main",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/main.go",
+            "lineNumber": 47
+          },
+          {
+            "function": "runtime.main",
+            "fileName": "runtime/proc.go",
+            "lineNumber": "[lineNumber]"
+          },
+          {
+            "function": "runtime.goexit",
+            "fileName": "runtime/asm_[arch].s",
+            "lineNumber": "[lineNumber]"
+          }
+        ],
+        "probe": {
+          "id": "testGenericFuncContainsLine",
+          "location": {
+            "method": "main.genericContains[...]",
+            "file": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "line": 78
+          }
+        },
+        "captures": {
+          "lines": {
+            "78": {
+              "locals": {
+                "haystack": {
+                  "type": "[]go.shape.int",
+                  "size": "3",
+                  "elements": [
+                    {
+                      "type": "go.shape.int",
+                      "value": "1"
+                    },
+                    {
+                      "type": "go.shape.int",
+                      "value": "2"
+                    },
+                    {
+                      "type": "go.shape.int",
+                      "value": "3"
+                    }
+                  ]
+                },
+                "needle": {
+                  "type": "go.shape.int",
+                  "value": "2"
+                },
+                "~r0": {
+                  "type": "bool",
+                  "notCapturedReason": "unavailable"
+                }
+              }
+            }
+          }
+        }
+      },
+      "type": "snapshot"
+    },
+    "timestamp": "[ts]",
+    "message": "v={error: failed to resolve reference \"v\"}"
+  },
+  {
+    "service": "sample",
+    "ddsource": "dd_debugger",
+    "logger": {
+      "name": "",
+      "method": "main.genericContains[...]",
+      "version": 0,
+      "thread_id": "[goid]",
+      "thread_name": ""
+    },
+    "debugger": {
+      "snapshot": {
+        "id": "[id]",
+        "timestamp": "[ts]",
+        "language": "go",
+        "stack": [
+          {
+            "function": "main.genericContains[go.shape.int]",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 78
+          },
+          {
+            "function": "main.executeGenericFuncs",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 215
+          },
+          {
+            "function": "main.main",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/main.go",
+            "lineNumber": 47
+          },
+          {
+            "function": "runtime.main",
+            "fileName": "runtime/proc.go",
+            "lineNumber": "[lineNumber]"
+          },
+          {
+            "function": "runtime.goexit",
+            "fileName": "runtime/asm_[arch].s",
+            "lineNumber": "[lineNumber]"
+          }
+        ],
+        "probe": {
+          "id": "testGenericFuncContainsLine",
+          "location": {
+            "method": "main.genericContains[...]",
+            "file": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "line": 78
+          }
+        },
+        "captures": {
+          "lines": {
+            "78": {
+              "locals": {
+                "haystack": {
+                  "type": "[]go.shape.int",
+                  "size": "3",
+                  "elements": [
+                    {
+                      "type": "go.shape.int",
+                      "value": "1"
+                    },
+                    {
+                      "type": "go.shape.int",
+                      "value": "2"
+                    },
+                    {
+                      "type": "go.shape.int",
+                      "value": "3"
+                    }
+                  ]
+                },
+                "needle": {
+                  "type": "go.shape.int",
+                  "value": "2"
+                },
+                "~r0": {
+                  "type": "bool",
+                  "notCapturedReason": "unavailable"
+                }
+              }
+            }
+          }
+        }
+      },
+      "type": "snapshot"
+    },
+    "timestamp": "[ts]",
+    "message": "v={error: failed to resolve reference \"v\"}"
+  },
+  {
+    "service": "sample",
+    "ddsource": "dd_debugger",
+    "logger": {
+      "name": "",
+      "method": "main.genericContains[...]",
+      "version": 0,
+      "thread_id": "[goid]",
+      "thread_name": ""
+    },
+    "debugger": {
+      "snapshot": {
+        "id": "[id]",
+        "timestamp": "[ts]",
+        "language": "go",
+        "stack": [
+          {
+            "function": "main.genericContains[go.shape.int]",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 78
+          },
+          {
+            "function": "main.executeGenericFuncs",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 219
+          },
+          {
+            "function": "main.main",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/main.go",
+            "lineNumber": 47
+          },
+          {
+            "function": "runtime.main",
+            "fileName": "runtime/proc.go",
+            "lineNumber": "[lineNumber]"
+          },
+          {
+            "function": "runtime.goexit",
+            "fileName": "runtime/asm_[arch].s",
+            "lineNumber": "[lineNumber]"
+          }
+        ],
+        "probe": {
+          "id": "testGenericFuncContainsLine",
+          "location": {
+            "method": "main.genericContains[...]",
+            "file": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "line": 78
+          }
+        },
+        "captures": {
+          "lines": {
+            "78": {
+              "locals": {
+                "haystack": {
+                  "type": "[]go.shape.int",
+                  "size": "3",
+                  "elements": [
+                    {
+                      "type": "go.shape.int",
+                      "value": "1"
+                    },
+                    {
+                      "type": "go.shape.int",
+                      "value": "2"
+                    },
+                    {
+                      "type": "go.shape.int",
+                      "value": "3"
+                    }
+                  ]
+                },
+                "needle": {
+                  "type": "go.shape.int",
+                  "value": "2"
+                },
+                "~r0": {
+                  "type": "bool",
+                  "notCapturedReason": "unavailable"
+                }
+              }
+            }
+          }
+        }
+      },
+      "type": "snapshot"
+    },
+    "timestamp": "[ts]",
+    "message": "v={error: failed to resolve reference \"v\"}"
+  },
+  {
+    "service": "sample",
+    "ddsource": "dd_debugger",
+    "logger": {
+      "name": "",
+      "method": "main.genericContains[...]",
+      "version": 0,
+      "thread_id": "[goid]",
+      "thread_name": ""
+    },
+    "debugger": {
+      "snapshot": {
+        "id": "[id]",
+        "timestamp": "[ts]",
+        "language": "go",
+        "stack": [
+          {
+            "function": "main.genericContains[go.shape.int]",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 78
+          },
+          {
+            "function": "main.executeGenericFuncs",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 219
+          },
+          {
+            "function": "main.main",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/main.go",
+            "lineNumber": 47
+          },
+          {
+            "function": "runtime.main",
+            "fileName": "runtime/proc.go",
+            "lineNumber": "[lineNumber]"
+          },
+          {
+            "function": "runtime.goexit",
+            "fileName": "runtime/asm_[arch].s",
+            "lineNumber": "[lineNumber]"
+          }
+        ],
+        "probe": {
+          "id": "testGenericFuncContainsLine",
+          "location": {
+            "method": "main.genericContains[...]",
+            "file": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "line": 78
+          }
+        },
+        "captures": {
+          "lines": {
+            "78": {
+              "locals": {
+                "haystack": {
+                  "type": "[]go.shape.int",
+                  "size": "3",
+                  "elements": [
+                    {
+                      "type": "go.shape.int",
+                      "value": "1"
+                    },
+                    {
+                      "type": "go.shape.int",
+                      "value": "2"
+                    },
+                    {
+                      "type": "go.shape.int",
+                      "value": "3"
+                    }
+                  ]
+                },
+                "needle": {
+                  "type": "go.shape.int",
+                  "value": "2"
+                },
+                "~r0": {
+                  "type": "bool",
+                  "notCapturedReason": "unavailable"
+                }
+              }
+            }
+          }
+        }
+      },
+      "type": "snapshot"
+    },
+    "timestamp": "[ts]",
+    "message": "v={error: failed to resolve reference \"v\"}"
+  },
+  {
+    "service": "sample",
+    "ddsource": "dd_debugger",
+    "logger": {
+      "name": "",
+      "method": "main.genericContains[...]",
+      "version": 0,
+      "thread_id": "[goid]",
+      "thread_name": ""
+    },
+    "debugger": {
+      "snapshot": {
+        "id": "[id]",
+        "timestamp": "[ts]",
+        "language": "go",
+        "stack": [
+          {
+            "function": "main.genericContains[go.shape.int]",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 78
+          },
+          {
+            "function": "main.executeGenericFuncs",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 260
+          },
+          {
+            "function": "main.main",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/main.go",
+            "lineNumber": 47
+          },
+          {
+            "function": "runtime.main",
+            "fileName": "runtime/proc.go",
+            "lineNumber": "[lineNumber]"
+          },
+          {
+            "function": "runtime.goexit",
+            "fileName": "runtime/asm_[arch].s",
+            "lineNumber": "[lineNumber]"
+          }
+        ],
+        "probe": {
+          "id": "testGenericFuncContainsLine",
+          "location": {
+            "method": "main.genericContains[...]",
+            "file": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "line": 78
+          }
+        },
+        "captures": {
+          "lines": {
+            "78": {
+              "locals": {
+                "haystack": {
+                  "type": "[]go.shape.int",
+                  "size": "3",
+                  "elements": [
+                    {
+                      "type": "go.shape.int",
+                      "value": "10"
+                    },
+                    {
+                      "type": "go.shape.int",
+                      "value": "20"
+                    },
+                    {
+                      "type": "go.shape.int",
+                      "value": "30"
+                    }
+                  ]
+                },
+                "needle": {
+                  "type": "go.shape.int",
+                  "value": "20"
+                },
+                "~r0": {
+                  "type": "bool",
+                  "notCapturedReason": "unavailable"
+                }
+              }
+            }
+          }
+        }
+      },
+      "type": "snapshot"
+    },
+    "timestamp": "[ts]",
+    "message": "v={error: failed to resolve reference \"v\"}"
+  },
+  {
+    "service": "sample",
+    "ddsource": "dd_debugger",
+    "logger": {
+      "name": "",
+      "method": "main.genericContains[...]",
+      "version": 0,
+      "thread_id": "[goid]",
+      "thread_name": ""
+    },
+    "debugger": {
+      "snapshot": {
+        "id": "[id]",
+        "timestamp": "[ts]",
+        "language": "go",
+        "stack": [
+          {
+            "function": "main.genericContains[go.shape.int]",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 78
+          },
+          {
+            "function": "main.executeGenericFuncs",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 260
+          },
+          {
+            "function": "main.main",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/main.go",
+            "lineNumber": 47
+          },
+          {
+            "function": "runtime.main",
+            "fileName": "runtime/proc.go",
+            "lineNumber": "[lineNumber]"
+          },
+          {
+            "function": "runtime.goexit",
+            "fileName": "runtime/asm_[arch].s",
+            "lineNumber": "[lineNumber]"
+          }
+        ],
+        "probe": {
+          "id": "testGenericFuncContainsLine",
+          "location": {
+            "method": "main.genericContains[...]",
+            "file": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "line": 78
+          }
+        },
+        "captures": {
+          "lines": {
+            "78": {
+              "locals": {
+                "haystack": {
+                  "type": "[]go.shape.int",
+                  "size": "3",
+                  "elements": [
+                    {
+                      "type": "go.shape.int",
+                      "value": "10"
+                    },
+                    {
+                      "type": "go.shape.int",
+                      "value": "20"
+                    },
+                    {
+                      "type": "go.shape.int",
+                      "value": "30"
+                    }
+                  ]
+                },
+                "needle": {
+                  "type": "go.shape.int",
+                  "value": "20"
+                },
+                "~r0": {
+                  "type": "bool",
+                  "notCapturedReason": "unavailable"
+                }
+              }
+            }
+          }
+        }
+      },
+      "type": "snapshot"
+    },
+    "timestamp": "[ts]",
+    "message": "v={error: failed to resolve reference \"v\"}"
+  },
+  {
+    "service": "sample",
+    "ddsource": "dd_debugger",
+    "logger": {
+      "name": "",
+      "method": "main.genericContains[...]",
+      "version": 0,
+      "thread_id": "[goid]",
+      "thread_name": ""
+    },
+    "debugger": {
+      "snapshot": {
+        "id": "[id]",
+        "timestamp": "[ts]",
+        "language": "go",
+        "stack": [
+          {
+            "function": "main.genericContains[go.shape.int]",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 78
+          },
+          {
+            "function": "main.executeGenericFuncs",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 261
+          },
+          {
+            "function": "main.main",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/main.go",
+            "lineNumber": 47
+          },
+          {
+            "function": "runtime.main",
+            "fileName": "runtime/proc.go",
+            "lineNumber": "[lineNumber]"
+          },
+          {
+            "function": "runtime.goexit",
+            "fileName": "runtime/asm_[arch].s",
+            "lineNumber": "[lineNumber]"
+          }
+        ],
+        "probe": {
+          "id": "testGenericFuncContainsLine",
+          "location": {
+            "method": "main.genericContains[...]",
+            "file": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "line": 78
+          }
+        },
+        "captures": {
+          "lines": {
+            "78": {
+              "locals": {
+                "haystack": {
+                  "type": "[]go.shape.int",
+                  "size": "2",
+                  "elements": [
+                    {
+                      "type": "go.shape.int",
+                      "value": "0"
+                    },
+                    {
+                      "type": "go.shape.int",
+                      "value": "100"
+                    }
+                  ]
+                },
+                "needle": {
+                  "type": "go.shape.int",
+                  "value": "100"
+                },
+                "~r0": {
+                  "type": "bool",
+                  "notCapturedReason": "unavailable"
+                }
+              }
+            }
+          }
+        }
+      },
+      "type": "snapshot"
+    },
+    "timestamp": "[ts]",
+    "message": "v={error: failed to resolve reference \"v\"}"
+  },
+  {
+    "service": "sample",
+    "ddsource": "dd_debugger",
+    "logger": {
+      "name": "",
+      "method": "main.genericContains[...]",
+      "version": 0,
+      "thread_id": "[goid]",
+      "thread_name": ""
+    },
+    "debugger": {
+      "snapshot": {
+        "id": "[id]",
+        "timestamp": "[ts]",
+        "language": "go",
+        "stack": [
+          {
+            "function": "main.genericContains[go.shape.int]",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 78
+          },
+          {
+            "function": "main.executeGenericFuncs",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 261
+          },
+          {
+            "function": "main.main",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/main.go",
+            "lineNumber": 47
+          },
+          {
+            "function": "runtime.main",
+            "fileName": "runtime/proc.go",
+            "lineNumber": "[lineNumber]"
+          },
+          {
+            "function": "runtime.goexit",
+            "fileName": "runtime/asm_[arch].s",
+            "lineNumber": "[lineNumber]"
+          }
+        ],
+        "probe": {
+          "id": "testGenericFuncContainsLine",
+          "location": {
+            "method": "main.genericContains[...]",
+            "file": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "line": 78
+          }
+        },
+        "captures": {
+          "lines": {
+            "78": {
+              "locals": {
+                "haystack": {
+                  "type": "[]go.shape.int",
+                  "size": "2",
+                  "elements": [
+                    {
+                      "type": "go.shape.int",
+                      "value": "0"
+                    },
+                    {
+                      "type": "go.shape.int",
+                      "value": "100"
+                    }
+                  ]
+                },
+                "needle": {
+                  "type": "go.shape.int",
+                  "value": "100"
+                },
+                "~r0": {
+                  "type": "bool",
+                  "notCapturedReason": "unavailable"
+                }
+              }
+            }
+          }
+        }
+      },
+      "type": "snapshot"
+    },
+    "timestamp": "[ts]",
+    "message": "v={error: failed to resolve reference \"v\"}"
+  }
+]

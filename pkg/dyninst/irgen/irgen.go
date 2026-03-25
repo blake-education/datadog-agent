@@ -1688,10 +1688,114 @@ func materializePending(
 				return cmp.Compare(a.Range[0], b.Range[0])
 			})
 		}
+
+		// Annotate variables whose types are generic shape typedefs with
+		// their dictionary index, and synthesize the dict variable.
+		if len(p.dictTypedefs) > 0 {
+			annotateDictIndices(sp, p.dictTypedefs)
+		}
+
 		subprograms = append(subprograms, sp)
 	}
 
 	return subprograms, nil
+}
+
+// getDictRegister returns the DWARF register number where the dictionary
+// pointer lives at function entry. For functions, it's the first int register.
+// For methods, it's the second int register (after the receiver).
+// The DictVar on the subprogram must be non-nil.
+func getDictRegister(sp *ir.Subprogram) uint8 {
+	// Check if this is a method (has a receiver as first parameter).
+	// If so, the receiver occupies register(s) before the dict.
+	// For simplicity, we check if the first parameter's name is a receiver
+	// name (by convention, single-letter lowercase or "x").
+	// Actually, the reliable check is: if DictVar exists and there's at least
+	// one parameter, the dict is in int register 1. If no parameters (shouldn't
+	// happen for a generic func), it's int register 0.
+	//
+	// The correct approach: the dict is always after the receiver. For functions
+	// (no receiver), it's int reg 0. For methods (has receiver), it's int reg 1
+	// (assuming the receiver fits in one register — true for pointer receivers
+	// and small value receivers, and for large value receivers that get hidden-
+	// pointer-ified).
+	//
+	// We detect methods by checking if the first variable is a parameter named
+	// after a receiver convention. But actually, we stored this info:
+	// DictVar.Name is ".dict" and we can check if the subprogram name contains
+	// a receiver pattern like "(*Type)." or "Type.".
+
+	// Determine whether this is a generic free function or a method on a
+	// generic type. A generic free function's shape name ends with ']':
+	//   main.genericContains[go.shape.int]
+	// A method on a generic type has content after the ']':
+	//   main.typeWithGenerics[go.shape.int].Guess
+	//   main.(*Pair[go.shape.int,go.shape.bool]).SetValue
+	//
+	// For free functions, the dict is the first ABI parameter (intReg[0]).
+	// For methods, the receiver is first, then the dict (intReg[1]).
+	//
+	// NOTE: This heuristic assumes generic methods always have a receiver
+	// before the dict. If Go ever adds generic methods without receivers
+	// (generic interface methods?), this will need revision.
+	name := sp.Name
+	isMethod := !strings.HasSuffix(name, "]")
+	// TODO: Use architecture from the binary. For now, use amd64.
+	if isMethod {
+		return amd64ABI.intRegs[1] // RBX = DWARF reg 3
+	}
+	return amd64ABI.intRegs[0] // RAX = DWARF reg 0
+}
+
+// annotateDictIndices sets DictIndex on variables whose DWARF types reference
+// generic shape typedefs, and synthesizes a DictVar for the subprogram.
+func annotateDictIndices(sp *ir.Subprogram, typedefs []dictTypedef) {
+	if len(typedefs) == 0 {
+		return
+	}
+
+	// Assign dict indices to shape-typed parameters by position.
+	// The typedefs (.param0, .param1, ...) correspond to type parameters
+	// in order. Each parameter whose resolved type contains "go.shape."
+	// is a shape-typed param that needs dict resolution.
+	paramTypedefIdx := 0
+	for _, v := range sp.Variables {
+		if v.Role != ir.VariableRoleParameter {
+			continue
+		}
+		if v.Type == nil {
+			continue
+		}
+		typeName := v.Type.GetName()
+		if !strings.Contains(typeName, "go.shape.") {
+			continue
+		}
+		if paramTypedefIdx < len(typedefs) {
+			v.DictIndex = typedefs[paramTypedefIdx].dictIdx
+			paramTypedefIdx++
+		}
+	}
+
+	// Synthesize a DictVar if any variables got dict indices.
+	hasDictVar := false
+	for _, v := range sp.Variables {
+		if v.DictIndex >= 0 {
+			hasDictVar = true
+			break
+		}
+	}
+	if hasDictVar {
+		// Compute the dict register. The dict is always the first parameter
+		// after the receiver (if any). We detect methods by checking if any
+		// variable is named with a single letter (receiver convention) as
+		// the first parameter. Simpler: check the subprogram name for
+		// receiver syntax.
+		dictReg := getDictRegister(sp)
+		sp.DictVar = &ir.Variable{
+			Name:      ".dict",
+			DictIndex: int(dictReg), // repurpose DictIndex to store register number
+		}
+	}
 }
 
 type lineSearchRange struct {
@@ -1961,6 +2065,9 @@ type pendingSubprogram struct {
 	id         ir.SubprogramID
 	probesCfgs []ir.ProbeDefinition
 	issue      ir.Issue
+	// dictTypedefs records generic shape type parameter metadata. Empty
+	// for non-generic functions.
+	dictTypedefs []dictTypedef
 }
 
 func (v *rootVisitor) push(entry *dwarf.Entry) (childVisitor visitor, err error) {
@@ -2043,6 +2150,9 @@ func (v *unitChildVisitor) push(
 			}, nil
 		}
 		probesCfgs := v.root.interests.subprograms[name]
+		if len(probesCfgs) == 0 {
+			probesCfgs = v.root.interests.matchGenericPatterns(name)
+		}
 		inline, ok, err := maybeGetAttr[int64](entry, dwarf.AttrInline)
 		if err != nil {
 			return nil, err
@@ -2288,6 +2398,7 @@ func (v *unitChildVisitor) pop(entry *dwarf.Entry, childVisitor visitor) error {
 				probesCfgs:        t.probesCfgs,
 				id:                spID,
 				issue:             issue,
+				dictTypedefs:      t.dictTypedefs,
 			})
 		}
 		return nil
@@ -2304,6 +2415,15 @@ func (v *unitChildVisitor) pop(entry *dwarf.Entry, childVisitor visitor) error {
 	}
 }
 
+// dictTypedef records a .paramN typedef from a generic shape function,
+// mapping a typedef name to its dictionary index.
+type dictTypedef struct {
+	name    string       // e.g. ".param0"
+	dictIdx int          // DW_AT_go_dict_index value
+	offset  dwarf.Offset // the typedef's own DIE offset
+	typeOff dwarf.Offset // what the typedef points to (the shape type)
+}
+
 type subprogramChildVisitor struct {
 	root            *rootVisitor
 	unit            *dwarf.Entry
@@ -2312,6 +2432,9 @@ type subprogramChildVisitor struct {
 	// Discovery: collect variable DIEs for later materialization.
 	variableEntries       []*dwarf.Entry
 	hasInlinedSubprograms bool
+	// dictTypedefs records generic shape type parameter metadata from
+	// DW_TAG_typedef entries with DW_AT_go_dict_index.
+	dictTypedefs []dictTypedef
 }
 
 func (v *subprogramChildVisitor) push(
@@ -2331,8 +2454,21 @@ func (v *subprogramChildVisitor) push(
 		}
 		return nil, nil
 	case dwarf.TagTypedef:
-		// Typedefs occur for generic type parameters and carry their dictionary
-		// index.
+		// Typedefs in generic shape functions carry dict index metadata.
+		// Record them so we can annotate variables with DictIndex later.
+		if len(v.probesCfgs) > 0 {
+			name, _, _ := maybeGetAttr[string](entry, dwarf.AttrName)
+			dictIdx, hasDictIdx, _ := maybeGetAttr[int64](entry, dwarf.Attr(dwAtGoDictIndex))
+			if hasDictIdx {
+				typeOff, _, _ := maybeGetAttr[dwarf.Offset](entry, dwarf.AttrType)
+				v.dictTypedefs = append(v.dictTypedefs, dictTypedef{
+					name:    name,
+					dictIdx: int(dictIdx),
+					offset:  entry.Offset,
+					typeOff: typeOff,
+				})
+			}
+		}
 		return nil, nil
 	case dwarf.TagLexDwarfBlock:
 		return v, nil
@@ -4248,15 +4384,42 @@ func populateEventExpressions(
 		if expr.captureExprName != "" {
 			name = expr.captureExprName
 		}
+		dictIdx := -1
+		if v != nil {
+			dictIdx = v.DictIndex
+		}
 		expressions = append(expressions, &ir.RootExpression{
 			Name:       name,
 			Offset:     uint32(0),
 			Kind:       expr.exprKind,
 			Expression: resolvedExpr,
+			DictIndex:  dictIdx,
 		})
 	}
 	presenceBitsetSize := uint32((2*len(expressions) + 7) / 8)
 	byteSize := uint64(presenceBitsetSize)
+
+	// Build dict entries for generic shape functions. Each dict entry
+	// occupies 8 bytes in the event output (after presence bitset, before
+	// expressions). The eBPF resolves the runtime type at probe time.
+	var dictEntries []ir.DictEntry
+	if probe.Subprogram.DictVar != nil {
+		dictReg := uint8(probe.Subprogram.DictVar.DictIndex) // register stored in DictIndex
+		// Collect unique dict indices from variables.
+		seenIdx := make(map[int]bool)
+		for _, v := range probe.Subprogram.Variables {
+			if v.DictIndex >= 0 && !seenIdx[v.DictIndex] {
+				seenIdx[v.DictIndex] = true
+				dictEntries = append(dictEntries, ir.DictEntry{
+					DictIndex:    v.DictIndex,
+					DictRegister: dictReg,
+					Offset:       uint32(byteSize),
+				})
+				byteSize += 8 // uint64 for resolved runtime type
+			}
+		}
+	}
+
 	for _, e := range expressions {
 		e.Offset = uint32(byteSize)
 		byteSize += uint64(e.Expression.Type.GetByteSize())
@@ -4278,6 +4441,7 @@ func populateEventExpressions(
 			ByteSize: uint32(byteSize),
 		},
 		PresenceBitsetSize: presenceBitsetSize,
+		DictEntries:        dictEntries,
 		Expressions:        expressions,
 	}
 	typeCatalog.typesByID[event.Type.ID] = event.Type
@@ -4955,6 +5119,7 @@ func processVariable(
 		Type:      typ,
 		Locations: locations,
 		Role:      role,
+		DictIndex: -1, // no dict resolution by default
 	}, nil
 }
 
@@ -5022,9 +5187,18 @@ func getAttr[T any](entry *dwarf.Entry, attr dwarf.Attr) (T, error) {
 const runtimePackageName = "runtime"
 
 // interests tracks what compile units and subprograms we're interested in.
+// genericPattern represents a probe target with [...] wildcards that should
+// match any generic type parameter instantiation in DWARF.
+type genericPattern struct {
+	prefix string // everything before "[...]"
+	suffix string // everything after "[...]"
+	probes []ir.ProbeDefinition
+}
+
 type interests struct {
-	compileUnits map[string]struct{}
-	subprograms  map[string][]ir.ProbeDefinition
+	compileUnits    map[string]struct{}
+	subprograms     map[string][]ir.ProbeDefinition
+	genericPatterns []genericPattern // probes targeting pkg.Type[...].Method
 }
 
 func makeInterests(cfg []ir.ProbeDefinition) (interests, []ir.ProbeIssue) {
@@ -5051,11 +5225,11 @@ func makeInterests(cfg []ir.ProbeDefinition) (interests, []ir.ProbeIssue) {
 		case ir.FunctionWhere:
 			methodName := where.Location()
 			i.compileUnits[compileUnitFromName(methodName)] = struct{}{}
-			i.subprograms[methodName] = append(i.subprograms[methodName], probe)
+			i.addProbe(methodName, probe)
 		case ir.LineWhere:
 			methodName, _, _ := where.Line()
 			i.compileUnits[compileUnitFromName(methodName)] = struct{}{}
-			i.subprograms[methodName] = append(i.subprograms[methodName], probe)
+			i.addProbe(methodName, probe)
 		default:
 			issues = append(issues, ir.ProbeIssue{
 				ProbeDefinition: probe,
@@ -5069,6 +5243,70 @@ func makeInterests(cfg []ir.ProbeDefinition) (interests, []ir.ProbeIssue) {
 	}
 
 	return i, issues
+}
+
+// addProbe routes a probe to either the exact-match subprograms map or the
+// generic patterns list, depending on whether the name contains "[...]".
+func (i *interests) addProbe(methodName string, probe ir.ProbeDefinition) {
+	if idx := strings.Index(methodName, "[...]"); idx != -1 {
+		// Split into prefix (before "[...]") and suffix (after "[...]").
+		prefix := methodName[:idx]
+		suffix := methodName[idx+5:] // len("[...]") == 5
+
+		// Check if this pattern already exists.
+		for j := range i.genericPatterns {
+			if i.genericPatterns[j].prefix == prefix && i.genericPatterns[j].suffix == suffix {
+				i.genericPatterns[j].probes = append(i.genericPatterns[j].probes, probe)
+				return
+			}
+		}
+		i.genericPatterns = append(i.genericPatterns, genericPattern{
+			prefix: prefix,
+			suffix: suffix,
+			probes: []ir.ProbeDefinition{probe},
+		})
+	} else {
+		i.subprograms[methodName] = append(i.subprograms[methodName], probe)
+	}
+}
+
+// matchGenericPatterns checks if a DWARF subprogram name matches any generic
+// pattern. A pattern "prefix[...]suffix" matches "prefix[<anything>]suffix"
+// where <anything> is non-empty. Returns the matching probes, or nil.
+func (i *interests) matchGenericPatterns(name string) []ir.ProbeDefinition {
+	for _, pat := range i.genericPatterns {
+		if !strings.HasPrefix(name, pat.prefix) {
+			continue
+		}
+		rest := name[len(pat.prefix):]
+		if len(rest) == 0 || rest[0] != '[' {
+			continue
+		}
+		// Find matching ']' using bracket-depth counting.
+		depth := 0
+		bracketEnd := -1
+		for j := 0; j < len(rest); j++ {
+			switch rest[j] {
+			case '[':
+				depth++
+			case ']':
+				depth--
+				if depth == 0 {
+					bracketEnd = j
+				}
+			}
+			if bracketEnd >= 0 {
+				break
+			}
+		}
+		if bracketEnd < 2 { // must contain at least one char between brackets
+			continue
+		}
+		if rest[bracketEnd+1:] == pat.suffix {
+			return pat.probes
+		}
+	}
+	return nil
 }
 
 // Note that this heuristic is flawed: it doesn't handle generics, linkname

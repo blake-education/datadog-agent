@@ -1,0 +1,254 @@
+[
+  {
+    "service": "sample",
+    "ddsource": "dd_debugger",
+    "logger": {
+      "name": "",
+      "method": "main.genericPtrIdentity[...]",
+      "version": 0,
+      "thread_id": "[goid]",
+      "thread_name": ""
+    },
+    "debugger": {
+      "snapshot": {
+        "id": "[id]",
+        "timestamp": "[ts]",
+        "language": "go",
+        "stack": [
+          {
+            "function": "main.genericPtrIdentity[go.shape.struct { X int; Y int }]",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 169
+          },
+          {
+            "function": "main.executeGenericFuncs",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 267
+          },
+          {
+            "function": "main.main",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/main.go",
+            "lineNumber": 47
+          },
+          {
+            "function": "runtime.main",
+            "fileName": "runtime/proc.go",
+            "lineNumber": "[lineNumber]"
+          },
+          {
+            "function": "runtime.goexit",
+            "fileName": "runtime/asm_[arch].s",
+            "lineNumber": "[lineNumber]"
+          }
+        ],
+        "probe": {
+          "id": "testGenericPtrIdentity",
+          "location": {
+            "method": "main.genericPtrIdentity[...]"
+          }
+        },
+        "captures": {
+          "entry": {
+            "arguments": {
+              "p": {
+                "type": "*main.smallStruct",
+                "address": "[addr]",
+                "fields": {
+                  "X": {
+                    "type": "int",
+                    "value": "1"
+                  },
+                  "Y": {
+                    "type": "int",
+                    "value": "2"
+                  }
+                }
+              }
+            }
+          },
+          "return": {
+            "locals": {
+              "~r0": {
+                "type": "*go.shape.struct { X int; Y int }",
+                "address": "[addr]",
+                "fields": {
+                  "X": {
+                    "type": "int",
+                    "value": "1"
+                  },
+                  "Y": {
+                    "type": "int",
+                    "value": "2"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "type": "snapshot"
+    },
+    "timestamp": "[ts]",
+    "duration": "[duration]",
+    "message": "p={X: 1, Y: 2}"
+  },
+  {
+    "service": "sample",
+    "ddsource": "dd_debugger",
+    "logger": {
+      "name": "",
+      "method": "main.genericPtrIdentity[...]",
+      "version": 0,
+      "thread_id": "[goid]",
+      "thread_name": ""
+    },
+    "debugger": {
+      "snapshot": {
+        "id": "[id]",
+        "timestamp": "[ts]",
+        "language": "go",
+        "stack": [
+          {
+            "function": "main.genericPtrIdentity[go.shape.struct { Name string }]",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 169
+          },
+          {
+            "function": "main.executeGenericFuncs",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 269
+          },
+          {
+            "function": "main.main",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/main.go",
+            "lineNumber": 47
+          },
+          {
+            "function": "runtime.main",
+            "fileName": "runtime/proc.go",
+            "lineNumber": "[lineNumber]"
+          },
+          {
+            "function": "runtime.goexit",
+            "fileName": "runtime/asm_[arch].s",
+            "lineNumber": "[lineNumber]"
+          }
+        ],
+        "probe": {
+          "id": "testGenericPtrIdentity",
+          "location": {
+            "method": "main.genericPtrIdentity[...]"
+          }
+        },
+        "captures": {
+          "entry": {
+            "arguments": {
+              "p": {
+                "type": "*main.tinyStruct",
+                "address": "[addr]",
+                "fields": {
+                  "Name": {
+                    "type": "string",
+                    "value": "tiny"
+                  }
+                }
+              }
+            }
+          },
+          "return": {
+            "locals": {
+              "~r0": {
+                "type": "*go.shape.struct { Name string }",
+                "address": "[addr]",
+                "fields": {
+                  "Name": {
+                    "type": "string",
+                    "value": "tiny"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "type": "snapshot"
+    },
+    "timestamp": "[ts]",
+    "duration": "[duration]",
+    "message": "p={Name: tiny}"
+  },
+  {
+    "service": "sample",
+    "ddsource": "dd_debugger",
+    "logger": {
+      "name": "",
+      "method": "main.genericPtrIdentity[...]",
+      "version": 0,
+      "thread_id": "[goid]",
+      "thread_name": ""
+    },
+    "debugger": {
+      "snapshot": {
+        "id": "[id]",
+        "timestamp": "[ts]",
+        "language": "go",
+        "stack": [
+          {
+            "function": "main.genericPtrIdentity[go.shape.int]",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 169
+          },
+          {
+            "function": "main.executeGenericFuncs",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/generics.go",
+            "lineNumber": 271
+          },
+          {
+            "function": "main.main",
+            "fileName": "github.com/DataDog/datadog-agent/pkg/dyninst/testprogs/progs/sample/main.go",
+            "lineNumber": 47
+          },
+          {
+            "function": "runtime.main",
+            "fileName": "runtime/proc.go",
+            "lineNumber": "[lineNumber]"
+          },
+          {
+            "function": "runtime.goexit",
+            "fileName": "runtime/asm_[arch].s",
+            "lineNumber": "[lineNumber]"
+          }
+        ],
+        "probe": {
+          "id": "testGenericPtrIdentity",
+          "location": {
+            "method": "main.genericPtrIdentity[...]"
+          }
+        },
+        "captures": {
+          "entry": {
+            "arguments": {
+              "p": {
+                "type": "*int",
+                "notCapturedReason": "depth"
+              }
+            }
+          },
+          "return": {
+            "locals": {
+              "~r0": {
+                "type": "*go.shape.int",
+                "address": "[addr]",
+                "value": "42"
+              }
+            }
+          }
+        }
+      },
+      "type": "snapshot"
+    },
+    "timestamp": "[ts]",
+    "duration": "[duration]",
+    "message": "p={pointer: not captured at 0x[addr]}"
+  }
+]

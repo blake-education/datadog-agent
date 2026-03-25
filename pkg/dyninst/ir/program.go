@@ -101,6 +101,12 @@ type Subprogram struct {
 	InlinePCRanges []InlinePCRanges
 	// Variables are the variables that are used in the subprogram.
 	Variables []*Variable
+	// DictVar is a synthetic variable representing the hidden dictionary
+	// parameter for shape-instantiated generic functions. Nil for non-generic
+	// functions. The dictionary pointer is used at runtime to resolve shape
+	// types to their concrete types.
+	// See pkg/dyninst/irgen/go_generics.md for details.
+	DictVar *Variable
 }
 
 // VariableRole is the role of a variable within a subprogram.
@@ -139,6 +145,11 @@ type Variable struct {
 	Locations []Location
 	// Role is the role of the variable within the subprogram.
 	Role VariableRole
+	// DictIndex is the index into the runtime dictionary where the concrete
+	// *runtime._type for this variable's shape type can be found. -1 means
+	// no dict resolution is needed (the variable is not a generic shape type).
+	// See pkg/dyninst/irgen/go_generics.md for details.
+	DictIndex int
 }
 
 // PCRange is the range of PC values that will be probed.

@@ -1131,6 +1131,128 @@ static long sm_loop(__maybe_unused unsigned long i, void* _ctx) {
     }
   } break;
 
+  case SM_OP_PROCESS_GO_DICT_TYPE: {
+    // Resolve a generic shape type parameter to its concrete type by
+    // reading the runtime dictionary. The dict pointer is in a register
+    // (captured at function entry via PT_REGS), and we index into it
+    // to read the *runtime._type for this type parameter.
+    uint32_t dict_index = sm_read_program_uint32(sm);
+    uint8_t dict_register = sm_read_program_uint8(sm);
+    uint32_t output_offset = sm_read_program_uint32(sm);
+
+    // Compute absolute output position: event root start + offset.
+    // Use barrier_var to help the verifier track bounds.
+    buf_offset_t write_pos = sm->buf_offset_0;
+    barrier_var(write_pos);
+    write_pos += output_offset;
+    barrier_var(write_pos);
+
+    // Read the dict pointer from the register value saved in PT_REGS.
+    uint64_t dict_ptr = 0;
+    struct pt_regs* regs = ctx->regs;
+    if (regs) {
+      switch (dict_register) {
+      case 0: dict_ptr = regs->DWARF_REGISTER(0); break;
+      case 1: dict_ptr = regs->DWARF_REGISTER(1); break;
+      case 2: dict_ptr = regs->DWARF_REGISTER(2); break;
+      case 3: dict_ptr = regs->DWARF_REGISTER(3); break;
+      case 4: dict_ptr = regs->DWARF_REGISTER(4); break;
+      case 5: dict_ptr = regs->DWARF_REGISTER(5); break;
+      case 6: dict_ptr = regs->DWARF_REGISTER(6); break;
+      case 7: dict_ptr = regs->DWARF_REGISTER(7); break;
+      case 8: dict_ptr = regs->DWARF_REGISTER(8); break;
+      case 9: dict_ptr = regs->DWARF_REGISTER(9); break;
+      case 10: dict_ptr = regs->DWARF_REGISTER(10); break;
+      case 11: dict_ptr = regs->DWARF_REGISTER(11); break;
+      case 12: dict_ptr = regs->DWARF_REGISTER(12); break;
+      case 13: dict_ptr = regs->DWARF_REGISTER(13); break;
+      case 14: dict_ptr = regs->DWARF_REGISTER(14); break;
+      case 15: dict_ptr = regs->DWARF_REGISTER(15); break;
+      default: break;
+      }
+    }
+    if (dict_ptr == 0) {
+      LOG(3, "dict: null dict pointer from register %d", dict_register);
+      if (scratch_buf_bounds_check(&write_pos, sizeof(uint64_t))) {
+        *(uint64_t*)(&(*buf)[write_pos]) = 0;
+      }
+      break;
+    }
+
+    // Read dict[dict_index] from user memory.
+    uint64_t type_ptr = 0;
+    if (bpf_probe_read_user(&type_ptr, sizeof(uint64_t),
+                            (void*)(dict_ptr + (uint64_t)dict_index * sizeof(uint64_t)))) {
+      LOG(3, "dict: failed to read dict[%d] at %llx", dict_index, dict_ptr);
+      if (scratch_buf_bounds_check(&write_pos, sizeof(uint64_t))) {
+        *(uint64_t*)(&(*buf)[write_pos]) = 0;
+      }
+      break;
+    }
+
+    // Convert to runtime type offset.
+    uint64_t runtime_type = 0;
+    if (type_ptr != 0) {
+      runtime_type = go_runtime_type_from_ptr(type_ptr);
+    }
+
+    // Write the resolved runtime type offset at the designated position
+    // in the event root data.
+    if (scratch_buf_bounds_check(&write_pos, sizeof(uint64_t))) {
+      *(uint64_t*)(&(*buf)[write_pos]) = runtime_type;
+    }
+    LOG(4, "dict: resolved dict[%d] = %llx -> runtime_type %llx (wrote at offset %d)",
+        dict_index, type_ptr, runtime_type, output_offset);
+  } break;
+
+  case SM_OP_CALL_DICT_RESOLVED: {
+    // Dynamically dispatch to the concrete type's ProcessType function
+    // based on the dict-resolved runtime type. Falls back to the shape
+    // type's ProcessType if resolution fails.
+    uint32_t output_offset = sm_read_program_uint32(sm);
+    uint32_t fallback_pc = sm_read_program_uint32(sm);
+
+    // Read the resolved runtime type from the event root data.
+    // Use expr_results_offset as the base, not buf_offset_0, because
+    // ExprSave clobbers buf_offset_0 for presence bitset tracking.
+    // expr_results_offset is set by PrepareEventRoot and not modified.
+    buf_offset_t read_pos = sm->expr_results_offset;
+    barrier_var(read_pos);
+    read_pos += output_offset;
+    barrier_var(read_pos);
+
+    uint32_t target_pc = fallback_pc;
+    LOG(4, "dict_call: read_pos=%d expr_results=%d output_offset=%d",
+        read_pos, sm->expr_results_offset, output_offset);
+    if (scratch_buf_bounds_check(&read_pos, sizeof(uint64_t))) {
+      uint64_t runtime_type = *(uint64_t*)(&(*buf)[read_pos]);
+      LOG(4, "dict_call: read runtime_type=0x%llx from pos %d", runtime_type, read_pos);
+      if (runtime_type != 0 && runtime_type != (uint64_t)(-1)) {
+        type_t concrete_type = lookup_go_interface(runtime_type);
+        if (concrete_type != 0) {
+          const type_info_t* info;
+          if (get_type_info(concrete_type, &info) && info->enqueue_pc != 0) {
+            target_pc = info->enqueue_pc;
+            LOG(4, "dict_call: resolved rt=%llx -> type=%d -> pc=%d",
+                runtime_type, concrete_type, target_pc);
+          }
+        }
+      }
+    }
+    if (target_pc == fallback_pc) {
+      LOG(4, "dict_call: using fallback pc=%d", fallback_pc);
+    }
+
+    // Call: push return address and jump.
+    if (sm->pc_stack_pointer >= ENQUEUE_STACK_DEPTH) {
+      LOG(2, "dict_call: call stack limit reached");
+      return 1;
+    }
+    sm->pc_stack[sm->pc_stack_pointer] = sm->pc;
+    sm->pc_stack_pointer++;
+    sm->pc = target_pc;
+  } break;
+
   case SM_OP_PROCESS_GO_HMAP: {
     // https://github.com/golang/go/blob/8d04110c/src/runtime/map.go#L105
     const uint8_t same_size_grow = 8;
