@@ -131,31 +131,34 @@ func (l *SNMPListener) loadCache(subnet *snmpSubnet) {
 		return
 	}
 
-	// Try to unmarshal with the old cache format
-	var deviceIPs []net.IP
-	err = json.Unmarshal([]byte(cacheValue), &deviceIPs)
-	if err == nil {
-		for _, deviceIP := range deviceIPs {
-			entityID := subnet.config.Digest(deviceIP.String())
-			deviceInfo := l.checkDeviceInfo(subnet.config.Authentications[0], subnet.config.Port, deviceIP.String())
-
-			l.createService(entityID, subnet, deviceIP.String(), deviceInfo, 0, 0, true)
-		}
-		return
-	}
-
 	var devices []deviceCache
-	err = json.Unmarshal([]byte(cacheValue), &devices)
-	if err != nil {
+	var deviceIPs []net.IP
+
+	// Try to unmarshal with the old cache format
+	if err = json.Unmarshal([]byte(cacheValue), &deviceIPs); err == nil {
+		for _, deviceIP := range deviceIPs {
+			devices = append(devices, deviceCache{IP: deviceIP, AuthIndex: 0})
+		}
+	} else if err = json.Unmarshal([]byte(cacheValue), &devices); err != nil {
 		log.Errorf("Couldn't unmarshal cache for %s: %s", subnet.cacheKey, err)
 		return
 	}
-	for _, device := range devices {
-		entityID := subnet.config.Digest(device.IP.String())
-		deviceInfo := l.checkDeviceInfo(subnet.config.Authentications[device.AuthIndex], subnet.config.Port, device.IP.String())
 
-		l.createService(entityID, subnet, device.IP.String(), deviceInfo, device.AuthIndex, device.Failures, true)
+	workers := l.config.Workers
+	var wg sync.WaitGroup
+	loadJob := make(chan struct{}, workers)
+	for _, device := range devices {
+		wg.Add(1)
+		loadJob <- struct{}{}
+		go func(device deviceCache) {
+			defer wg.Done()
+			defer func() { <-loadJob }()
+			entityID := subnet.config.Digest(device.IP.String())
+			deviceInfo := l.checkDeviceInfo(subnet.config.Authentications[device.AuthIndex], subnet.config.Port, device.IP.String())
+			l.createService(entityID, subnet, device.IP.String(), deviceInfo, device.AuthIndex, device.Failures, true)
+		}(device)
 	}
+	wg.Wait()
 }
 
 func (l *SNMPListener) writeCache(subnet *snmpSubnet) {
@@ -385,8 +388,6 @@ func migrateCache(config snmp.Config) string {
 }
 
 func (l *SNMPListener) checkDevices() {
-	subnets := l.initializeSubnets()
-
 	if l.config.Workers == 0 {
 		l.config.Workers = defaultWorkers
 	}
@@ -398,6 +399,8 @@ func (l *SNMPListener) checkDevices() {
 	if l.config.DiscoveryInterval == 0 {
 		l.config.DiscoveryInterval = defaultDiscoveryInterval
 	}
+
+	subnets := l.initializeSubnets()
 
 	jobs := make(chan snmpJob)
 	for w := 0; w < l.config.Workers; w++ {
