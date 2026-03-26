@@ -17,7 +17,6 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/DataDog/datadog-agent/comp/core/config"
 	"github.com/DataDog/datadog-agent/comp/host-profiler/version"
 	"go.opentelemetry.io/collector/confmap"
 	"go.opentelemetry.io/collector/confmap/xconfmap"
@@ -26,15 +25,6 @@ import (
 // NewFactoryWithoutAgent returns a new converterWithoutAgent factory.
 func NewFactoryWithoutAgent() confmap.ConverterFactory {
 	return confmap.NewConverterFactory(newConverterWithoutAgent)
-}
-
-// NewFactoryWithAgent returns a new converterWithAgent factory.
-func NewFactoryWithAgent(c config.Component) confmap.ConverterFactory {
-	newConverterWithAgentWrapper := func(settings confmap.ConverterSettings) confmap.Converter {
-		return newConverterWithAgent(settings, c)
-	}
-
-	return confmap.NewConverterFactory(newConverterWithAgentWrapper)
 }
 
 type confMap = map[string]any
@@ -66,6 +56,8 @@ const (
 const (
 	fieldAllowHostnameOverride = "allow_hostname_override"
 	fieldDDAPIKey              = "dd-api-key"
+	fieldDDEVPOrigin           = "dd-evp-origin"
+	fieldDDEVPOriginVersion    = "dd-evp-origin-version"
 	fieldAPIKey                = "api_key"
 	fieldAppKey                = "app_key"
 )
