@@ -17,6 +17,7 @@ import (
 	"net/netip"
 	"os"
 	"path/filepath"
+	"runtime"
 	"slices"
 	"sort"
 	"strings"
@@ -3312,6 +3313,13 @@ func AppendProbeRequestsToFetcher(constantFetcher constantfetch.ConstantFetcher,
 	}
 	appendOffsetofRequest(constantFetcher, constantfetch.OffsetNameTaskStructRealParent, "struct task_struct", "real_parent")
 	appendOffsetofRequest(constantFetcher, constantfetch.OffsetNameTaskStructTGID, "struct task_struct", "tgid")
+
+	// OTel TLSDESC thread pointer offsets for reading OTel Thread Local Context Records
+	// from native applications. x86_64 only for now; ARM64 (tpidr_el0) will be added later.
+	if runtime.GOARCH == "amd64" {
+		appendOffsetofRequest(constantFetcher, constantfetch.OffsetNameTaskStructThread, "struct task_struct", "thread")
+		appendOffsetofRequest(constantFetcher, constantfetch.OffsetNameThreadStructFsbase, "struct thread_struct", "fsbase")
+	}
 
 	// splice event
 	constantFetcher.AppendSizeofRequest(constantfetch.SizeOfPipeBuffer, "struct pipe_buffer")

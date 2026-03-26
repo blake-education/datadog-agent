@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"runtime"
 	"strconv"
 	"testing"
 
@@ -109,5 +110,65 @@ func TestSpan(t *testing.T) {
 			assert.Equal(t, "204", strconv.FormatUint(event.SpanContext.SpanID, 10))
 			assert.Equal(t, fakeTraceID128b, event.SpanContext.TraceID.String())
 		}, "test_span_rule_exec")
+	})
+}
+
+// TestOTelSpan tests OTel Thread Local Context Record based span context collection.
+// This tests the native application TLSDESC path (per OTel spec PR #4947).
+// Only supported on x86_64 (reads fsbase from task_struct->thread.fsbase).
+func TestOTelSpan(t *testing.T) {
+	SkipIfNotAvailable(t)
+
+	if runtime.GOARCH != "amd64" {
+		t.Skip("OTel TLSDESC span test only supported on amd64")
+	}
+
+	ruleDefs := []*rules.RuleDefinition{
+		{
+			ID:         "test_otel_span_rule_open",
+			Expression: `open.file.path == "{{.Root}}/test-otel-span"`,
+		},
+	}
+
+	test, err := newTestModule(t, nil, ruleDefs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer test.Close()
+
+	syscallTester, err := loadSyscallTester(t, test, "syscall_tester")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	fakeTraceID128b := "136272290892501783905308705057321818530"
+
+	test.RunMultiMode(t, "open", func(t *testing.T, _ wrapperType, cmdFunc func(cmd string, args []string, envs []string) *exec.Cmd) {
+		testFile, _, err := test.Path("test-otel-span")
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer os.Remove(testFile)
+
+		args := []string{"otel-span-open", fakeTraceID128b, "204", testFile}
+		envs := []string{}
+
+		test.WaitSignalFromRule(t, func() error {
+			cmd := cmdFunc(syscallTester, args, envs)
+			out, err := cmd.CombinedOutput()
+
+			if err != nil {
+				return fmt.Errorf("%s: %w", out, err)
+			}
+
+			return nil
+		}, func(event *model.Event, rule *rules.Rule) {
+			assertTriggeredRule(t, rule, "test_otel_span_rule_open")
+
+			test.validateSpanSchema(t, event)
+
+			assert.Equal(t, "204", strconv.FormatUint(event.SpanContext.SpanID, 10))
+			assert.Equal(t, fakeTraceID128b, event.SpanContext.TraceID.String())
+		}, "test_otel_span_rule_open")
 	})
 }

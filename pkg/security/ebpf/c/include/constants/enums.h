@@ -230,6 +230,7 @@ enum erpc_op
     USER_SESSION_CONTEXT_OP,
     PRCTL_DISCARDER,
     NOP_EVENT_OP,
+    REGISTER_OTEL_TLS_OP, // OTel Thread Local Context Record TLS registration (native applications)
 };
 
 enum selinux_source_event_t

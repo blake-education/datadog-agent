@@ -115,6 +115,8 @@ int __attribute__((always_inline)) handle_erpc_request(ctx_t *ctx) {
         return handle_register_user_session(data);
     case REGISTER_SPAN_TLS_OP:
         return handle_register_span_memory(data);
+    case REGISTER_OTEL_TLS_OP:
+        return handle_register_otel_tls(data);
     case EXPIRE_INODE_DISCARDER_OP:
         return handle_expire_inode_discarder(data);
     case BUMP_DISCARDERS_REVISION:

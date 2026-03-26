@@ -17,6 +17,8 @@ const (
 	RPCCmd uint64 = 0xdeadc001
 	// RegisterSpanTLSOp defines the span TLS register op code
 	RegisterSpanTLSOp uint8 = 6
+	// RegisterOTelTLSOp defines the OTel Thread Local Context Record TLS register op code (native applications)
+	RegisterOTelTLSOp uint8 = 14
 )
 
 func registerERPCHandlers(handlers map[int]syscallHandler) []string {

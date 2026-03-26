@@ -29,8 +29,13 @@
 #include <sys/resource.h>
 #include <stdatomic.h>
 
+#ifdef __x86_64__
+#include <asm/prctl.h>
+#endif
+
 #define RPC_CMD 0xdeadc001
 #define REGISTER_SPAN_TLS_OP 6
+#define REGISTER_OTEL_TLS_OP 14
 
 #ifndef SYS_gettid
 #error "SYS_gettid unavailable on this system"
@@ -172,6 +177,147 @@ int span_open(int argc, char **argv) {
 
     pthread_t thread;
     if (pthread_create(&thread, NULL, thread_open, &opts) < 0) {
+        return EXIT_FAILURE;
+    }
+    pthread_join(thread, NULL);
+
+    return EXIT_SUCCESS;
+}
+
+// --- OTel Thread Local Context Record (per OTel spec PR #4947) ---
+// Native application implementation using ELF TLSDESC.
+
+// OTel Thread Local Context Record layout (28-byte fixed header).
+struct otel_thread_ctx_record {
+    uint8_t trace_id[16];     // W3C big-endian byte order
+    uint8_t span_id[8];       // W3C big-endian byte order
+    uint8_t valid;            // must be 1
+    uint8_t _reserved;
+    uint16_t attrs_data_size; // 0 for no custom attributes
+};
+
+struct otel_tls_t {
+    int64_t tls_offset;
+};
+
+// Thread-local pointer to the active OTel context record.
+// This simulates what an OTel SDK would expose via TLSDESC.
+static __thread struct otel_thread_ctx_record *otel_ctx_ptr = NULL;
+
+// Convert a native uint64 to big-endian (W3C) bytes.
+static void u64_to_be_bytes(uint64_t val, uint8_t *out) {
+    out[0] = (uint8_t)(val >> 56);
+    out[1] = (uint8_t)(val >> 48);
+    out[2] = (uint8_t)(val >> 40);
+    out[3] = (uint8_t)(val >> 32);
+    out[4] = (uint8_t)(val >> 24);
+    out[5] = (uint8_t)(val >> 16);
+    out[6] = (uint8_t)(val >> 8);
+    out[7] = (uint8_t)(val);
+}
+
+#ifdef __x86_64__
+static int register_otel_tls() {
+    // Get the current thread's fsbase (thread pointer) via arch_prctl.
+    unsigned long fsbase = 0;
+    if (syscall(SYS_arch_prctl, ARCH_GET_FS, &fsbase) != 0) {
+        fprintf(stderr, "arch_prctl(ARCH_GET_FS) failed\n");
+        return -1;
+    }
+
+    // Compute the TLS offset: address of otel_ctx_ptr relative to fsbase.
+    int64_t tls_offset = (int64_t)((uintptr_t)&otel_ctx_ptr - fsbase);
+
+    // Register via eRPC.
+    uint8_t request[257];
+    memset(request, 0, sizeof(request));
+    request[0] = REGISTER_OTEL_TLS_OP;
+
+    struct otel_tls_t tls = { .tls_offset = tls_offset };
+    memcpy(&request[1], &tls, sizeof(tls));
+
+    ioctl(0, RPC_CMD, &request);
+    return 0;
+}
+#endif
+
+struct otel_thread_opts {
+    char **argv;
+};
+
+static void *thread_otel_open(void *data) {
+    struct otel_thread_opts *opts = (struct otel_thread_opts *)data;
+
+#ifdef __x86_64__
+    // Register OTel TLS for this process (from the worker thread).
+    if (register_otel_tls() != 0) {
+        fprintf(stderr, "Failed to register OTel TLS\n");
+        return NULL;
+    }
+
+    // Parse trace-id (128-bit) and span-id.
+    __int128_t trace_id = atouint128(opts->argv[1]);
+    uint64_t span_id = (uint64_t)atol(opts->argv[2]);
+
+    // Build the OTel record.
+    struct otel_thread_ctx_record record;
+    memset(&record, 0, sizeof(record));
+
+    // Convert trace-id to W3C byte order (big-endian).
+    // Hi 64 bits go to bytes[0..7], Lo 64 bits go to bytes[8..15].
+    uint64_t trace_hi = (uint64_t)(trace_id >> 64);
+    uint64_t trace_lo = (uint64_t)(trace_id);
+    u64_to_be_bytes(trace_hi, &record.trace_id[0]);
+    u64_to_be_bytes(trace_lo, &record.trace_id[8]);
+
+    // Convert span-id to W3C byte order.
+    u64_to_be_bytes(span_id, record.span_id);
+
+    record.valid = 1;
+    record.attrs_data_size = 0;
+
+    // Publish: set the TLS pointer to the record.
+    // Use a compiler fence to ensure the record is fully written before the pointer is visible.
+    __atomic_signal_fence(__ATOMIC_SEQ_CST);
+    otel_ctx_ptr = &record;
+    __atomic_signal_fence(__ATOMIC_SEQ_CST);
+
+    // Trigger the syscall that the test is waiting for.
+    int fd = open(opts->argv[3], O_CREAT);
+    if (fd < 0) {
+        fprintf(stderr, "Unable to create file `%s`\n", opts->argv[3]);
+        otel_ctx_ptr = NULL;
+        return NULL;
+    }
+    close(fd);
+    unlink(opts->argv[3]);
+
+    // Detach context.
+    otel_ctx_ptr = NULL;
+#else
+    fprintf(stderr, "OTel TLS test only supported on x86_64\n");
+#endif
+
+    return NULL;
+}
+
+int otel_span_open(int argc, char **argv) {
+    if (argc < 4) {
+        fprintf(stderr, "Usage: otel-span-open <trace_id> <span_id> <file_path>\n");
+        return EXIT_FAILURE;
+    }
+
+#ifndef __x86_64__
+    fprintf(stderr, "OTel TLS test only supported on x86_64\n");
+    return EXIT_FAILURE;
+#endif
+
+    struct otel_thread_opts opts = {
+        .argv = argv,
+    };
+
+    pthread_t thread;
+    if (pthread_create(&thread, NULL, thread_otel_open, &opts) < 0) {
         return EXIT_FAILURE;
     }
     pthread_join(thread, NULL);
@@ -2040,6 +2186,8 @@ int main(int argc, char **argv) {
             exit_code = setrlimit_core();
         } else if (strcmp(cmd, "span-open") == 0) {
             exit_code = span_open(sub_argc, sub_argv);
+        } else if (strcmp(cmd, "otel-span-open") == 0) {
+            exit_code = otel_span_open(sub_argc, sub_argv);
         } else if (strcmp(cmd, "pipe-chown") == 0) {
             exit_code = test_pipe_chown();
         } else if (strcmp(cmd, "signal") == 0) {

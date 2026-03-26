@@ -51,6 +51,8 @@ const (
 	DiscardPrctlOp
 	// NopEventOp is used to nop an event
 	NopEventOp
+	// RegisterOTelTLSOp is used for OTel Thread Local Context Record TLS registration (native applications)
+	RegisterOTelTLSOp
 )
 
 // ERPC defines a krpc object

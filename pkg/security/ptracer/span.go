@@ -53,3 +53,23 @@ func fillSpanContext(tracer *Tracer, pid int, tid int, span *SpanTLS) *ebpfless.
 		},
 	}
 }
+
+// OTelTLS holds information needed to read OTel Thread Local Context Records
+// from native applications using ELF TLSDESC.
+// Support for additional runtimes (e.g., Go via pprof labels) will be added later.
+type OTelTLS struct {
+	tlsOffset int64 // signed TLS offset from thread pointer (discovered via dynsym)
+}
+
+func isOTelTLSRegisterRequest(req []byte) bool {
+	return req[0] == RegisterOTelTLSOp
+}
+
+func handleOTelTLSRegister(req []byte) *OTelTLS {
+	if len(req) < 9 {
+		return nil
+	}
+	return &OTelTLS{
+		tlsOffset: int64(binary.NativeEndian.Uint64(req[1:9])),
+	}
+}
