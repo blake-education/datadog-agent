@@ -18,7 +18,7 @@ import (
 )
 
 // Setup initializes the kubeactions subsystem with all executors registered
-func Setup(ctx context.Context, clientset kubernetes.Interface, isLeader func() bool, rcClient RcClient, epForwarderComp eventplatform.Component) (*ConfigRetriever, error) {
+func Setup(ctx context.Context, clientset kubernetes.Interface, clusterName, clusterID string, isLeader func() bool, rcClient RcClient, epForwarderComp eventplatform.Component) (*ConfigRetriever, error) {
 	log.Infof("Setting up Kubernetes actions subsystem")
 
 	// Create the executor registry
@@ -42,7 +42,7 @@ func Setup(ctx context.Context, clientset kubernetes.Interface, isLeader func() 
 
 	// Create the processor with in-memory store and event platform forwarder
 	log.Infof("[KubeActions] Creating ActionProcessor with epForwarder=%p", epForwarder)
-	processor := NewActionProcessor(ctx, registry, store, epForwarder)
+	processor := NewActionProcessor(ctx, registry, store, epForwarder, clusterName, clusterID)
 	log.Infof("[KubeActions] ActionProcessor created successfully")
 
 	// Create and return the config retriever
