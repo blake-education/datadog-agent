@@ -35,7 +35,7 @@ func NewConfigRetriever(ctx context.Context, processor *ActionProcessor, isLeade
 
 	// Subscribe to remote config updates for K8S_ACTIONS product
 	log.Infof("[KubeActions] Subscribing to K8S_ACTIONS product for remote config updates...")
-	rcClient.SubscribeIgnoreExpiration("K8S_ACTIONS", cr.actionsCallback)
+	rcClient.SubscribeIgnoreExpiration(state.ProductK8SActions, cr.actionsCallback)
 	log.Infof("[KubeActions] Successfully subscribed to K8S_ACTIONS product, callback registered")
 
 	log.Infof("[KubeActions] ConfigRetriever created successfully")
