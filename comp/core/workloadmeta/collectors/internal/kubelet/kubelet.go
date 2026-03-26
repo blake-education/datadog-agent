@@ -67,6 +67,10 @@ func GetFxOptions() fx.Option {
 	return fx.Provide(NewCollector)
 }
 
+func (c *collector) GetPullInterval() time.Duration {
+	return 1 * time.Second
+}
+
 func (c *collector) Start(_ context.Context, store workloadmeta.Component) error {
 	if !env.IsFeaturePresent(env.Kubernetes) {
 		return errors.NewDisabled(componentName, "Agent is not running on Kubernetes")
