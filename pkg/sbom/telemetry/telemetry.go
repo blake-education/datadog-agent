@@ -86,7 +86,7 @@ var (
 	)
 
 	// SBOMComponentsFound is the number of components found in a SBOM
-	SBOMComponentsFound = telemetry.NewGaugeWithOpts(
+	SBOMComponentsFound = telemetryimpl.GetCompatComponent().NewGaugeWithOpts(
 		Subsystem,
 		"components_found",
 		[]string{"source", "type"},
