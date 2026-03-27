@@ -99,6 +99,9 @@ func (p *ActionProcessor) Process(configKey string, rawConfig state.RawConfig) e
 	if p.store.WasExecuted(actionKey) {
 		record, _ := p.store.GetRecord(actionKey)
 		log.Infof("[KubeActions] Action %s was already executed with status: %s", actionKey.String(), record.Status)
+		if record.Status == "failed" || record.Status == "expired" {
+			return fmt.Errorf("action previously %s: %s", record.Status, record.Message)
+		}
 		return nil
 	}
 
@@ -127,9 +130,9 @@ func (p *ActionProcessor) processAction(action *kubeactions.KubeAction, index in
 	actionType := GetActionType(action)
 	log.Infof("[KubeActions] === Processing action %d ===", index)
 	log.Infof("[KubeActions]   ActionType: %s", actionType)
-	log.Infof("[KubeActions]   Resource.Kind: %s", action.Resource.Kind)
-	log.Infof("[KubeActions]   Resource.Name: %s", action.Resource.Name)
-	log.Infof("[KubeActions]   Resource.Namespace: %s", action.Resource.Namespace)
+	if action.Resource != nil {
+		log.Infof("[KubeActions]   Resource: %s/%s in %s", action.Resource.Kind, action.Resource.Name, action.Resource.Namespace)
+	}
 
 	// Extract action timestamp
 	var actionCreatedAt int64
@@ -170,10 +173,8 @@ func (p *ActionProcessor) processAction(action *kubeactions.KubeAction, index in
 	p.store.MarkExecuted(actionKey, result.Status, result.Message, executedAt.Unix(), receivedAt, actionCreatedAt)
 	log.Infof("[KubeActions] Result stored in action store")
 
-	// Report the result to backend via Event Platform
-	log.Infof("[KubeActions] Reporting result to backend...")
-	p.reporter.ReportResult(actionKey, action, result, executedAt)
-	log.Infof("[KubeActions] Result reported to backend")
+	// TODO: Report the result to backend via Event Platform once the intake is configured
+	// p.reporter.ReportResult(actionKey, action, result, executedAt)
 
 	// Log the result
 	if result.Status == "success" {
