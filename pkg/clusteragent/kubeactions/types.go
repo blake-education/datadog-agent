@@ -17,6 +17,7 @@ import (
 const (
 	ActionTypeDeletePod          = "delete_pod"
 	ActionTypeRestartDeployment  = "restart_deployment"
+	ActionTypePatchDeployment    = "patch_deployment"
 	ActionTypeUnknown            = "unknown"
 )
 
@@ -44,6 +45,8 @@ func GetActionType(action *kubeactions.KubeAction) string {
 		return ActionTypeDeletePod
 	case *kubeactions.KubeAction_RestartDeployment:
 		return ActionTypeRestartDeployment
+	case *kubeactions.KubeAction_PatchDeployment:
+		return ActionTypePatchDeployment
 	default:
 		return ActionTypeUnknown
 	}

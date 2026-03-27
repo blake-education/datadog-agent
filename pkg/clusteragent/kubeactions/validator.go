@@ -118,6 +118,27 @@ func (v *ActionValidator) ValidateAction(action *kubeactions.KubeAction) error {
 				Message: "resource.kind must be 'Deployment' for restart_deployment action",
 			}
 		}
+	case ActionTypePatchDeployment:
+		// Validate patch_deployment specific requirements
+		if action.Resource.Namespace == "" {
+			return &ValidationError{
+				Action:  action,
+				Message: "resource.namespace is required for patch_deployment action",
+			}
+		}
+		if action.Resource.Kind != "Deployment" {
+			return &ValidationError{
+				Action:  action,
+				Message: "resource.kind must be 'Deployment' for patch_deployment action",
+			}
+		}
+		patchParams := action.GetPatchDeployment()
+		if patchParams == nil || len(patchParams.GetPatch()) == 0 {
+			return &ValidationError{
+				Action:  action,
+				Message: "patch is required for patch_deployment action",
+			}
+		}
 	}
 
 	// Block actions on protected system namespaces

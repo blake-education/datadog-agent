@@ -72,10 +72,12 @@ func registerExecutors(registry *ExecutorRegistry, clientset kubernetes.Interfac
 	registry.Register("restart_deployment", &executorAdapter{exec: executors.NewRestartDeploymentExecutor(clientset)})
 	log.Infof("Registered executor for action type: restart_deployment")
 
+	// Register patch_deployment executor
+	registry.Register("patch_deployment", &executorAdapter{exec: executors.NewPatchDeploymentExecutor(clientset)})
+	log.Infof("Registered executor for action type: patch_deployment")
+
 	// TODO: Add more executors here as they are implemented:
-	// registry.Register("patch_deployment", &executorAdapter{exec: executors.NewPatchDeploymentExecutor(clientset)})
 	// registry.Register("drain_node", &executorAdapter{exec: executors.NewDrainNodeExecutor(clientset)})
-	// registry.Register("scale_deployment", &executorAdapter{exec: executors.NewScaleDeploymentExecutor(clientset)})
 	// registry.Register("cordon_node", &executorAdapter{exec: executors.NewCordonNodeExecutor(clientset)})
 	// registry.Register("uncordon_node", &executorAdapter{exec: executors.NewUncordonNodeExecutor(clientset)})
 }
