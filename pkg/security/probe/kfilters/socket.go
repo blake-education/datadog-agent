@@ -29,7 +29,7 @@ func socketKFiltersGetter(approvers rules.Approvers) (KFilters, []eval.Field, er
 	for field, values := range approvers {
 		switch field {
 		case "socket.type":
-			kfilter, err := getEnumsKFilters("socket_type_approvers", uintValues[uint64](values)...)
+			kfilter, err := getEnumsKFiltersWithIndex("socket_type_approvers", 0, uintValues[uint64](values)...)
 			if err != nil {
 				return nil, nil, err
 			}
