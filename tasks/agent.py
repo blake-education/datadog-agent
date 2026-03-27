@@ -14,6 +14,7 @@ import tempfile
 from invoke import task
 from invoke.exceptions import Exit
 
+from tasks import doc
 from tasks.build_tags import (
     compute_build_tags_for_flavor,
     get_default_build_tags,
@@ -449,7 +450,22 @@ def image_build(ctx, arch='amd64', base_dir="omnibus", skip_tests=False, tag=Non
     ctx.run(f"rm {build_context}/{deb_glob}")
 
 
-@task
+@task(
+    help={
+        "base_image": doc.base_image,
+        "target_image": doc.target_image,
+        "process_agent": doc.process_agent,
+        "trace_agent": doc.trace_agent,
+        "system_probe": doc.system_probe,
+        "security_agent": doc.security_agent,
+        "trace_loader": doc.trace_loader,
+        "privateactionrunner": doc.privateactionrunner,
+        "push": doc.push,
+        "signed_pull": doc.signed_pull,
+        "arch": doc.arch,
+        "development": doc.development,
+    }
+)
 def hacky_dev_image_build(
     ctx,
     base_image=None,
@@ -466,6 +482,9 @@ def hacky_dev_image_build(
     arch=None,
     development=True,
 ):
+    """
+    Builds the agent or cluster-agent Docker image.
+    """
     if arch is None:
         arch = CONTAINER_PLATFORM_MAPPING.get(platform.machine().lower())
 
