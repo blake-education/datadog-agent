@@ -33,7 +33,7 @@ type confMap = map[string]any
 const (
 	componentTypeInfraAttributes   = "infraattributes"
 	componentTypeResourceDetection = "resourcedetection"
-	componentTypeHostProfiler      = "hostprofiler"
+	componentTypeProfiling         = "profiling"
 	componentTypeOtlpHTTP          = "otlphttp"
 	componentTypeDDProfiling       = "ddprofiling"
 	componentTypeHPFlare           = "hpflare"
@@ -43,7 +43,7 @@ const (
 const (
 	defaultInfraAttributesName   = "infraattributes/default"
 	defaultResourceDetectionName = "resourcedetection/default"
-	defaultHostProfilerName      = "hostprofiler"
+	defaultProfilingName         = "profiling"
 )
 
 // Configuration paths used multiple times across converters
@@ -71,7 +71,7 @@ const (
 
 // isComponentType checks if a component name matches a specific type.
 // OTEL components follow the naming convention: "type" or "type/id"
-// Examples: "otlphttp", "otlphttp/prod", "hostprofiler/custom"
+// Examples: "otlphttp", "otlphttp/prod", "profiling/custom"
 func isComponentType(name, componentType string) bool {
 	return name == componentType || strings.HasPrefix(name, componentType+"/")
 }
