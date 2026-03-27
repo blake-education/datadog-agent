@@ -19,6 +19,7 @@ import (
 	"time"
 
 	log "github.com/DataDog/datadog-agent/comp/core/log/def"
+	noopsimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl/noops"
 	"github.com/DataDog/datadog-agent/comp/syntheticstestscheduler/common"
 	"github.com/DataDog/datadog-agent/pkg/networkpath/payload"
 	"github.com/DataDog/datadog-agent/pkg/networkpath/traceroute/config"
@@ -234,6 +235,7 @@ func TestWorker_OnDemandPriority(t *testing.T) {
 		log:                          l,
 		hostNameService:              &mockHostname{},
 		statsdClient:                 &teststatsd.Client{},
+		telemetry:                    newSyntheticsTelemetry(noopsimpl.GetCompatComponent()),
 		traceroute: &tracerouteRunner{fn: func(_ context.Context, _ config.Config) (payload.NetworkPath, error) {
 			return payload.NetworkPath{}, nil
 		}},
