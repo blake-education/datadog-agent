@@ -13,6 +13,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"reflect"
 	"slices"
 	"strings"
 
@@ -291,7 +292,7 @@ func (c *converterWithoutAgent) fixReceiversPipeline(conf confMap, receiverNames
 		if isLegacyHostProfilerType(name) {
 			renamed := renameLegacyHostProfiler(name)
 			if receiverCfg, ok := receivers[name]; ok {
-				if existing, exists := receivers[renamed]; exists && existing != receiverCfg {
+				if existing, exists := receivers[renamed]; exists && !reflect.DeepEqual(existing, receiverCfg) {
 					return nil, fmt.Errorf("legacy receiver %q conflicts with existing receiver %q", name, renamed)
 				}
 				receivers[renamed] = receiverCfg
