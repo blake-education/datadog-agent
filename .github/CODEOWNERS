@@ -330,7 +330,7 @@
 /comp/metadata @DataDog/agent-configuration
 /comp/ndmtmp @DataDog/network-device-monitoring-core
 /comp/netflow @DataDog/ndm-integrations
-/comp/network @DataDog/network-monitoring
+/comp/network @DataDog/cloud-network-monitoring
 /comp/networkpath @DataDog/network-path
 /comp/otelcol @DataDog/opentelemetry-agent
 /comp/process @DataDog/container-experiences
