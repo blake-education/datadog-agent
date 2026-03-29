@@ -24,7 +24,7 @@ import (
 	workloadmeta "github.com/DataDog/datadog-agent/comp/core/workloadmeta/def"
 	workloadmetafx "github.com/DataDog/datadog-agent/comp/core/workloadmeta/fx"
 	"github.com/DataDog/datadog-agent/comp/process/containercheck/containercheckimpl"
-	"github.com/DataDog/datadog-agent/comp/process/hostinfo/hostinfoimpl"
+	"github.com/DataDog/datadog-agent/comp/process/hostinfo/impl"
 	"github.com/DataDog/datadog-agent/comp/process/processcheck/processcheckimpl"
 	"github.com/DataDog/datadog-agent/comp/process/runner"
 	"github.com/DataDog/datadog-agent/comp/process/submitter/submitterimpl"

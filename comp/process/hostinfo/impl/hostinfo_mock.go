@@ -10,7 +10,7 @@ package hostinfoimpl
 import (
 	"go.uber.org/fx"
 
-	hostinfoComp "github.com/DataDog/datadog-agent/comp/process/hostinfo"
+	hostinfoComp "github.com/DataDog/datadog-agent/comp/process/hostinfo/def"
 	"github.com/DataDog/datadog-agent/pkg/process/checks"
 	"github.com/DataDog/datadog-agent/pkg/util/fxutil"
 )

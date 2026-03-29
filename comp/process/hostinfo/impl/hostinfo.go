@@ -15,16 +15,9 @@ import (
 	"github.com/DataDog/datadog-agent/comp/core/hostname/hostnameinterface"
 	ipc "github.com/DataDog/datadog-agent/comp/core/ipc/def"
 	log "github.com/DataDog/datadog-agent/comp/core/log/def"
-	hostinfoComp "github.com/DataDog/datadog-agent/comp/process/hostinfo"
+	hostinfoComp "github.com/DataDog/datadog-agent/comp/process/hostinfo/def"
 	"github.com/DataDog/datadog-agent/pkg/process/checks"
-	"github.com/DataDog/datadog-agent/pkg/util/fxutil"
 )
-
-// Module defines the fx options for this component.
-func Module() fxutil.Module {
-	return fxutil.Component(
-		fx.Provide(newHostInfo))
-}
 
 type dependencies struct {
 	fx.In
@@ -39,7 +32,8 @@ type hostinfo struct {
 	hostinfo *checks.HostInfo
 }
 
-func newHostInfo(deps dependencies) (hostinfoComp.Component, error) {
+// NewComponent creates a new hostinfo component.
+func NewComponent(deps dependencies) (hostinfoComp.Component, error) {
 	hinfo, err := checks.CollectHostInfo(deps.Config, deps.Hostname, deps.IPC)
 	if err != nil {
 		_ = deps.Logger.Critical("Error collecting host details:", err)
