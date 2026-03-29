@@ -18,7 +18,6 @@ import (
 	traceroute "github.com/DataDog/datadog-agent/comp/networkpath/traceroute/def"
 	rdnsquerier "github.com/DataDog/datadog-agent/comp/rdnsquerier/def"
 	nooprdnsquerier "github.com/DataDog/datadog-agent/comp/rdnsquerier/impl-none"
-	"github.com/DataDog/datadog-agent/pkg/util/fxutil"
 )
 
 type dependencies struct {
@@ -39,14 +38,8 @@ type Provides struct {
 	Comp npcollector.Component
 }
 
-// Module defines the fx options for this component.
-func Module() fxutil.Module {
-	return fxutil.Component(
-		fxutil.ProvideComponentConstructor(newNpCollector),
-	)
-}
-
-func newNpCollector(deps dependencies) Provides {
+// NewNpCollector creates a new npcollector component.
+func NewNpCollector(deps dependencies) Provides {
 	var collector *npCollectorImpl
 
 	configs := newConfig(deps.AgentConfig, deps.Logger)
