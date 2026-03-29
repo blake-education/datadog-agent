@@ -9,9 +9,8 @@ package hostinfoimpl
 import (
 	"fmt"
 
-	"go.uber.org/fx"
-
 	"github.com/DataDog/datadog-agent/comp/core/config"
+	compdef "github.com/DataDog/datadog-agent/comp/def"
 	"github.com/DataDog/datadog-agent/comp/core/hostname/hostnameinterface"
 	ipc "github.com/DataDog/datadog-agent/comp/core/ipc/def"
 	log "github.com/DataDog/datadog-agent/comp/core/log/def"
@@ -20,7 +19,7 @@ import (
 )
 
 type dependencies struct {
-	fx.In
+	compdef.In
 
 	Config   config.Component
 	Hostname hostnameinterface.Component
