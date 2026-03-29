@@ -16,7 +16,8 @@ import (
 	connectionsforwardermock "github.com/DataDog/datadog-agent/comp/forwarder/connectionsforwarder/mock"
 	"github.com/DataDog/datadog-agent/comp/process/forwarders/forwardersimpl"
 	"github.com/DataDog/datadog-agent/comp/process/hostinfo/hostinfoimpl"
-	"github.com/DataDog/datadog-agent/comp/process/submitter"
+	submitter "github.com/DataDog/datadog-agent/comp/process/submitter/def"
+	submitterfx "github.com/DataDog/datadog-agent/comp/process/submitter/fx"
 	"github.com/DataDog/datadog-agent/pkg/util/fxutil"
 )
 
@@ -29,6 +30,6 @@ func TestSubmitterLifecycle(t *testing.T) {
 		fx.Provide(func() statsd.ClientInterface {
 			return &statsd.NoOpClient{}
 		}),
-		Module(),
+		submitterfx.Module(),
 	))
 }
