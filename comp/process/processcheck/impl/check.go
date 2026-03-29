@@ -8,7 +8,7 @@ package processcheckimpl
 
 import (
 	"github.com/DataDog/datadog-go/v5/statsd"
-	"go.uber.org/fx"
+	compdef "github.com/DataDog/datadog-agent/comp/def"
 
 	"github.com/DataDog/datadog-agent/comp/core/config"
 	ipc "github.com/DataDog/datadog-agent/comp/core/ipc/def"
@@ -25,7 +25,7 @@ import (
 // Module defines the fx options for this component.
 func Module() fxutil.Module {
 	return fxutil.Component(
-		fx.Provide(newCheck))
+		fxutil.ProvideComponentConstructor(newCheck))
 }
 
 var _ types.CheckComponent = (*check)(nil)
@@ -35,7 +35,7 @@ type check struct {
 }
 
 type dependencies struct {
-	fx.In
+	compdef.In
 
 	Config        config.Component
 	Sysconfig     sysprobeconfig.Component
@@ -47,7 +47,7 @@ type dependencies struct {
 }
 
 type result struct {
-	fx.Out
+	compdef.Out
 
 	Check     types.ProvidesCheck
 	Component processcheck.Component
