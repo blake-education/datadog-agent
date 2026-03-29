@@ -8,17 +8,10 @@ package forwarderimpl
 
 import (
 	"github.com/DataDog/datadog-agent/comp/aggregator/demultiplexer"
-	"github.com/DataDog/datadog-agent/comp/ndmtmp/forwarder"
-	"github.com/DataDog/datadog-agent/pkg/util/fxutil"
-	"go.uber.org/fx"
+	forwarder "github.com/DataDog/datadog-agent/comp/ndmtmp/forwarder/def"
 )
 
-// Module defines the fx options for this component.
-func Module() fxutil.Module {
-	return fxutil.Component(
-		fx.Provide(getForwarder))
-}
-
-func getForwarder(agg demultiplexer.Component) (forwarder.Component, error) {
+// GetForwarder returns the event platform forwarder from the demultiplexer.
+func GetForwarder(agg demultiplexer.Component) (forwarder.Component, error) {
 	return agg.GetEventPlatformForwarder()
 }
