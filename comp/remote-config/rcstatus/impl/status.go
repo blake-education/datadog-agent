@@ -13,9 +13,8 @@ import (
 
 	"github.com/DataDog/datadog-agent/comp/core/config"
 	"github.com/DataDog/datadog-agent/comp/core/status"
+	compdef "github.com/DataDog/datadog-agent/comp/def"
 	configutils "github.com/DataDog/datadog-agent/pkg/config/utils"
-
-	"go.uber.org/fx"
 )
 
 //go:embed status_templates
@@ -23,14 +22,14 @@ var templatesFS embed.FS
 
 // Dependencies defines the dependencies for the rcstatus component.
 type Dependencies struct {
-	fx.In
+	compdef.In
 
 	Config config.Component
 }
 
 // Provides defines the output of the rcstatus component.
 type Provides struct {
-	fx.Out
+	compdef.Out
 
 	StatusProvider status.InformationProvider
 }
