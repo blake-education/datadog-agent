@@ -8,14 +8,13 @@ package rctelemetryreporterimpl
 
 import (
 	"github.com/DataDog/datadog-agent/comp/core/telemetry"
+	compdef "github.com/DataDog/datadog-agent/comp/def"
 	rctelemetryreporter "github.com/DataDog/datadog-agent/comp/remote-config/rctelemetryreporter/def"
-
-	"go.uber.org/fx"
 )
 
 // Dependencies defines the dependencies for the rctelemetryreporter component.
 type Dependencies struct {
-	fx.In
+	compdef.In
 
 	Telemetry telemetry.Component
 }

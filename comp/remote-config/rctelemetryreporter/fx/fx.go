@@ -7,8 +7,6 @@
 package fx
 
 import (
-	"go.uber.org/fx"
-
 	rctelemetryreporterimpl "github.com/DataDog/datadog-agent/comp/remote-config/rctelemetryreporter/impl"
 	"github.com/DataDog/datadog-agent/pkg/util/fxutil"
 )
@@ -16,6 +14,6 @@ import (
 // Module defines the fx options for this component.
 func Module() fxutil.Module {
 	return fxutil.Component(
-		fx.Provide(rctelemetryreporterimpl.NewDdRcTelemetryReporter),
+		fxutil.ProvideComponentConstructor(rctelemetryreporterimpl.NewDdRcTelemetryReporter),
 	)
 }
