@@ -31,8 +31,8 @@ import (
 	"github.com/DataDog/datadog-agent/comp/forwarder/defaultforwarder"
 	"github.com/DataDog/datadog-agent/comp/forwarder/eventplatform/eventplatformimpl"
 	"github.com/DataDog/datadog-agent/comp/forwarder/eventplatformreceiver/eventplatformreceiverimpl"
-	"github.com/DataDog/datadog-agent/comp/ndmtmp/forwarder/forwarderimpl"
-	"github.com/DataDog/datadog-agent/comp/networkpath/npcollector"
+	forwardermock "github.com/DataDog/datadog-agent/comp/ndmtmp/forwarder/mock"
+	npcollector "github.com/DataDog/datadog-agent/comp/networkpath/npcollector/def"
 	npmodel "github.com/DataDog/datadog-agent/comp/networkpath/npcollector/model"
 	traceroute "github.com/DataDog/datadog-agent/comp/networkpath/traceroute/def"
 	rdnsqueriermock "github.com/DataDog/datadog-agent/comp/rdnsquerier/fx-mock"
@@ -50,7 +50,7 @@ var MockTimeNow = func() time.Time {
 // testOptions is a fx collection of common dependencies for all tests
 var testOptions = fx.Options(
 	Module(),
-	forwarderimpl.MockModule(),
+	forwardermock.MockModule(),
 	demultiplexerimpl.MockModule(),
 	defaultforwarder.MockModule(),
 	eventplatformimpl.Module(eventplatformimpl.NewDefaultParams()),
