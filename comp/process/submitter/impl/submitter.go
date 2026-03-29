@@ -17,7 +17,7 @@ import (
 	"github.com/DataDog/datadog-agent/comp/core/config"
 	log "github.com/DataDog/datadog-agent/comp/core/log/def"
 	"github.com/DataDog/datadog-agent/comp/core/sysprobeconfig"
-	"github.com/DataDog/datadog-agent/comp/process/agent"
+	agentimpl "github.com/DataDog/datadog-agent/comp/process/agent/impl"
 	"github.com/DataDog/datadog-agent/comp/process/forwarders"
 	"github.com/DataDog/datadog-agent/comp/process/hostinfo"
 	submitterComp "github.com/DataDog/datadog-agent/comp/process/submitter/def"
@@ -57,7 +57,7 @@ func NewComponent(deps dependencies) (result, error) {
 		return result{}, err
 	}
 
-	if agent.Enabled(deps.Config, deps.Checks, deps.Log) {
+	if agentimpl.Enabled(deps.Config, deps.Checks, deps.Log) {
 		deps.Lc.Append(fx.Hook{
 			OnStart: func(context.Context) error {
 				return s.Start()
