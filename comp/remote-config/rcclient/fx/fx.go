@@ -18,7 +18,7 @@ import (
 // Module defines the fx options for this component.
 func Module() fxutil.Module {
 	return fxutil.Component(
-		fx.Provide(rcclientimpl.NewRemoteConfigClient),
+		fxutil.ProvideComponentConstructor(rcclientimpl.NewRemoteConfigClient),
 		fxutil.ProvideOptional[rcclient.Component](),
 	)
 }
