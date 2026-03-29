@@ -20,14 +20,14 @@ import (
 )
 
 func TestStatusOut(t *testing.T) {
-	deps := fxutil.Test[dependencies](t, fx.Options(
+	reqs := fxutil.Test[Requires](t, fx.Options(
 		fx.Provide(func() config.Component { return config.NewMock(t) }),
 		fx.Provide(func() ipc.HTTPClient {
 			return ipcmock.New(t).GetClient()
 		}),
 	))
 
-	provides := newStatus(deps)
+	provides := NewComponent(reqs)
 
 	headerProvider := provides.StatusProvider.Provider
 
