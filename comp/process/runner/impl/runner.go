@@ -9,9 +9,8 @@ package runnerimpl
 import (
 	"context"
 
-	"go.uber.org/fx"
-
 	"github.com/DataDog/datadog-agent/comp/core/config"
+	compdef "github.com/DataDog/datadog-agent/comp/def"
 	log "github.com/DataDog/datadog-agent/comp/core/log/def"
 	"github.com/DataDog/datadog-agent/comp/core/sysprobeconfig"
 	tagger "github.com/DataDog/datadog-agent/comp/core/tagger/def"
@@ -22,7 +21,6 @@ import (
 	"github.com/DataDog/datadog-agent/comp/process/types"
 	"github.com/DataDog/datadog-agent/pkg/process/checks"
 	processRunner "github.com/DataDog/datadog-agent/pkg/process/runner"
-	"github.com/DataDog/datadog-agent/pkg/util/fxutil"
 )
 
 // for testing
@@ -35,8 +33,8 @@ type runnerImpl struct {
 }
 
 type dependencies struct {
-	fx.In
-	Lc  fx.Lifecycle
+	compdef.In
+	Lc  compdef.Lifecycle
 	Log log.Component
 
 	Submitter  submitter.Component
@@ -51,7 +49,7 @@ type dependencies struct {
 
 // NewComponent creates a new runner component.
 func NewComponent(deps dependencies) (runner.Component, error) {
-	checks := fxutil.GetAndFilterGroup(deps.Checks)
+	checks := filterNilChecks(deps.Checks)
 	c, err := processRunner.NewRunner(deps.Config, deps.SysCfg.SysProbeObject(), deps.HostInfo.Object(), filterEnabledChecks(checks), deps.RTNotifier)
 	if err != nil {
 		return nil, err
@@ -64,7 +62,7 @@ func NewComponent(deps dependencies) (runner.Component, error) {
 	}
 
 	if agentEnabled(deps.Config, deps.Checks, deps.Log) {
-		deps.Lc.Append(fx.Hook{
+		deps.Lc.Append(compdef.Hook{
 			OnStart: runnerComponent.Run,
 			OnStop:  runnerComponent.stop,
 		})
@@ -80,6 +78,17 @@ func (r *runnerImpl) Run(context.Context) error {
 func (r *runnerImpl) stop(context.Context) error {
 	r.checkRunner.Stop()
 	return nil
+}
+
+// filterNilChecks removes nil values from an fx group of CheckComponent.
+func filterNilChecks(group []types.CheckComponent) []types.CheckComponent {
+	result := make([]types.CheckComponent, 0, len(group))
+	for _, item := range group {
+		if item != nil {
+			result = append(result, item)
+		}
+	}
+	return result
 }
 
 func filterEnabledChecks(providedChecks []types.CheckComponent) []checks.Check {
