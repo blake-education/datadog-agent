@@ -15,7 +15,7 @@ import (
 	connectionsforwarderfx "github.com/DataDog/datadog-agent/comp/forwarder/connectionsforwarder/fx"
 	"github.com/DataDog/datadog-agent/comp/process/agent/agentimpl"
 	"github.com/DataDog/datadog-agent/comp/process/apiserver"
-	"github.com/DataDog/datadog-agent/comp/process/connectionscheck/connectionscheckimpl"
+	connectionscheckfx "github.com/DataDog/datadog-agent/comp/process/connectionscheck/fx"
 	"github.com/DataDog/datadog-agent/comp/process/containercheck/containercheckimpl"
 	"github.com/DataDog/datadog-agent/comp/process/expvars/expvarsimpl"
 	"github.com/DataDog/datadog-agent/comp/process/forwarders/forwardersimpl"
@@ -43,7 +43,7 @@ func Bundle() fxutil.BundleOptions {
 		profilerimpl.Module(),
 
 		// Checks
-		connectionscheckimpl.Module(),
+		connectionscheckfx.Module(),
 		containercheckimpl.Module(),
 		processcheckimpl.Module(),
 		rtcontainercheckimpl.Module(),
