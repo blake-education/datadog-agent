@@ -15,9 +15,9 @@ import (
 	"time"
 
 	"github.com/hashicorp/go-multierror"
-	"go.uber.org/fx"
 
 	configcomp "github.com/DataDog/datadog-agent/comp/core/config"
+	compdef "github.com/DataDog/datadog-agent/comp/def"
 	ipc "github.com/DataDog/datadog-agent/comp/core/ipc/def"
 	log "github.com/DataDog/datadog-agent/comp/core/log/def"
 	"github.com/DataDog/datadog-agent/comp/core/settings"
@@ -60,10 +60,10 @@ type rcClient struct {
 
 // Dependencies defines the dependencies for the rcclient component.
 type Dependencies struct {
-	fx.In
+	compdef.In
 
 	Log log.Component
-	Lc  fx.Lifecycle
+	Lc  compdef.Lifecycle
 
 	Params            rcclient.Params             `optional:"true"`
 	Listeners         []types.RCListener          `group:"rCListener"`          // <-- Fill automatically by Fx
@@ -133,7 +133,7 @@ func NewRemoteConfigClient(deps Dependencies) (rcclient.Component, error) {
 	}
 
 	if configUtils.IsRemoteConfigEnabled(deps.Config) {
-		deps.Lc.Append(fx.Hook{
+		deps.Lc.Append(compdef.Hook{
 			OnStart: func(context.Context) error {
 				rc.start()
 				return nil
@@ -141,7 +141,7 @@ func NewRemoteConfigClient(deps Dependencies) (rcclient.Component, error) {
 		})
 	}
 
-	deps.Lc.Append(fx.Hook{
+	deps.Lc.Append(compdef.Hook{
 		OnStop: func(context.Context) error {
 			rc.client.Close()
 			return nil
