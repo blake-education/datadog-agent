@@ -16,21 +16,20 @@ import (
 
 	cfgcomp "github.com/DataDog/datadog-agent/comp/core/config"
 	"github.com/DataDog/datadog-agent/comp/core/hostname"
+	compdef "github.com/DataDog/datadog-agent/comp/def"
 	rcservicemrf "github.com/DataDog/datadog-agent/comp/remote-config/rcservicemrf/def"
 	"github.com/DataDog/datadog-agent/comp/remote-config/rctelemetryreporter"
 	remoteconfig "github.com/DataDog/datadog-agent/pkg/config/remote/service"
 	configUtils "github.com/DataDog/datadog-agent/pkg/config/utils"
 	"github.com/DataDog/datadog-agent/pkg/util/option"
 	"github.com/DataDog/datadog-agent/pkg/version"
-
-	"go.uber.org/fx"
 )
 
 // Dependencies defines the dependencies for the rcservicemrf component.
 type Dependencies struct {
-	fx.In
+	compdef.In
 
-	Lc fx.Lifecycle
+	Lc compdef.Lifecycle
 
 	DdRcTelemetryReporter rctelemetryreporter.Component
 	Hostname              hostname.Component
@@ -100,12 +99,12 @@ func newMrfRemoteConfigService(deps Dependencies) (rcservicemrf.Component, error
 		return nil, fmt.Errorf("unable to create MRF remote-config service: %w", err)
 	}
 
-	deps.Lc.Append(fx.Hook{OnStart: func(_ context.Context) error {
+	deps.Lc.Append(compdef.Hook{OnStart: func(_ context.Context) error {
 		mrfConfigService.Start()
 		deps.Logger.Info("remote config MRF service started")
 		return nil
 	}})
-	deps.Lc.Append(fx.Hook{OnStop: func(_ context.Context) error {
+	deps.Lc.Append(compdef.Hook{OnStop: func(_ context.Context) error {
 		deps.Logger.Info("remote config MRF service stopped")
 		err = mrfConfigService.Stop()
 		if err != nil {

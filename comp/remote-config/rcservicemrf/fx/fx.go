@@ -7,8 +7,6 @@
 package fx
 
 import (
-	"go.uber.org/fx"
-
 	rcservicemrfimpl "github.com/DataDog/datadog-agent/comp/remote-config/rcservicemrf/impl"
 	"github.com/DataDog/datadog-agent/pkg/util/fxutil"
 )
@@ -16,6 +14,6 @@ import (
 // Module conditionally provides the HA DC remote config service.
 func Module() fxutil.Module {
 	return fxutil.Component(
-		fx.Provide(rcservicemrfimpl.NewMrfRemoteConfigServiceOptional),
+		fxutil.ProvideComponentConstructor(rcservicemrfimpl.NewMrfRemoteConfigServiceOptional),
 	)
 }
