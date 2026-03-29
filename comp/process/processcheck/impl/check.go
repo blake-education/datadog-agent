@@ -19,14 +19,7 @@ import (
 	processcheck "github.com/DataDog/datadog-agent/comp/process/processcheck/def"
 	"github.com/DataDog/datadog-agent/comp/process/types"
 	"github.com/DataDog/datadog-agent/pkg/process/checks"
-	"github.com/DataDog/datadog-agent/pkg/util/fxutil"
 )
-
-// Module defines the fx options for this component.
-func Module() fxutil.Module {
-	return fxutil.Component(
-		fxutil.ProvideComponentConstructor(newCheck))
-}
 
 var _ types.CheckComponent = (*check)(nil)
 
@@ -53,7 +46,8 @@ type result struct {
 	Component processcheck.Component
 }
 
-func newCheck(deps dependencies) result {
+// NewCheck creates a new processcheck component.
+func NewCheck(deps dependencies) result {
 	c := &check{
 		processCheck: checks.NewProcessCheck(deps.Config, deps.Sysconfig, deps.WMmeta, deps.GpuSubscriber, deps.Statsd, deps.IPC.GetTLSServerConfig(), deps.Tagger),
 	}
