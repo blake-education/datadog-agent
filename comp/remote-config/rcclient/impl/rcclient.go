@@ -22,7 +22,7 @@ import (
 	log "github.com/DataDog/datadog-agent/comp/core/log/def"
 	"github.com/DataDog/datadog-agent/comp/core/settings"
 	"github.com/DataDog/datadog-agent/comp/core/sysprobeconfig"
-	"github.com/DataDog/datadog-agent/comp/remote-config/rcclient"
+	rcclient "github.com/DataDog/datadog-agent/comp/remote-config/rcclient/def"
 	"github.com/DataDog/datadog-agent/comp/remote-config/rcclient/types"
 	"github.com/DataDog/datadog-agent/pkg/config/model"
 	"github.com/DataDog/datadog-agent/pkg/config/remote/client"
@@ -34,14 +34,6 @@ import (
 	pkglog "github.com/DataDog/datadog-agent/pkg/util/log"
 	"github.com/DataDog/datadog-agent/pkg/util/option"
 )
-
-// Module defines the fx options for this component.
-func Module() fxutil.Module {
-	return fxutil.Component(
-		fx.Provide(newRemoteConfigClient),
-		fxutil.ProvideOptional[rcclient.Component](),
-	)
-}
 
 const (
 	agentTaskTimeout        = 5 * time.Minute
@@ -66,7 +58,8 @@ type rcClient struct {
 	isSystemProbe     bool
 }
 
-type dependencies struct {
+// Dependencies defines the dependencies for the rcclient component.
+type Dependencies struct {
 	fx.In
 
 	Log log.Component
@@ -81,11 +74,11 @@ type dependencies struct {
 	IPC               ipc.Component
 }
 
-// newRemoteConfigClient must not populate any Fx groups or return any types that would be consumed as dependencies by
+// NewRemoteConfigClient must not populate any Fx groups or return any types that would be consumed as dependencies by
 // other components. To avoid dependency cycles between our components we need to have "pure leaf" components (i.e.
 // components that are instantiated last).  Remote configuration client is a good candidate for this since it must be
 // able to interact with any other components (i.e. be at the end of the dependency graph).
-func newRemoteConfigClient(deps dependencies) (rcclient.Component, error) {
+func NewRemoteConfigClient(deps Dependencies) (rcclient.Component, error) {
 	ipcAddress, err := pkgconfigsetup.GetIPCAddress(pkgconfigsetup.Datadog())
 	if err != nil {
 		return nil, err
@@ -158,7 +151,7 @@ func newRemoteConfigClient(deps dependencies) (rcclient.Component, error) {
 	return rc, nil
 }
 
-// Start subscribes to AGENT_CONFIG configurations and start the remote config client
+// start subscribes to AGENT_CONFIG configurations and starts the remote config client
 func (rc *rcClient) start() {
 	rc.client.Subscribe(state.ProductAgentConfig, rc.agentConfigUpdateCallback)
 
@@ -343,6 +336,7 @@ func (rc *rcClient) applyMRFRuntimeSetting(setting string, value any, cfgPath st
 	return err
 }
 
+// SubscribeAgentTask subscribes the remote-config client to AGENT_TASK
 func (rc *rcClient) SubscribeAgentTask() {
 	rc.taskProcessed = map[string]bool{}
 	if rc.client == nil {
@@ -352,6 +346,7 @@ func (rc *rcClient) SubscribeAgentTask() {
 	rc.client.Subscribe(state.ProductAgentTask, rc.agentTaskUpdateCallback)
 }
 
+// Subscribe is the generic way to start listening to a specific product update
 func (rc *rcClient) Subscribe(product data.Product, fn func(update map[string]state.RawConfig, applyStateCallback func(string, state.ApplyStatus))) {
 	rc.client.Subscribe(string(product), fn)
 }
