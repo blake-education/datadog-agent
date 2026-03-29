@@ -16,11 +16,11 @@ import (
 )
 
 func TestStatusOuput(t *testing.T) {
-	deps := fxutil.Test[dependencies](t, fx.Options(
+	deps := fxutil.Test[Dependencies](t, fx.Options(
 		fx.Provide(func() config.Component { return config.NewMock(t) }),
 	))
 
-	provides := newStatus(deps)
+	provides := NewStatus(deps)
 
 	statusProvider := provides.StatusProvider.Provider
 
