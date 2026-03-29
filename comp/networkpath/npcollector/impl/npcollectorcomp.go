@@ -9,9 +9,9 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-go/v5/statsd"
-	"go.uber.org/fx"
 
 	"github.com/DataDog/datadog-agent/comp/core/config"
+	compdef "github.com/DataDog/datadog-agent/comp/def"
 	log "github.com/DataDog/datadog-agent/comp/core/log/def"
 	"github.com/DataDog/datadog-agent/comp/forwarder/eventplatform"
 	npcollector "github.com/DataDog/datadog-agent/comp/networkpath/npcollector/def"
@@ -22,8 +22,8 @@ import (
 )
 
 type dependencies struct {
-	fx.In
-	Lc          fx.Lifecycle
+	compdef.In
+	Lc          compdef.Lifecycle
 	EpForwarder eventplatform.Component
 	Traceroute  traceroute.Component
 	Logger      log.Component
@@ -34,7 +34,7 @@ type dependencies struct {
 
 // Provides defines the output of the npcollector component
 type Provides struct {
-	fx.Out
+	compdef.Out
 
 	Comp npcollector.Component
 }
@@ -42,7 +42,7 @@ type Provides struct {
 // Module defines the fx options for this component.
 func Module() fxutil.Module {
 	return fxutil.Component(
-		fx.Provide(newNpCollector),
+		fxutil.ProvideComponentConstructor(newNpCollector),
 	)
 }
 
@@ -71,7 +71,7 @@ func newNpCollector(deps dependencies) Provides {
 			collector = newNoopNpCollectorImpl()
 		} else {
 			collector = newNpCollectorImpl(epForwarder, configs, deps.Traceroute, deps.Logger, rdnsQuerier, deps.Statsd)
-			deps.Lc.Append(fx.Hook{
+			deps.Lc.Append(compdef.Hook{
 				// No need for OnStart hook since NpCollector.Init() will be called by clients when needed.
 				OnStart: func(context.Context) error {
 					return collector.start()
