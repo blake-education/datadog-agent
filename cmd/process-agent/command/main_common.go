@@ -50,7 +50,7 @@ import (
 	remotetraceroute "github.com/DataDog/datadog-agent/comp/networkpath/traceroute/fx-remote"
 	"github.com/DataDog/datadog-agent/comp/process"
 	"github.com/DataDog/datadog-agent/comp/process/agent"
-	"github.com/DataDog/datadog-agent/comp/process/apiserver"
+	apiserver "github.com/DataDog/datadog-agent/comp/process/apiserver/def"
 	"github.com/DataDog/datadog-agent/comp/process/expvars"
 	"github.com/DataDog/datadog-agent/comp/process/hostinfo"
 	profiler "github.com/DataDog/datadog-agent/comp/process/profiler/def"
