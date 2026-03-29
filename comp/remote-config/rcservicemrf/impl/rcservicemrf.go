@@ -16,25 +16,18 @@ import (
 
 	cfgcomp "github.com/DataDog/datadog-agent/comp/core/config"
 	"github.com/DataDog/datadog-agent/comp/core/hostname"
-	"github.com/DataDog/datadog-agent/comp/remote-config/rcservicemrf"
+	rcservicemrf "github.com/DataDog/datadog-agent/comp/remote-config/rcservicemrf/def"
 	"github.com/DataDog/datadog-agent/comp/remote-config/rctelemetryreporter"
 	remoteconfig "github.com/DataDog/datadog-agent/pkg/config/remote/service"
 	configUtils "github.com/DataDog/datadog-agent/pkg/config/utils"
-	"github.com/DataDog/datadog-agent/pkg/util/fxutil"
 	"github.com/DataDog/datadog-agent/pkg/util/option"
 	"github.com/DataDog/datadog-agent/pkg/version"
 
 	"go.uber.org/fx"
 )
 
-// Module conditionally provides the HA DC remote config service.
-func Module() fxutil.Module {
-	return fxutil.Component(
-		fx.Provide(newMrfRemoteConfigServiceOptional),
-	)
-}
-
-type dependencies struct {
+// Dependencies defines the dependencies for the rcservicemrf component.
+type Dependencies struct {
 	fx.In
 
 	Lc fx.Lifecycle
@@ -45,8 +38,8 @@ type dependencies struct {
 	Logger                log.Component
 }
 
-// newMrfRemoteConfigServiceOptional conditionally creates and configures a new MRF remote config service, based on whether RC is enabled.
-func newMrfRemoteConfigServiceOptional(deps dependencies) option.Option[rcservicemrf.Component] {
+// NewMrfRemoteConfigServiceOptional conditionally creates and configures a new MRF remote config service, based on whether RC is enabled.
+func NewMrfRemoteConfigServiceOptional(deps Dependencies) option.Option[rcservicemrf.Component] {
 	none := option.None[rcservicemrf.Component]()
 	if !configUtils.IsRemoteConfigEnabled(deps.Cfg) || !deps.Cfg.GetBool("multi_region_failover.enabled") {
 		return none
@@ -61,8 +54,8 @@ func newMrfRemoteConfigServiceOptional(deps dependencies) option.Option[rcservic
 	return option.New[rcservicemrf.Component](mrfConfigService)
 }
 
-// newMrfRemoteConfigServiceOptional creates and configures a new service that receives remote config updates from the configured DD failover DC
-func newMrfRemoteConfigService(deps dependencies) (rcservicemrf.Component, error) {
+// newMrfRemoteConfigService creates and configures a new service that receives remote config updates from the configured DD failover DC
+func newMrfRemoteConfigService(deps Dependencies) (rcservicemrf.Component, error) {
 	apiKey := configUtils.SanitizeAPIKey(deps.Cfg.GetString("multi_region_failover.api_key"))
 	baseRawURL, err := configUtils.GetMRFEndpoint(deps.Cfg, "https://config.", "multi_region_failover.remote_configuration.rc_dd_url")
 	if err != nil {
