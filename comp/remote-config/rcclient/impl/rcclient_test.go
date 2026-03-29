@@ -17,7 +17,7 @@ import (
 	"github.com/DataDog/datadog-agent/comp/core/settings"
 	"github.com/DataDog/datadog-agent/comp/core/settings/settingsimpl"
 	"github.com/DataDog/datadog-agent/comp/core/sysprobeconfig"
-	"github.com/DataDog/datadog-agent/comp/remote-config/rcclient"
+	rcclient "github.com/DataDog/datadog-agent/comp/remote-config/rcclient/def"
 	configmock "github.com/DataDog/datadog-agent/pkg/config/mock"
 	"github.com/DataDog/datadog-agent/pkg/config/model"
 	"github.com/DataDog/datadog-agent/pkg/config/remote/client"
@@ -64,8 +64,8 @@ func (m *mockLogLevelRuntimeSettings) Hidden() bool {
 func applyEmpty(_ string, _ state.ApplyStatus) {}
 
 func TestRCClientCreate(t *testing.T) {
-	_, err := newRemoteConfigClient(
-		fxutil.Test[dependencies](
+	_, err := NewRemoteConfigClient(
+		fxutil.Test[Dependencies](
 			t,
 			fx.Provide(func() log.Component { return logmock.New(t) }),
 			fx.Provide(func() config.Component { return configmock.New(t) }),
@@ -77,8 +77,8 @@ func TestRCClientCreate(t *testing.T) {
 	// Missing params
 	assert.Error(t, err)
 
-	client, err := newRemoteConfigClient(
-		fxutil.Test[dependencies](
+	client, err := NewRemoteConfigClient(
+		fxutil.Test[Dependencies](
 			t,
 			fx.Provide(func() log.Component { return logmock.New(t) }),
 			fx.Provide(func() config.Component { return configmock.New(t) }),
@@ -106,7 +106,10 @@ func TestAgentConfigCallback(t *testing.T) {
 
 	rcComponent := fxutil.Test[rcclient.Component](t,
 		fx.Options(
-			Module(),
+			fxutil.Component(
+				fx.Provide(NewRemoteConfigClient),
+				fxutil.ProvideOptional[rcclient.Component](),
+			),
 			fx.Provide(func() log.Component { return logmock.New(t) }),
 			fx.Provide(func() config.Component { return cfg }),
 			sysprobeconfig.NoneModule(),
@@ -210,7 +213,10 @@ func TestAgentMRFConfigCallback(t *testing.T) {
 
 	rcComponent := fxutil.Test[rcclient.Component](t,
 		fx.Options(
-			Module(),
+			fxutil.Component(
+				fx.Provide(NewRemoteConfigClient),
+				fxutil.ProvideOptional[rcclient.Component](),
+			),
 			fx.Provide(func() log.Component { return logmock.New(t) }),
 			fx.Provide(func() config.Component { return cfg }),
 			sysprobeconfig.NoneModule(),

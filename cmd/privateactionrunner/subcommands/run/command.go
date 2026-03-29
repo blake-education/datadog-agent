@@ -27,7 +27,7 @@ import (
 	privateactionrunner "github.com/DataDog/datadog-agent/comp/privateactionrunner/def"
 	privateactionrunnerfx "github.com/DataDog/datadog-agent/comp/privateactionrunner/fx"
 	"github.com/DataDog/datadog-agent/comp/remote-config/rcclient"
-	"github.com/DataDog/datadog-agent/comp/remote-config/rcclient/rcclientimpl"
+	rcclientfx "github.com/DataDog/datadog-agent/comp/remote-config/rcclient/fx"
 	"github.com/DataDog/datadog-agent/comp/remote-config/rcservice/rcserviceimpl"
 	logscompressionfx "github.com/DataDog/datadog-agent/comp/serializer/logscompression/fx"
 	commonsettings "github.com/DataDog/datadog-agent/pkg/config/settings"
@@ -69,7 +69,7 @@ func runPrivateActionRunner(ctx context.Context, confPath string, extraConfFiles
 		remotehostnameimpl.Module(),
 		ipcfx.ModuleReadWrite(),
 		rcserviceimpl.Module(),
-		rcclientimpl.Module(),
+		rcclientfx.Module(),
 		fx.Supply(rcclient.Params{AgentName: "private-action-runner", AgentVersion: version.AgentVersion}),
 		getTaggerModule(),
 		remotetraceroute.Module(),
