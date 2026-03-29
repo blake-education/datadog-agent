@@ -12,12 +12,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"go.uber.org/fx"
-
 	"github.com/DataDog/datadog-agent/comp/core/config"
 	log "github.com/DataDog/datadog-agent/comp/core/log/def"
 	"github.com/DataDog/datadog-agent/comp/core/sysprobeconfig"
 	"github.com/DataDog/datadog-agent/comp/core/telemetry"
+	compdef "github.com/DataDog/datadog-agent/comp/def"
 	expvars "github.com/DataDog/datadog-agent/comp/process/expvars/def"
 	"github.com/DataDog/datadog-agent/comp/process/hostinfo"
 	pkgconfigsetup "github.com/DataDog/datadog-agent/pkg/config/setup"
@@ -32,9 +31,9 @@ var _ expvars.Component = (*expvarServer)(nil)
 type expvarServer *http.Server
 
 type dependencies struct {
-	fx.In
+	compdef.In
 
-	Lc fx.Lifecycle
+	Lc compdef.Lifecycle
 
 	Config         config.Component
 	SysProbeConfig sysprobeconfig.Component
@@ -61,7 +60,7 @@ func NewComponent(deps dependencies) (expvars.Component, error) {
 	expvarPort := getExpvarPort(deps)
 	expvarServer := &http.Server{Addr: fmt.Sprintf("localhost:%d", expvarPort), Handler: http.DefaultServeMux}
 
-	deps.Lc.Append(fx.Hook{
+	deps.Lc.Append(compdef.Hook{
 		OnStart: func(_ context.Context) error {
 			go func() {
 				err := expvarServer.ListenAndServe()
