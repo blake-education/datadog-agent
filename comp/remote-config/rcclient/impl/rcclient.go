@@ -17,11 +17,11 @@ import (
 	"github.com/hashicorp/go-multierror"
 
 	configcomp "github.com/DataDog/datadog-agent/comp/core/config"
-	compdef "github.com/DataDog/datadog-agent/comp/def"
 	ipc "github.com/DataDog/datadog-agent/comp/core/ipc/def"
 	log "github.com/DataDog/datadog-agent/comp/core/log/def"
 	"github.com/DataDog/datadog-agent/comp/core/settings"
 	"github.com/DataDog/datadog-agent/comp/core/sysprobeconfig"
+	compdef "github.com/DataDog/datadog-agent/comp/def"
 	rcclient "github.com/DataDog/datadog-agent/comp/remote-config/rcclient/def"
 	"github.com/DataDog/datadog-agent/comp/remote-config/rcclient/types"
 	"github.com/DataDog/datadog-agent/pkg/config/model"
@@ -30,7 +30,6 @@ import (
 	pkgconfigsetup "github.com/DataDog/datadog-agent/pkg/config/setup"
 	configUtils "github.com/DataDog/datadog-agent/pkg/config/utils"
 	"github.com/DataDog/datadog-agent/pkg/remoteconfig/state"
-	"github.com/DataDog/datadog-agent/pkg/util/fxutil"
 	pkglog "github.com/DataDog/datadog-agent/pkg/util/log"
 	"github.com/DataDog/datadog-agent/pkg/util/option"
 )
@@ -121,8 +120,8 @@ func NewRemoteConfigClient(deps Dependencies) (rcclient.Component, error) {
 	}
 
 	rc := &rcClient{
-		listeners:         fxutil.GetAndFilterGroup(deps.Listeners),
-		taskListeners:     fxutil.GetAndFilterGroup(deps.TaskListeners),
+		listeners:         filterNilListeners(deps.Listeners),
+		taskListeners:     filterNilTaskListeners(deps.TaskListeners),
 		m:                 &sync.Mutex{},
 		client:            c,
 		clientMRF:         clientMRF,
@@ -507,4 +506,26 @@ func (rc *rcClient) agentTaskUpdateCallback(updates map[string]state.RawConfig, 
 		// timed out
 		pkglog.Warnf("Timeout of at least one agent task configuration")
 	}
+}
+
+// filterNilListeners removes nil/zero values from an fx group of RCListener.
+func filterNilListeners(group []types.RCListener) []types.RCListener {
+	result := make([]types.RCListener, 0, len(group))
+	for _, item := range group {
+		if item != nil {
+			result = append(result, item)
+		}
+	}
+	return result
+}
+
+// filterNilTaskListeners removes nil/zero values from an fx group of RCAgentTaskListener.
+func filterNilTaskListeners(group []types.RCAgentTaskListener) []types.RCAgentTaskListener {
+	result := make([]types.RCAgentTaskListener, 0, len(group))
+	for _, item := range group {
+		if item != nil {
+			result = append(result, item)
+		}
+	}
+	return result
 }
