@@ -18,21 +18,14 @@ import (
 	log "github.com/DataDog/datadog-agent/comp/core/log/def"
 	"github.com/DataDog/datadog-agent/comp/core/sysprobeconfig"
 	"github.com/DataDog/datadog-agent/comp/core/telemetry"
-	"github.com/DataDog/datadog-agent/comp/process/expvars"
+	expvars "github.com/DataDog/datadog-agent/comp/process/expvars/def"
 	"github.com/DataDog/datadog-agent/comp/process/hostinfo"
 	pkgconfigsetup "github.com/DataDog/datadog-agent/pkg/config/setup"
 	"github.com/DataDog/datadog-agent/pkg/process/runner/endpoint"
 	"github.com/DataDog/datadog-agent/pkg/process/status"
 	"github.com/DataDog/datadog-agent/pkg/process/util"
 	sysconfig "github.com/DataDog/datadog-agent/pkg/system-probe/config"
-	"github.com/DataDog/datadog-agent/pkg/util/fxutil"
 )
-
-// Module defines the fx options for this component.
-func Module() fxutil.Module {
-	return fxutil.Component(
-		fx.Provide(newExpvarServer))
-}
 
 var _ expvars.Component = (*expvarServer)(nil)
 
@@ -51,7 +44,8 @@ type dependencies struct {
 	Telemetry telemetry.Component
 }
 
-func newExpvarServer(deps dependencies) (expvars.Component, error) {
+// NewComponent creates a new expvars component.
+func NewComponent(deps dependencies) (expvars.Component, error) {
 	// Initialize status
 	err := InitProcessStatus(deps.Config, deps.SysProbeConfig, deps.HostInfo, deps.Log)
 	if err != nil {
