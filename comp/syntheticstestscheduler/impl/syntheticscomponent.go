@@ -17,7 +17,6 @@ import (
 	agentconfig "github.com/DataDog/datadog-agent/comp/core/config"
 	"github.com/DataDog/datadog-agent/comp/core/hostname"
 	log "github.com/DataDog/datadog-agent/comp/core/log/def"
-	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	compdef "github.com/DataDog/datadog-agent/comp/def"
 	"github.com/DataDog/datadog-agent/comp/forwarder/eventplatform"
 	traceroute "github.com/DataDog/datadog-agent/comp/networkpath/traceroute/def"
@@ -35,7 +34,6 @@ type Requires struct {
 	AgentConfig     agentconfig.Component
 	HostnameService hostname.Component
 	Statsd          statsd.ClientInterface
-	Telemetry       telemetry.Component
 }
 
 // Provides defines the output of the syntheticstestscheduler component
@@ -61,12 +59,10 @@ func NewComponent(reqs Requires) (Provides, error) {
 		return Provides{}, reqs.Logger.Errorf("error getting EpForwarder")
 	}
 
-	tlm := newSyntheticsTelemetry(reqs.Telemetry)
-
 	onDemandPollerConfig := newOnDemandPollerConfig(reqs.AgentConfig)
 	poller := newOnDemandPoller(onDemandPollerConfig, reqs.HostnameService, reqs.Logger, time.Now)
 
-	scheduler := newSyntheticsTestScheduler(configs, epForwarder, reqs.Logger, reqs.HostnameService, time.Now, reqs.Statsd, reqs.Traceroute, tlm, poller)
+	scheduler := newSyntheticsTestScheduler(configs, epForwarder, reqs.Logger, reqs.HostnameService, time.Now, reqs.Statsd, reqs.Traceroute, defaultTelemetry, poller)
 
 	var rcListener rctypes.ListenerProvider
 	rcListener.ListenerProvider = rctypes.RCListener{
