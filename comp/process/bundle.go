@@ -22,7 +22,7 @@ import (
 	gpusubscriber "github.com/DataDog/datadog-agent/comp/process/gpusubscriber/fx"
 	"github.com/DataDog/datadog-agent/comp/process/hostinfo/hostinfoimpl"
 	"github.com/DataDog/datadog-agent/comp/process/processcheck/processcheckimpl"
-	"github.com/DataDog/datadog-agent/comp/process/processdiscoverycheck/processdiscoverycheckimpl"
+	processdiscoverycheckfx "github.com/DataDog/datadog-agent/comp/process/processdiscoverycheck/fx"
 	profilerimpl "github.com/DataDog/datadog-agent/comp/process/profiler/fx"
 	"github.com/DataDog/datadog-agent/comp/process/rtcontainercheck/rtcontainercheckimpl"
 	"github.com/DataDog/datadog-agent/comp/process/runner/runnerimpl"
@@ -47,7 +47,7 @@ func Bundle() fxutil.BundleOptions {
 		containercheckimpl.Module(),
 		processcheckimpl.Module(),
 		rtcontainercheckimpl.Module(),
-		processdiscoverycheckimpl.Module(),
+		processdiscoverycheckfx.Module(),
 
 		agentimpl.Module(),
 
