@@ -23,10 +23,10 @@ import (
 	"github.com/DataDog/datadog-agent/pkg/logs/diagnostic"
 	"github.com/DataDog/datadog-agent/pkg/logs/pipeline"
 	"github.com/DataDog/datadog-agent/pkg/logs/sender"
+	compdef "github.com/DataDog/datadog-agent/comp/def"
 	"github.com/DataDog/datadog-agent/pkg/util/option"
 	"github.com/DataDog/datadog-agent/pkg/util/startstop"
 
-	"go.uber.org/fx"
 	"go.uber.org/zap"
 )
 
@@ -39,9 +39,9 @@ const (
 
 // Dependencies specifies the list of dependencies needed to initialize the logs agent
 type Dependencies struct {
-	fx.In
+	compdef.In
 
-	Lc           fx.Lifecycle
+	Lc           compdef.Lifecycle
 	Log          log.Component
 	Config       configComponent.Component
 	Hostname     hostnameinterface.Component
@@ -86,7 +86,7 @@ func NewLogsAgent(deps Dependencies) logsagentpipeline.LogsAgent {
 			intakeOrigin: deps.IntakeOrigin,
 		}
 		if deps.Lc != nil {
-			deps.Lc.Append(fx.Hook{
+			deps.Lc.Append(compdef.Hook{
 				OnStart: logsAgent.Start,
 				OnStop:  logsAgent.Stop,
 			})
