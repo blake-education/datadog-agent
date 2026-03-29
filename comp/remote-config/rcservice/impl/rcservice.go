@@ -15,6 +15,7 @@ import (
 	cfgcomp "github.com/DataDog/datadog-agent/comp/core/config"
 	"github.com/DataDog/datadog-agent/comp/core/hostname"
 	log "github.com/DataDog/datadog-agent/comp/core/log/def"
+	compdef "github.com/DataDog/datadog-agent/comp/def"
 	"github.com/DataDog/datadog-agent/comp/metadata/host/hostimpl/hosttags"
 	rcservice "github.com/DataDog/datadog-agent/comp/remote-config/rcservice/def"
 	"github.com/DataDog/datadog-agent/comp/remote-config/rctelemetryreporter"
@@ -22,8 +23,6 @@ import (
 	configUtils "github.com/DataDog/datadog-agent/pkg/config/utils"
 	"github.com/DataDog/datadog-agent/pkg/util/option"
 	"github.com/DataDog/datadog-agent/pkg/version"
-
-	"go.uber.org/fx"
 )
 
 var (
@@ -38,9 +37,9 @@ func init() {
 
 // Dependencies defines the dependencies for the rcservice component.
 type Dependencies struct {
-	fx.In
+	compdef.In
 
-	Lc fx.Lifecycle
+	Lc compdef.Lifecycle
 
 	Params                *rcservice.Params `optional:"true"`
 	DdRcTelemetryReporter rctelemetryreporter.Component
@@ -117,12 +116,12 @@ func newRemoteConfigService(deps Dependencies) (rcservice.Component, error) {
 	}
 	rcStartupFailureReason.Set("")
 
-	deps.Lc.Append(fx.Hook{OnStart: func(_ context.Context) error {
+	deps.Lc.Append(compdef.Hook{OnStart: func(_ context.Context) error {
 		configService.Start()
 		deps.Logger.Info("remote config service started")
 		return nil
 	}})
-	deps.Lc.Append(fx.Hook{OnStop: func(_ context.Context) error {
+	deps.Lc.Append(compdef.Hook{OnStop: func(_ context.Context) error {
 		err = configService.Stop()
 		if err != nil {
 			deps.Logger.Errorf("unable to stop remote config service: %s", err)

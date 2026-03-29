@@ -7,8 +7,6 @@
 package fx
 
 import (
-	"go.uber.org/fx"
-
 	rcserviceimpl "github.com/DataDog/datadog-agent/comp/remote-config/rcservice/impl"
 	"github.com/DataDog/datadog-agent/pkg/util/fxutil"
 )
@@ -16,6 +14,6 @@ import (
 // Module conditionally provides the remote config service.
 func Module() fxutil.Module {
 	return fxutil.Component(
-		fx.Provide(rcserviceimpl.NewRemoteConfigServiceOptional),
+		fxutil.ProvideComponentConstructor(rcserviceimpl.NewRemoteConfigServiceOptional),
 	)
 }
