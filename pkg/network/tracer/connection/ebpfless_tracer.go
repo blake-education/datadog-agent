@@ -21,7 +21,7 @@ import (
 	"github.com/vishvananda/netns"
 	"golang.org/x/sys/unix"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	ddebpf "github.com/DataDog/datadog-agent/pkg/ebpf"
 	"github.com/DataDog/datadog-agent/pkg/network"
@@ -43,8 +43,8 @@ const (
 
 var (
 	ebpfLessTracerTelemetry = struct {
-		skippedPackets     telemetrydef.Counter
-		droppedConnections telemetrydef.Counter
+		skippedPackets     telemetry.Counter
+		droppedConnections telemetry.Counter
 	}{
 		telemetryimpl.GetCompatComponent().NewCounter(ebpfLessTelemetryPrefix, "skipped_packets", []string{"reason"}, "Counter measuring skipped packets"),
 		telemetryimpl.GetCompatComponent().NewCounter(ebpfLessTelemetryPrefix, "dropped_connections", nil, "Counter measuring dropped connections"),

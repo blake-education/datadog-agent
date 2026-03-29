@@ -17,7 +17,7 @@ import (
 
 	"github.com/cenkalti/backoff/v5"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	auditor "github.com/DataDog/datadog-agent/comp/logs/auditor/def"
 	publishermetadatacache "github.com/DataDog/datadog-agent/comp/publishermetadatacache/def"
 	"github.com/DataDog/datadog-agent/pkg/logs/internal/decoder"
@@ -87,7 +87,7 @@ func NewTailer(evtapi evtapi.API, source *sources.LogSource, config *Config, out
 	}
 
 	if len(source.Config.ProcessingRules) > 0 && config.ProcessRawMessage {
-		telemetrydef.GetStatsTelemetryProvider().Gauge(processor.UnstructuredProcessingMetricName, 1, []string{"tailer:windowsevent"})
+		telemetry.GetStatsTelemetryProvider().Gauge(processor.UnstructuredProcessingMetricName, 1, []string{"tailer:windowsevent"})
 	}
 
 	return &Tailer{

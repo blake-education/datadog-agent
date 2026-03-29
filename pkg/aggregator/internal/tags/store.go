@@ -13,7 +13,7 @@ import (
 
 	"go.uber.org/atomic"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	"github.com/DataDog/datadog-agent/pkg/aggregator/ckey"
 	"github.com/DataDog/datadog-agent/pkg/tagset"
@@ -161,12 +161,12 @@ func (tc *Store) updateTelemetry(s *entryStats) {
 	tlmTagsetSumTagBytes.Set(float64(s.sumDataSizeBytes), t.name, BytesKindData)
 }
 
-func newCounter(name string, help string, tags ...string) telemetrydef.Counter {
+func newCounter(name string, help string, tags ...string) telemetry.Counter {
 	return telemetryimpl.GetCompatComponent().NewCounter("aggregator_tags_store", name,
 		append([]string{"cache_instance_name"}, tags...), help)
 }
 
-func newGauge(name string, help string, tags ...string) telemetrydef.Gauge {
+func newGauge(name string, help string, tags ...string) telemetry.Gauge {
 	return telemetryimpl.GetCompatComponent().NewGauge("aggregator_tags_store", name,
 		append([]string{"cache_instance_name"}, tags...), help)
 }
@@ -193,8 +193,8 @@ var (
 )
 
 type storeTelemetry struct {
-	hits telemetrydef.SimpleCounter
-	miss telemetrydef.SimpleCounter
+	hits telemetry.SimpleCounter
+	miss telemetry.SimpleCounter
 	name string
 }
 

@@ -16,7 +16,7 @@ import (
 	lru "github.com/hashicorp/golang-lru/v2"
 	"go4.org/intern"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	"github.com/DataDog/datadog-agent/pkg/network"
 	"github.com/DataDog/datadog-agent/pkg/network/events"
@@ -40,9 +40,9 @@ const (
 )
 
 var containerStoreTelemetry = struct {
-	capacityEvictions telemetrydef.Counter
-	eventsDropped     telemetrydef.Counter
-	readFailures      telemetrydef.Counter
+	capacityEvictions telemetry.Counter
+	eventsDropped     telemetry.Counter
+	readFailures      telemetry.Counter
 }{
 	telemetryimpl.GetCompatComponent().NewCounter(moduleName, "capacity_evictions", []string{}, "Counter measuring the number of LRU capacity evictions of non-expired containers"),
 	telemetryimpl.GetCompatComponent().NewCounter(moduleName, "events_dropped", []string{}, "Counter measuring the number of dropped process events"),

@@ -16,7 +16,7 @@ import (
 	"github.com/benbjohnson/clock"
 	"go4.org/intern"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	procutil "github.com/DataDog/datadog-agent/pkg/process/util"
 	proccontainers "github.com/DataDog/datadog-agent/pkg/process/util/containers"
@@ -28,8 +28,8 @@ const (
 )
 
 var resolverTelemetry = struct {
-	cacheSize  telemetrydef.Gauge
-	cacheDrops telemetrydef.Counter
+	cacheSize  telemetry.Gauge
+	cacheDrops telemetry.Counter
 }{
 	telemetryimpl.GetCompatComponent().NewGauge("net_local_resolver", "cache_size", []string{"cache"}, "Gauge for cache sizes"),
 	telemetryimpl.GetCompatComponent().NewCounter("net_local_resolver", "cache_drops", []string{"cache"}, "Gauge for cache drops"),

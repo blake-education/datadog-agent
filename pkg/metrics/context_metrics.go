@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"math"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	"github.com/DataDog/datadog-agent/pkg/aggregator/ckey"
 	pkgconfigmodel "github.com/DataDog/datadog-agent/pkg/config/model"
 	"github.com/DataDog/datadog-agent/pkg/util/log"
@@ -25,9 +25,9 @@ func MakeContextMetrics() ContextMetrics {
 
 // AddSampleTelemetry counts number of new metrics added.
 type AddSampleTelemetry struct {
-	Total     telemetrydef.SimpleCounter
-	Stateful  telemetrydef.SimpleCounter
-	Stateless telemetrydef.SimpleCounter
+	Total     telemetry.SimpleCounter
+	Stateful  telemetry.SimpleCounter
+	Stateless telemetry.SimpleCounter
 }
 
 // Inc should be called once for each new metric added to the map.

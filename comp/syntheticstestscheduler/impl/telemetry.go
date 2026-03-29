@@ -5,30 +5,24 @@
 
 package syntheticstestschedulerimpl
 
-import (
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
-	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
-)
+import "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 
 const subsystem = "synthetics_agent"
 
 type syntheticsTelemetry struct {
 	// ChecksReceived tracks the number of synthetics checks received from remote config
-	ChecksReceived telemetrydef.Counter
+	ChecksReceived telemetry.Counter
 	// ChecksProcessed tracks the number of synthetics checks processed
-	ChecksProcessed telemetrydef.Counter
+	ChecksProcessed telemetry.Counter
 	// ErrorTestConfig tracks errors when interpreting test configuration
-	ErrorTestConfig telemetrydef.Counter
+	ErrorTestConfig telemetry.Counter
 	// TracerouteError tracks errors when running traceroute
-	TracerouteError telemetrydef.Counter
+	TracerouteError telemetry.Counter
 	// SendResultFailure tracks errors when sending results to the event platform
-	SendResultFailure telemetrydef.Counter
+	SendResultFailure telemetry.Counter
 }
 
-// defaultTelemetry is a package-level singleton to avoid re-registering metrics on each component instantiation.
-var defaultTelemetry = newSyntheticsTelemetry(telemetryimpl.GetCompatComponent())
-
-func newSyntheticsTelemetry(comp telemetrydef.Component) *syntheticsTelemetry {
+func newSyntheticsTelemetry(comp telemetry.Component) *syntheticsTelemetry {
 	return &syntheticsTelemetry{
 		ChecksReceived: comp.NewCounter(
 			subsystem,

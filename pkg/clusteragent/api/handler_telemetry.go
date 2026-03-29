@@ -13,19 +13,19 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 )
 
 var (
 	apiRequests = telemetryimpl.GetCompatComponent().NewCounterWithOpts("", "api_requests",
 		[]string{"handler", "status", "forwarded"}, "Counter of requests made to the cluster agent API.",
-		telemetrydef.Options{NoDoubleUnderscoreSep: true})
+		telemetry.Options{NoDoubleUnderscoreSep: true})
 
 	apiElapsed = telemetryimpl.GetCompatComponent().NewHistogramWithOpts("", "api_elapsed",
 		[]string{"handler", "status", "forwarded"}, "Poll duration distribution by config provider (in seconds).",
 		prometheus.DefBuckets,
-		telemetrydef.Options{NoDoubleUnderscoreSep: true})
+		telemetry.Options{NoDoubleUnderscoreSep: true})
 )
 
 // TelemetryHandler provides a http handler and emits requests telemetry for it.

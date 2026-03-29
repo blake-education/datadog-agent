@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"github.com/DataDog/agent-payload/v5/gogen"
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	loadstore "github.com/DataDog/datadog-agent/pkg/clusteragent/autoscaling/workload/loadstore"
 	"github.com/DataDog/datadog-agent/pkg/util/log"
@@ -28,7 +28,7 @@ const (
 )
 
 var (
-	commonOpts = telemetrydef.Options{NoDoubleUnderscoreSep: true}
+	commonOpts = telemetry.Options{NoDoubleUnderscoreSep: true}
 
 	telemetryWorkloadEntities = telemetryimpl.GetCompatComponent().NewGaugeWithOpts(
 		subsystem,

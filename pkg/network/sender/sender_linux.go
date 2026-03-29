@@ -29,7 +29,7 @@ import (
 	log "github.com/DataDog/datadog-agent/comp/core/log/def"
 	"github.com/DataDog/datadog-agent/comp/core/sysprobeconfig"
 	tagger "github.com/DataDog/datadog-agent/comp/core/tagger/def"
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	workloadmeta "github.com/DataDog/datadog-agent/comp/core/workloadmeta/def"
 	connectionsforwarder "github.com/DataDog/datadog-agent/comp/forwarder/connectionsforwarder/def"
@@ -56,9 +56,9 @@ const clientID = "local_client"
 const telemetrySubsystem = "sender__connections"
 
 var senderTelemetry = struct {
-	queueSize       telemetrydef.Gauge
-	queueBytes      telemetrydef.Gauge
-	connectionCount telemetrydef.Counter
+	queueSize       telemetry.Gauge
+	queueBytes      telemetry.Gauge
+	connectionCount telemetry.Counter
 }{
 	telemetryimpl.GetCompatComponent().NewGauge(telemetrySubsystem, "queue_size", nil, ""),
 	telemetryimpl.GetCompatComponent().NewGauge(telemetrySubsystem, "queue_bytes", nil, ""),

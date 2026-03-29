@@ -16,7 +16,7 @@ import (
 
 	"github.com/google/gopacket/layers"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	"github.com/DataDog/datadog-agent/pkg/network"
 )
@@ -63,14 +63,14 @@ func (r ProcessResult) ShouldPersist() bool {
 }
 
 var statsTelemetry = struct {
-	expiredPendingConns     telemetrydef.Counter
-	droppedPendingConns     telemetrydef.Counter
-	droppedEstablishedConns telemetrydef.Counter
-	missedTCPHandshakes     telemetrydef.Counter
-	missingTCPFlags         telemetrydef.Counter
-	tcpSynAndFin            telemetrydef.Counter
-	tcpRstAndSyn            telemetrydef.Counter
-	tcpRstAndFin            telemetrydef.Counter
+	expiredPendingConns     telemetry.Counter
+	droppedPendingConns     telemetry.Counter
+	droppedEstablishedConns telemetry.Counter
+	missedTCPHandshakes     telemetry.Counter
+	missingTCPFlags         telemetry.Counter
+	tcpSynAndFin            telemetry.Counter
+	tcpRstAndSyn            telemetry.Counter
+	tcpRstAndFin            telemetry.Counter
 }{
 	expiredPendingConns:     telemetryimpl.GetCompatComponent().NewCounter(ebpflessModuleName, "expired_pending_conns", nil, "Counter measuring the number of TCP connections which expired because it took too long to complete the handshake"),
 	droppedPendingConns:     telemetryimpl.GetCompatComponent().NewCounter(ebpflessModuleName, "dropped_pending_conns", nil, "Counter measuring the number of TCP connections which were dropped during the handshake (because the map was full)"),

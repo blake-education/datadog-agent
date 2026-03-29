@@ -15,7 +15,7 @@ import (
 
 	"github.com/DataDog/agent-payload/v5/healthplatform"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	haagent "github.com/DataDog/datadog-agent/comp/haagent/def"
 	healthplatformdef "github.com/DataDog/datadog-agent/comp/healthplatform/def"
@@ -83,7 +83,7 @@ var (
 		"integration_runs",
 		[]string{"integration", "config_id"},
 		"Tracks number of HA integrations runs.",
-		telemetrydef.Options{DefaultMetric: true},
+		telemetry.Options{DefaultMetric: true},
 	)
 )
 

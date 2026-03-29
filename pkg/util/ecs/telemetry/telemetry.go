@@ -12,7 +12,7 @@ import (
 	"net/http"
 	"strconv"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 )
 
@@ -23,7 +23,7 @@ var (
 		"queries",
 		[]string{"path", "code"},
 		"Count of ECS queries by path and response code. The response code defaults to 0 for unachieved queries.",
-		telemetrydef.Options{NoDoubleUnderscoreSep: true},
+		telemetry.Options{NoDoubleUnderscoreSep: true},
 	)
 )
 

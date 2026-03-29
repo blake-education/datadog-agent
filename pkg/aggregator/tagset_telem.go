@@ -10,7 +10,7 @@ import (
 
 	"go.uber.org/atomic"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	"github.com/DataDog/datadog-agent/pkg/metrics"
 )
@@ -30,7 +30,7 @@ type tagsetTelemetry struct {
 
 	// tlmHugeSeries is an array containing counters with the same values as
 	// hugeSeriesCount.
-	tlmHugeSeries []telemetrydef.Counter
+	tlmHugeSeries []telemetry.Counter
 
 	// hugeSketchesCount contains the total count of huge distributions, by
 	// threshold.
@@ -38,7 +38,7 @@ type tagsetTelemetry struct {
 
 	// tlmHugeSketches is an array containing counters with the same values as
 	// hugeSketchesCount.
-	tlmHugeSketches []telemetrydef.Counter
+	tlmHugeSketches []telemetry.Counter
 }
 
 func newTagsetTelemetry(thresholds []uint64) *tagsetTelemetry {
@@ -47,9 +47,9 @@ func newTagsetTelemetry(thresholds []uint64) *tagsetTelemetry {
 		size:              size,
 		sizeThresholds:    thresholds,
 		hugeSeriesCount:   make([]*atomic.Uint64, size),
-		tlmHugeSeries:     make([]telemetrydef.Counter, size),
+		tlmHugeSeries:     make([]telemetry.Counter, size),
 		hugeSketchesCount: make([]*atomic.Uint64, size),
-		tlmHugeSketches:   make([]telemetrydef.Counter, size),
+		tlmHugeSketches:   make([]telemetry.Counter, size),
 	}
 
 	for i, thresh := range t.sizeThresholds {
@@ -63,7 +63,7 @@ func newTagsetTelemetry(thresholds []uint64) *tagsetTelemetry {
 }
 
 // updateTelemetry implements common behavior fof the update*Telemetry methods.
-func (t *tagsetTelemetry) updateTelemetry(tagsetSize uint64, atomicCounts []*atomic.Uint64, tlms []telemetrydef.Counter) {
+func (t *tagsetTelemetry) updateTelemetry(tagsetSize uint64, atomicCounts []*atomic.Uint64, tlms []telemetry.Counter) {
 	for i, thresh := range t.sizeThresholds {
 		if tagsetSize > thresh {
 			atomicCounts[i].Inc()

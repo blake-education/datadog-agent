@@ -29,7 +29,7 @@ import (
 	"k8s.io/client-go/tools/leaderelection"
 	rl "k8s.io/client-go/tools/leaderelection/resourcelock"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	configmaplock "github.com/DataDog/datadog-agent/internal/third_party/client-go/tools/leaderelection/resourcelock"
 	pkgconfigsetup "github.com/DataDog/datadog-agent/pkg/config/setup"
@@ -76,7 +76,7 @@ type LeaderEngine struct {
 	leaderIdentity string
 
 	// leaderMetric indicates whether this instance is leader
-	leaderMetric telemetrydef.Gauge
+	leaderMetric telemetry.Gauge
 }
 
 func newLeaderEngine(ctx context.Context) *LeaderEngine {

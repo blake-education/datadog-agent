@@ -12,15 +12,15 @@ import (
 
 	model "github.com/DataDog/agent-payload/v5/process"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	"github.com/DataDog/datadog-agent/pkg/util/kernel"
 	"github.com/DataDog/datadog-agent/pkg/util/log"
 )
 
 var rcTelemetry = struct {
-	success telemetrydef.Counter
-	error   telemetrydef.Counter
+	success telemetry.Counter
+	error   telemetry.Counter
 }{
 	success: telemetryimpl.GetCompatComponent().NewCounter("ebpf__runtime_compilation__compile", "success", []string{"platform", "platform_version", "kernel", "arch", "asset", "result"}, "counter of runtime compilation compile successes"),
 	error:   telemetryimpl.GetCompatComponent().NewCounter("ebpf__runtime_compilation__compile", "error", []string{"platform", "platform_version", "kernel", "arch", "asset", "result"}, "counter of runtime compilation compile errors"),

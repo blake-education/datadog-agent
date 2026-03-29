@@ -11,7 +11,7 @@ import (
 	"sync"
 	"sync/atomic"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	"github.com/DataDog/datadog-agent/pkg/ebpf/perf"
 	"github.com/DataDog/datadog-agent/pkg/network"
@@ -24,8 +24,8 @@ const closeConsumerModuleName = "network_tracer__ebpf"
 
 // Telemetry
 var closeConsumerTelemetry = struct {
-	perfReceived  telemetrydef.Counter
-	flushReceived telemetrydef.Counter
+	perfReceived  telemetry.Counter
+	flushReceived telemetry.Counter
 }{
 	telemetryimpl.GetCompatComponent().NewCounter(closeConsumerModuleName, "closed_conn_polling_received", []string{}, "Counter measuring the number of closed connections received"),
 	telemetryimpl.GetCompatComponent().NewCounter(closeConsumerModuleName, "closed_conn_flush_received", []string{}, "Counter measuring the number of closed connections received during flush"),

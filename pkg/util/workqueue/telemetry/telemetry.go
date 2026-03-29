@@ -12,14 +12,14 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"k8s.io/client-go/util/workqueue"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 )
 
-var commonOpts = telemetrydef.Options{NoDoubleUnderscoreSep: true}
+var commonOpts = telemetry.Options{NoDoubleUnderscoreSep: true}
 
 type gaugeWrapper struct {
-	telemetrydef.Gauge
+	telemetry.Gauge
 }
 
 // Inc implements the workqueue.GaugeMetric interface
@@ -38,7 +38,7 @@ func (g gaugeWrapper) Set(v float64) {
 }
 
 type counterWrapper struct {
-	telemetrydef.Counter
+	telemetry.Counter
 }
 
 // Inc implements the workqueue.CounterMetric interface
@@ -47,7 +47,7 @@ func (c counterWrapper) Inc() {
 }
 
 type histgramWrapper struct {
-	telemetrydef.Histogram
+	telemetry.Histogram
 }
 
 // Observer implements the workqueue.HistogramMetric interface

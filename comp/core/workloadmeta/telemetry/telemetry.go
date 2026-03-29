@@ -7,7 +7,7 @@
 package telemetry
 
 import (
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 )
 
@@ -22,35 +22,35 @@ var (
 
 var (
 	// StoredEntities tracks how many entities are stored in the workloadmeta store.
-	StoredEntities telemetrydef.Gauge
+	StoredEntities telemetry.Gauge
 	// Subscribers tracks the number of subscribers.
-	Subscribers telemetrydef.Gauge
+	Subscribers telemetry.Gauge
 	// EventsReceived tracks the number of events received.
-	EventsReceived telemetrydef.Counter
+	EventsReceived telemetry.Counter
 	// PullErrors tracks the number of errors that the workloadmeta received
 	// when pulling from the collectors.
-	PullErrors telemetrydef.Counter
+	PullErrors telemetry.Counter
 	// PullDuration measures the time that it takes to pull from the
 	// workloadmeta collectors.
-	PullDuration telemetrydef.Histogram
+	PullDuration telemetry.Histogram
 	// NotificationsSent tracks the number of notifications sent from the
 	// workloadmeta store to its subscribers. Note that each notification can
 	// include multiple events.
-	NotificationsSent telemetrydef.Counter
+	NotificationsSent telemetry.Counter
 	// RemoteClientErrors tracks the number of errors on the remote workloadmeta
 	// client while receiving events.
-	RemoteClientErrors telemetrydef.Counter
+	RemoteClientErrors telemetry.Counter
 	// RemoteServerErrors track the number of errors on the remote workloadmeta
 	// server while streaming events.
-	RemoteServerErrors telemetrydef.Counter
+	RemoteServerErrors telemetry.Counter
 	// PendingEventBundles tracks the current number of event bundles pending to
 	// be handled by workloadmeta.
-	PendingEventBundles telemetrydef.Gauge
+	PendingEventBundles telemetry.Gauge
 )
 
 func init() {
 	comp := telemetryimpl.GetCompatComponent()
-	opts := telemetrydef.Options{NoDoubleUnderscoreSep: true}
+	opts := telemetry.Options{NoDoubleUnderscoreSep: true}
 
 	StoredEntities = comp.NewGaugeWithOpts(
 		subsystem,

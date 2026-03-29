@@ -10,7 +10,7 @@ package custommetrics
 import (
 	"strings"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	le "github.com/DataDog/datadog-agent/pkg/util/kubernetes/apiserver/leaderelection/metrics"
 )
@@ -23,7 +23,7 @@ const (
 var (
 	externalTotal = telemetryimpl.GetCompatComponent().NewGaugeWithOpts("", "external_metrics",
 		[]string{"valid", le.JoinLeaderLabel}, "Number of external metrics tagged.",
-		telemetrydef.Options{NoDoubleUnderscoreSep: true})
+		telemetry.Options{NoDoubleUnderscoreSep: true})
 )
 
 // Store is an interface for persistent storage of custom and external metrics.

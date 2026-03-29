@@ -22,7 +22,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"golang.org/x/sys/unix"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	"github.com/DataDog/datadog-agent/pkg/ebpf/maps"
 	"github.com/DataDog/datadog-agent/pkg/network"
@@ -46,8 +46,8 @@ const (
 const ciliumConntrackerModuleName = "network_tracer__cilium_conntracker"
 
 var ciliumConntrackerTelemetry = struct {
-	getsDuration telemetrydef.Histogram
-	getsTotal    telemetrydef.Counter
+	getsDuration telemetry.Histogram
+	getsTotal    telemetry.Counter
 }{
 	telemetryimpl.GetCompatComponent().NewHistogram(ciliumConntrackerModuleName, "gets_duration_nanoseconds", []string{}, "Histogram measuring the time spent retrieving connection tuples from the EBPF map", defaultBuckets),
 	telemetryimpl.GetCompatComponent().NewCounter(ciliumConntrackerModuleName, "gets_total", []string{}, "Counter measuring the total number of attempts to get connection tuples from the EBPF map"),

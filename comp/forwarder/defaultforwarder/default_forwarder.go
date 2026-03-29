@@ -24,7 +24,7 @@ import (
 	log "github.com/DataDog/datadog-agent/comp/core/log/def"
 	secrets "github.com/DataDog/datadog-agent/comp/core/secrets/def"
 	secretnooptypes "github.com/DataDog/datadog-agent/comp/core/secrets/noop-impl/types"
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	"github.com/DataDog/datadog-agent/comp/forwarder/defaultforwarder/endpoints"
 	"github.com/DataDog/datadog-agent/comp/forwarder/defaultforwarder/internal/retry"
 	pkgresolver "github.com/DataDog/datadog-agent/comp/forwarder/defaultforwarder/resolver"
@@ -597,7 +597,7 @@ func (f *DefaultForwarder) sendHTTPTransactions(transactions []*transaction.HTTP
 		if capacities, err := f.queueDurationCapacity.ComputeCapacity(now); err != nil {
 			f.log.Errorf("Cannot compute the capacity of the retry queues: %v", err)
 		} else {
-			tlmStats := telemetrydef.GetStatsTelemetryProvider()
+			tlmStats := telemetry.GetStatsTelemetryProvider()
 			metricPrefix := "datadog.agent.retry_queue_duration."
 			for domain, t := range capacities {
 				tags := []string{

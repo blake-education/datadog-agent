@@ -14,7 +14,7 @@ import (
 
 	"github.com/cilium/ebpf"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	"github.com/DataDog/datadog-agent/pkg/ebpf/maps"
 	"github.com/DataDog/datadog-agent/pkg/util/log"
@@ -24,10 +24,10 @@ const ebpfMapsCleanerModule = "ebpf__maps__cleaner"
 
 var defaultBuckets = []float64{10, 25, 50, 75, 100, 250, 500, 1000, 10000}
 var mapCleanerTelemetry = struct {
-	examined telemetrydef.Counter
-	deleted  telemetrydef.Counter
-	aborts   telemetrydef.Counter
-	elapsed  telemetrydef.Histogram
+	examined telemetry.Counter
+	deleted  telemetry.Counter
+	aborts   telemetry.Counter
+	elapsed  telemetry.Histogram
 }{
 	telemetryimpl.GetCompatComponent().NewCounter(ebpfMapsCleanerModule, "examined", []string{"map_name", "module", "api"}, "Counter measuring how many entries are examined"),
 	telemetryimpl.GetCompatComponent().NewCounter(ebpfMapsCleanerModule, "deleted", []string{"map_name", "module", "api"}, "Counter measuring how many entries are deleted"),
@@ -50,11 +50,11 @@ type MapCleaner[K any, V any] struct {
 	stopOnce sync.Once
 	done     chan struct{}
 
-	examined      telemetrydef.SimpleCounter
-	singleDeleted telemetrydef.SimpleCounter
-	batchDeleted  telemetrydef.SimpleCounter
-	aborts        telemetrydef.SimpleCounter
-	elapsed       telemetrydef.SimpleHistogram
+	examined      telemetry.SimpleCounter
+	singleDeleted telemetry.SimpleCounter
+	batchDeleted  telemetry.SimpleCounter
+	aborts        telemetry.SimpleCounter
+	elapsed       telemetry.SimpleHistogram
 
 	cleanerFunc func(nowTS int64, shouldClean func(nowTS int64, k K, v V) bool)
 }

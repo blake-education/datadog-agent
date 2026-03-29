@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	pkgconfigmodel "github.com/DataDog/datadog-agent/pkg/config/model"
 	"github.com/DataDog/datadog-agent/pkg/logs/client"
@@ -20,8 +20,8 @@ import (
 )
 
 var (
-	tlmPayloadsDropped = telemetryimpl.GetCompatComponent().NewCounterWithOpts("logs_sender", "payloads_dropped", []string{"reliable", "destination"}, "Payloads dropped", telemetrydef.Options{DefaultMetric: true})
-	tlmMessagesDropped = telemetryimpl.GetCompatComponent().NewCounterWithOpts("logs_sender", "messages_dropped", []string{"reliable", "destination"}, "Messages dropped", telemetrydef.Options{DefaultMetric: true})
+	tlmPayloadsDropped = telemetryimpl.GetCompatComponent().NewCounterWithOpts("logs_sender", "payloads_dropped", []string{"reliable", "destination"}, "Payloads dropped", telemetry.Options{DefaultMetric: true})
+	tlmMessagesDropped = telemetryimpl.GetCompatComponent().NewCounterWithOpts("logs_sender", "messages_dropped", []string{"reliable", "destination"}, "Messages dropped", telemetry.Options{DefaultMetric: true})
 	tlmSendWaitTime    = telemetryimpl.GetCompatComponent().NewCounter("logs_sender", "send_wait", []string{}, "Time spent waiting for all sends to finish")
 )
 

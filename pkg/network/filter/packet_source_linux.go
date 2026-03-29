@@ -24,7 +24,7 @@ import (
 	"golang.org/x/net/bpf"
 	"golang.org/x/sys/unix"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	"github.com/DataDog/datadog-agent/pkg/util/log"
 )
@@ -36,15 +36,15 @@ const (
 
 // Telemetry
 var packetSourceTelemetry = struct {
-	polls     *telemetrydef.StatCounterWrapper
-	processed *telemetrydef.StatCounterWrapper
-	captured  *telemetrydef.StatCounterWrapper
-	dropped   *telemetrydef.StatCounterWrapper
+	polls     *telemetry.StatCounterWrapper
+	processed *telemetry.StatCounterWrapper
+	captured  *telemetry.StatCounterWrapper
+	dropped   *telemetry.StatCounterWrapper
 }{
-	telemetrydef.NewStatCounterWrapper(telemetryimpl.GetCompatComponent(), telemetryModuleName, "polled_packets", []string{}, "Counter measuring the number of polled packets"),
-	telemetrydef.NewStatCounterWrapper(telemetryimpl.GetCompatComponent(), telemetryModuleName, "processed_packets", []string{}, "Counter measuring the number of processed packets"),
-	telemetrydef.NewStatCounterWrapper(telemetryimpl.GetCompatComponent(), telemetryModuleName, "captured_packets", []string{}, "Counter measuring the number of captured packets"),
-	telemetrydef.NewStatCounterWrapper(telemetryimpl.GetCompatComponent(), telemetryModuleName, "dropped_packets", []string{}, "Counter measuring the number of dropped packets"),
+	telemetry.NewStatCounterWrapper(telemetryimpl.GetCompatComponent(), telemetryModuleName, "polled_packets", []string{}, "Counter measuring the number of polled packets"),
+	telemetry.NewStatCounterWrapper(telemetryimpl.GetCompatComponent(), telemetryModuleName, "processed_packets", []string{}, "Counter measuring the number of processed packets"),
+	telemetry.NewStatCounterWrapper(telemetryimpl.GetCompatComponent(), telemetryModuleName, "captured_packets", []string{}, "Counter measuring the number of captured packets"),
+	telemetry.NewStatCounterWrapper(telemetryimpl.GetCompatComponent(), telemetryModuleName, "dropped_packets", []string{}, "Counter measuring the number of dropped packets"),
 }
 
 // AFPacketSource provides a RAW_SOCKET attached to an eBPF SOCKET_FILTER

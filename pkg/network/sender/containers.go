@@ -17,7 +17,7 @@ import (
 
 	"go4.org/intern"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	workloadmeta "github.com/DataDog/datadog-agent/comp/core/workloadmeta/def"
 	pkgconfigsetup "github.com/DataDog/datadog-agent/pkg/config/setup"
@@ -28,8 +28,8 @@ import (
 const containerResolverSubsystem = "sender__container_resolver"
 
 var containerResolverTelemetry = struct {
-	addressCount telemetrydef.Gauge
-	tagCount     telemetrydef.Gauge
+	addressCount telemetry.Gauge
+	tagCount     telemetry.Gauge
 }{
 	telemetryimpl.GetCompatComponent().NewGauge(containerResolverSubsystem, "address_count", nil, ""),
 	telemetryimpl.GetCompatComponent().NewGauge(containerResolverSubsystem, "tag_count", nil, ""),

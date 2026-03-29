@@ -7,16 +7,16 @@
 package metrics
 
 import (
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 )
 
-// NewITCounter creates a new telemetrydef.Counter with the given Datadog metric name, tags, and help text.
-func NewITCounter(metric ITMetric, tags []string, help string) telemetrydef.Counter {
+// NewITCounter creates a new telemetry.Counter with the given Datadog metric name, tags, and help text.
+func NewITCounter(metric ITMetric, tags []string, help string) telemetry.Counter {
 	return telemetryimpl.GetCompatComponent().NewCounter(metric.Subsystem, metric.Name, tags, help)
 }
 
-// NewITGauge creates a new telemetrydef.Gauge with the given Datadog metric name, tags, and help text.
-func NewITGauge(metric ITMetric, tags []string, help string) telemetrydef.Gauge {
+// NewITGauge creates a new telemetry.Gauge with the given Datadog metric name, tags, and help text.
+func NewITGauge(metric ITMetric, tags []string, help string) telemetry.Gauge {
 	return telemetryimpl.GetCompatComponent().NewGauge(metric.Subsystem, metric.Name, tags, help)
 }

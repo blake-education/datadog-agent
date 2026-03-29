@@ -8,7 +8,7 @@
 package apiserver
 
 import (
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 )
 
@@ -21,7 +21,7 @@ var (
 		"client_timeouts",
 		[]string{},
 		"Count of requests to the apiserver which have timed out. Consider increasing the kubernetes_apiserver_client_timeout setting.",
-		telemetrydef.Options{NoDoubleUnderscoreSep: true},
+		telemetry.Options{NoDoubleUnderscoreSep: true},
 	)
 	// kube_cache_sync_timeouts tracks timeouts to kubernetes apiserver done by the Agent.
 	cacheSyncTimeouts = telemetryimpl.GetCompatComponent().NewCounterWithOpts(
@@ -29,6 +29,6 @@ var (
 		"cache_sync_timeouts",
 		[]string{},
 		"Count of kubernetes cache requests which have timed out. Consider increasing the kube_cache_sync_timeout_seconds setting.",
-		telemetrydef.Options{NoDoubleUnderscoreSep: true},
+		telemetry.Options{NoDoubleUnderscoreSep: true},
 	)
 )

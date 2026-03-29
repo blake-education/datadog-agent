@@ -11,7 +11,7 @@ import (
 	"sync"
 	"time"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	"github.com/DataDog/datadog-agent/pkg/network/config"
 	"github.com/DataDog/datadog-agent/pkg/network/filter"
@@ -28,18 +28,18 @@ const (
 
 // Telemetry
 var snooperTelemetry = struct {
-	decodingErrors *telemetrydef.StatCounterWrapper
-	truncatedPkts  *telemetrydef.StatCounterWrapper
-	queries        *telemetrydef.StatCounterWrapper
-	successes      *telemetrydef.StatCounterWrapper
-	errors         *telemetrydef.StatCounterWrapper
+	decodingErrors *telemetry.StatCounterWrapper
+	truncatedPkts  *telemetry.StatCounterWrapper
+	queries        *telemetry.StatCounterWrapper
+	successes      *telemetry.StatCounterWrapper
+	errors         *telemetry.StatCounterWrapper
 }{
-	telemetrydef.NewStatCounterWrapper(telemetryimpl.GetCompatComponent(), dnsModuleName, "decoding_errors", []string{}, "Counter measuring the number of decoding errors while processing packets"),
-	telemetrydef.NewStatCounterWrapper(telemetryimpl.GetCompatComponent(), dnsModuleName, "truncated_pkts", []string{}, "Counter measuring the number of truncated packets while processing"),
+	telemetry.NewStatCounterWrapper(telemetryimpl.GetCompatComponent(), dnsModuleName, "decoding_errors", []string{}, "Counter measuring the number of decoding errors while processing packets"),
+	telemetry.NewStatCounterWrapper(telemetryimpl.GetCompatComponent(), dnsModuleName, "truncated_pkts", []string{}, "Counter measuring the number of truncated packets while processing"),
 	// DNS telemetry, values calculated *till* the last tick in pollStats
-	telemetrydef.NewStatCounterWrapper(telemetryimpl.GetCompatComponent(), dnsModuleName, "queries", []string{}, "Counter measuring the number of packets that are DNS queries in processed packets"),
-	telemetrydef.NewStatCounterWrapper(telemetryimpl.GetCompatComponent(), dnsModuleName, "successes", []string{}, "Counter measuring the number of successful DNS responses in processed packets"),
-	telemetrydef.NewStatCounterWrapper(telemetryimpl.GetCompatComponent(), dnsModuleName, "errors", []string{}, "Counter measuring the number of failed DNS responses in processed packets"),
+	telemetry.NewStatCounterWrapper(telemetryimpl.GetCompatComponent(), dnsModuleName, "queries", []string{}, "Counter measuring the number of packets that are DNS queries in processed packets"),
+	telemetry.NewStatCounterWrapper(telemetryimpl.GetCompatComponent(), dnsModuleName, "successes", []string{}, "Counter measuring the number of successful DNS responses in processed packets"),
+	telemetry.NewStatCounterWrapper(telemetryimpl.GetCompatComponent(), dnsModuleName, "errors", []string{}, "Counter measuring the number of failed DNS responses in processed packets"),
 }
 
 var _ ReverseDNS = &socketFilterSnooper{}

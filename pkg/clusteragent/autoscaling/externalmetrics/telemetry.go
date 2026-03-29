@@ -15,7 +15,7 @@ import (
 	datadoghq "github.com/DataDog/datadog-operator/api/datadoghq/v1alpha1"
 	"github.com/prometheus/client_golang/prometheus"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	le "github.com/DataDog/datadog-agent/pkg/util/kubernetes/apiserver/leaderelection/metrics"
 )
@@ -31,27 +31,27 @@ var (
 	// Leader metrics
 	ddmTelemetry = telemetryimpl.GetCompatComponent().NewGaugeWithOpts("external_metrics", "datadog_metrics",
 		[]string{"namespace", "name", "valid", "active", le.JoinLeaderLabel}, "The label valid is true if the DatadogMetric CR is valid, false otherwise. The label active is true if DatadogMetrics CR is used, false otherwise.",
-		telemetrydef.Options{NoDoubleUnderscoreSep: true})
+		telemetry.Options{NoDoubleUnderscoreSep: true})
 
 	retrieverElapsed = telemetryimpl.GetCompatComponent().NewHistogramWithOpts("external_metrics", "retriever_elapsed",
 		[]string{le.JoinLeaderLabel}, "Wall time spent to retrieve metrics (seconds)",
 		[]float64{0.5, 1, 5, 10, 20, 30, 60, 120, 300},
-		telemetrydef.Options{NoDoubleUnderscoreSep: true})
+		telemetry.Options{NoDoubleUnderscoreSep: true})
 
 	// All instances metrics
 	reconcileElapsed = telemetryimpl.GetCompatComponent().NewHistogramWithOpts("external_metrics", "reconcile_elapsed",
 		[]string{"operation", "in_error", le.JoinLeaderLabel}, "Wall time spent to reconcile a datadogmetric object (seconds)",
 		[]float64{0.001, 0.01, 0.05, 0.1, 0.2, 0.4, 0.8, 1},
-		telemetrydef.Options{NoDoubleUnderscoreSep: true})
+		telemetry.Options{NoDoubleUnderscoreSep: true})
 
 	requestsTelemetry = telemetryimpl.GetCompatComponent().NewGaugeWithOpts("external_metrics", "api_requests",
 		[]string{"handler", "in_error"}, "Count of API Requests received",
-		telemetrydef.Options{NoDoubleUnderscoreSep: true})
+		telemetry.Options{NoDoubleUnderscoreSep: true})
 
 	elapsedTelemetry = telemetryimpl.GetCompatComponent().NewHistogramWithOpts("external_metrics", "api_elapsed",
 		[]string{"handler", "in_error"}, "Wall time spent on API request (seconds)",
 		prometheus.DefBuckets,
-		telemetrydef.Options{NoDoubleUnderscoreSep: true})
+		telemetry.Options{NoDoubleUnderscoreSep: true})
 )
 
 func setDatadogMetricTelemetry(ddm *datadoghq.DatadogMetric) {

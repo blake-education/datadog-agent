@@ -15,7 +15,7 @@ import (
 	"sync"
 	"time"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	"github.com/DataDog/datadog-agent/pkg/system-probe/config/types"
 	"github.com/DataDog/datadog-agent/pkg/util/funcs"
@@ -30,12 +30,12 @@ const (
 )
 
 var checkTelemetry = struct {
-	totalRequests      telemetrydef.Counter
-	failedRequests     telemetrydef.Counter
-	failedResponses    telemetrydef.Counter
-	responseErrors     telemetrydef.Counter
-	malformedResponses telemetrydef.Counter
-	requestDuration    telemetrydef.Gauge
+	totalRequests      telemetry.Counter
+	failedRequests     telemetry.Counter
+	failedResponses    telemetry.Counter
+	responseErrors     telemetry.Counter
+	malformedResponses telemetry.Counter
+	requestDuration    telemetry.Gauge
 }{
 	telemetryimpl.GetCompatComponent().NewCounter(telemetrySubsystem, "requests__total", []string{checkLabelName}, "Counter measuring how many system-probe check requests were made"),
 	telemetryimpl.GetCompatComponent().NewCounter(telemetrySubsystem, "requests__failed", []string{checkLabelName}, "Counter measuring how many system-probe check requests failed to be sent"),

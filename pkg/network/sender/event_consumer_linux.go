@@ -16,7 +16,7 @@ import (
 
 	log "github.com/DataDog/datadog-agent/comp/core/log/def"
 	"github.com/DataDog/datadog-agent/comp/core/sysprobeconfig"
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	"github.com/DataDog/datadog-agent/pkg/eventmonitor"
 	"github.com/DataDog/datadog-agent/pkg/security/secl/model"
@@ -28,8 +28,8 @@ import (
 const eventConsumerSubsystem = "sender__event_consumer"
 
 var eventConsumerTelemetry = struct {
-	eventsReceived telemetrydef.Counter
-	processCount   telemetrydef.Gauge
+	eventsReceived telemetry.Counter
+	processCount   telemetry.Gauge
 }{
 	telemetryimpl.GetCompatComponent().NewCounter(eventConsumerSubsystem, "events_received", []string{"event_type"}, ""),
 	telemetryimpl.GetCompatComponent().NewGauge(eventConsumerSubsystem, "process_count", nil, ""),

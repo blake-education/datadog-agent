@@ -24,7 +24,7 @@ import (
 	"strconv"
 	"sync"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	"github.com/DataDog/datadog-agent/pkg/util/archive"
 	"github.com/DataDog/datadog-agent/pkg/util/kernel"
@@ -32,8 +32,8 @@ import (
 )
 
 var headerTelemetry = struct {
-	success telemetrydef.Counter
-	error   telemetrydef.Counter
+	success telemetry.Counter
+	error   telemetry.Counter
 }{
 	success: telemetryimpl.GetCompatComponent().NewCounter("ebpf__runtime_compilation__header_download", "success", []string{"platform", "platform_version", "kernel", "arch", "result"}, "count of kernel header download successes"),
 	error:   telemetryimpl.GetCompatComponent().NewCounter("ebpf__runtime_compilation__header_download", "error", []string{"platform", "platform_version", "kernel", "arch", "result"}, "count of kernel header download errors"),

@@ -18,7 +18,7 @@ import (
 	"github.com/DataDog/datadog-go/v5/statsd"
 	"go.uber.org/atomic"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	"github.com/DataDog/datadog-agent/pkg/security/config"
 	"github.com/DataDog/datadog-agent/pkg/security/events"
 	"github.com/DataDog/datadog-agent/pkg/security/metrics"
@@ -63,7 +63,7 @@ type PlatformProbe interface {
 }
 
 var probeTelemetry = struct {
-	totalVariables telemetrydef.Gauge
+	totalVariables telemetry.Gauge
 }{
 	totalVariables: metrics.NewITGauge(metrics.MetricSECLTotalVariables, []string{"type", "scope"}, "Number of instantiated variables"),
 }

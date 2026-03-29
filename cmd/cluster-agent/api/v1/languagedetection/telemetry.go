@@ -8,14 +8,14 @@
 package languagedetection
 
 import (
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 )
 
 const subsystem = "language_detection_dca_handler"
 
 var (
-	commonOpts = telemetrydef.Options{NoDoubleUnderscoreSep: true}
+	commonOpts = telemetry.Options{NoDoubleUnderscoreSep: true}
 )
 
 var (

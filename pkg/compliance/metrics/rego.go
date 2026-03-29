@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	opametrics "github.com/open-policy-agent/opa/v1/metrics"
 	"github.com/prometheus/client_golang/prometheus"
@@ -18,8 +18,8 @@ import (
 
 var (
 	registrationMu       sync.Mutex
-	registeredHistograms map[string]telemetrydef.Histogram
-	registeredCounters   map[string]telemetrydef.Counter
+	registeredHistograms map[string]telemetry.Histogram
+	registeredCounters   map[string]telemetry.Counter
 )
 
 // NewRegoTelemetry returns a opa/metrics.Metrics interface to monitor rego's
@@ -33,12 +33,12 @@ func NewRegoTelemetry() opametrics.Metrics {
 	}
 }
 
-func registerHistogram(name string) telemetrydef.Histogram {
+func registerHistogram(name string) telemetry.Histogram {
 	registrationMu.Lock()
 	defer registrationMu.Unlock()
 
 	if registeredHistograms == nil {
-		registeredHistograms = make(map[string]telemetrydef.Histogram)
+		registeredHistograms = make(map[string]telemetry.Histogram)
 	}
 
 	if histogram, found := registeredHistograms[name]; found {
@@ -55,12 +55,12 @@ func registerHistogram(name string) telemetrydef.Histogram {
 	return histogram
 }
 
-func registerCounter(name string) telemetrydef.Counter {
+func registerCounter(name string) telemetry.Counter {
 	registrationMu.Lock()
 	defer registrationMu.Unlock()
 
 	if registeredCounters == nil {
-		registeredCounters = make(map[string]telemetrydef.Counter)
+		registeredCounters = make(map[string]telemetry.Counter)
 	}
 
 	if counter, found := registeredCounters[name]; found {
@@ -74,7 +74,7 @@ func registerCounter(name string) telemetrydef.Counter {
 
 type regoCounter struct {
 	regoCounter opametrics.Counter
-	ddCounter   telemetrydef.Counter
+	ddCounter   telemetry.Counter
 }
 
 func (c *regoCounter) Incr() {
@@ -93,7 +93,7 @@ func (c *regoCounter) Add(n uint64) {
 
 type regoHistogram struct {
 	regoHistogram opametrics.Histogram
-	ddHistogram   telemetrydef.Histogram
+	ddHistogram   telemetry.Histogram
 }
 
 func (h *regoHistogram) Value() interface{} {
@@ -107,7 +107,7 @@ func (h *regoHistogram) Update(n int64) {
 
 type regoTimer struct {
 	regoTimer   opametrics.Timer
-	ddHistogram telemetrydef.Histogram
+	ddHistogram telemetry.Histogram
 }
 
 func (t *regoTimer) Value() interface{} {

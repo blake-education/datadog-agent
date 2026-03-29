@@ -8,7 +8,7 @@
 package clusterchecks
 
 import (
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	le "github.com/DataDog/datadog-agent/pkg/util/kubernetes/apiserver/leaderelection/metrics"
 )
@@ -16,41 +16,41 @@ import (
 var (
 	nodeAgents = telemetryimpl.GetCompatComponent().NewGaugeWithOpts("cluster_checks", "nodes_reporting",
 		[]string{le.JoinLeaderLabel}, "Number of node agents reporting.",
-		telemetrydef.Options{NoDoubleUnderscoreSep: true})
+		telemetry.Options{NoDoubleUnderscoreSep: true})
 	danglingConfigs = telemetryimpl.GetCompatComponent().NewGaugeWithOpts("cluster_checks", "configs_dangling",
 		[]string{le.JoinLeaderLabel}, "Number of check configurations not dispatched.",
-		telemetrydef.Options{NoDoubleUnderscoreSep: true})
+		telemetry.Options{NoDoubleUnderscoreSep: true})
 	unscheduledCheck = telemetryimpl.GetCompatComponent().NewGaugeWithOpts("cluster_checks", "unscheduled_check",
 		[]string{le.JoinLeaderLabel, "config_name", "config_source"}, "Number of check configurations not scheduled.",
-		telemetrydef.Options{NoDoubleUnderscoreSep: true})
+		telemetry.Options{NoDoubleUnderscoreSep: true})
 	dispatchedConfigs = telemetryimpl.GetCompatComponent().NewGaugeWithOpts("cluster_checks", "configs_dispatched",
 		[]string{"node", le.JoinLeaderLabel}, "Number of check configurations dispatched, by node.",
-		telemetrydef.Options{NoDoubleUnderscoreSep: true})
+		telemetry.Options{NoDoubleUnderscoreSep: true})
 	dispatchedEndpoints = telemetryimpl.GetCompatComponent().NewGaugeWithOpts("endpoint_checks", "configs_dispatched",
 		[]string{"node", le.JoinLeaderLabel}, "Number of endpoint check configurations dispatched, by node.",
-		telemetrydef.Options{NoDoubleUnderscoreSep: true})
+		telemetry.Options{NoDoubleUnderscoreSep: true})
 	rebalancingDecisions = telemetryimpl.GetCompatComponent().NewCounterWithOpts("cluster_checks", "rebalancing_decisions",
 		[]string{le.JoinLeaderLabel}, "Total number of check rebalancing decisions",
-		telemetrydef.Options{NoDoubleUnderscoreSep: true})
+		telemetry.Options{NoDoubleUnderscoreSep: true})
 	successfulRebalancing = telemetryimpl.GetCompatComponent().NewCounterWithOpts("cluster_checks", "successful_rebalancing_moves",
 		[]string{le.JoinLeaderLabel}, "Total number of successful check rebalancing decisions",
-		telemetrydef.Options{NoDoubleUnderscoreSep: true})
+		telemetry.Options{NoDoubleUnderscoreSep: true})
 	rebalancingDuration = telemetryimpl.GetCompatComponent().NewGaugeWithOpts("cluster_checks", "rebalancing_duration_seconds",
 		[]string{le.JoinLeaderLabel}, "Duration of the check rebalancing algorithm last execution",
-		telemetrydef.Options{NoDoubleUnderscoreSep: true})
+		telemetry.Options{NoDoubleUnderscoreSep: true})
 	statsCollectionFails = telemetryimpl.GetCompatComponent().NewCounterWithOpts("cluster_checks", "failed_stats_collection",
 		[]string{"node", le.JoinLeaderLabel}, "Total number of unsuccessful stats collection attempts",
-		telemetrydef.Options{NoDoubleUnderscoreSep: true})
+		telemetry.Options{NoDoubleUnderscoreSep: true})
 	updateStatsDuration = telemetryimpl.GetCompatComponent().NewGaugeWithOpts("cluster_checks", "updating_stats_duration_seconds",
 		[]string{le.JoinLeaderLabel}, "Duration of collecting stats from check runners and updating cache",
-		telemetrydef.Options{NoDoubleUnderscoreSep: true})
+		telemetry.Options{NoDoubleUnderscoreSep: true})
 	busyness = telemetryimpl.GetCompatComponent().NewGaugeWithOpts("cluster_checks", "busyness",
 		[]string{"node", le.JoinLeaderLabel}, "Busyness of a node per the number of metrics submitted and average duration of all checks run",
-		telemetrydef.Options{NoDoubleUnderscoreSep: true})
+		telemetry.Options{NoDoubleUnderscoreSep: true})
 	configsInfo = telemetryimpl.GetCompatComponent().NewGaugeWithOpts("cluster_checks", "configs_info",
 		[]string{"node", "check_name", "check_id", le.JoinLeaderLabel}, "Information about the dispatched checks (node, check name, check ID)",
-		telemetrydef.Options{NoDoubleUnderscoreSep: true})
+		telemetry.Options{NoDoubleUnderscoreSep: true})
 	predictedUtilization = telemetryimpl.GetCompatComponent().NewGaugeWithOpts("cluster_checks", "predicted_utilization",
 		[]string{"node", le.JoinLeaderLabel}, "Utilization predicted by the rebalance algorithm",
-		telemetrydef.Options{NoDoubleUnderscoreSep: true})
+		telemetry.Options{NoDoubleUnderscoreSep: true})
 )

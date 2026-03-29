@@ -7,7 +7,7 @@
 package telemetry
 
 import (
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	workqueuetelemetry "github.com/DataDog/datadog-agent/pkg/util/workqueue/telemetry"
 )
@@ -17,7 +17,7 @@ const (
 	Subsystem = "sbom"
 )
 
-var commonOpts = telemetrydef.Options{NoDoubleUnderscoreSep: true}
+var commonOpts = telemetry.Options{NoDoubleUnderscoreSep: true}
 
 var (
 	// SBOMAttempts tracks sbom collection attempts.

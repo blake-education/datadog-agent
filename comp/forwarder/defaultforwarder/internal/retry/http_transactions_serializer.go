@@ -15,7 +15,7 @@ import (
 	"time"
 
 	log "github.com/DataDog/datadog-agent/comp/core/log/def"
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	"github.com/DataDog/datadog-agent/comp/forwarder/defaultforwarder/resolver"
 	"github.com/DataDog/datadog-agent/comp/forwarder/defaultforwarder/transaction"
@@ -33,7 +33,7 @@ const squareChar = "\xfe"
 const placeHolderPrefix = squareChar + "API_KEY" + squareChar
 const placeHolderFormat = placeHolderPrefix + "%v" + squareChar
 
-var tlmV1TransactionsDeserialized = telemetryimpl.GetCompatComponent().NewCounterWithOpts("transactions", "v1deserialized", []string{}, "", telemetrydef.Options{DefaultMetric: true})
+var tlmV1TransactionsDeserialized = telemetryimpl.GetCompatComponent().NewCounterWithOpts("transactions", "v1deserialized", []string{}, "", telemetry.Options{DefaultMetric: true})
 
 // HTTPTransactionsSerializer serializes Transaction instances.
 // To support a new Transaction implementation, add a new

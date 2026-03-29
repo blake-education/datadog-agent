@@ -12,7 +12,7 @@ import (
 	"sync"
 	"time"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	"github.com/DataDog/datadog-agent/pkg/util/log"
 )
@@ -38,8 +38,8 @@ const (
 )
 
 var statsTelemetry = struct {
-	processedStats telemetrydef.Counter
-	droppedStats   telemetrydef.Counter
+	processedStats telemetry.Counter
+	droppedStats   telemetry.Counter
 }{
 	telemetryimpl.GetCompatComponent().NewCounter(dnsStatKeeperModuleName, "processed_stats", []string{}, "Counter measuring the number of processed DNS stats"),
 	telemetryimpl.GetCompatComponent().NewCounter(dnsStatKeeperModuleName, "dropped_stats", []string{}, "Counter measuring the number of dropped DNS stats"),

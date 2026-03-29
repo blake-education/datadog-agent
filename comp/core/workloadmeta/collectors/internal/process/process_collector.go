@@ -28,12 +28,12 @@ import (
 	"github.com/DataDog/datadog-agent/pkg/languagedetection/languagemodels"
 	"github.com/DataDog/datadog-agent/pkg/process/procutil"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	workloadmeta "github.com/DataDog/datadog-agent/comp/core/workloadmeta/def"
 	"github.com/DataDog/datadog-agent/pkg/discovery/core"
 	"github.com/DataDog/datadog-agent/pkg/discovery/model"
-	tracermetadata "github.com/DataDog/datadog-agent/pkg/discovery/tracermetadata/model"
+	"github.com/DataDog/datadog-agent/pkg/discovery/tracermetadata"
 	"github.com/DataDog/datadog-agent/pkg/errors"
 	"github.com/DataDog/datadog-agent/pkg/languagedetection"
 	proccontainers "github.com/DataDog/datadog-agent/pkg/process/util/containers"
@@ -72,7 +72,7 @@ type collector struct {
 	ignoredPids              core.PidSet
 	pidHeartbeats            map[int32]time.Time
 	knownInjectionStatusPids core.PidSet // Track PIDs whose injection status we've already reported (but have no service data yet)
-	metricDiscoveredServices telemetrydef.Gauge
+	metricDiscoveredServices telemetry.Gauge
 }
 
 // EventType represents the type of collector event
@@ -93,14 +93,14 @@ type Event struct {
 }
 
 func newProcessCollector(id string, catalog workloadmeta.AgentType, clock clock.Clock, processProbe procutil.Probe, config pkgconfigmodel.Reader, systemProbeConfig pkgconfigmodel.Reader) collector {
-	var discoveredServicesGauge telemetrydef.Gauge
+	var discoveredServicesGauge telemetry.Gauge
 	if serviceDiscoveryEnabled(systemProbeConfig) {
 		discoveredServicesGauge = telemetryimpl.GetCompatComponent().NewGaugeWithOpts(
 			collectorID,
 			"discovered_services",
 			[]string{},
 			"Number of discovered alive services.",
-			telemetrydef.DefaultOptions,
+			telemetry.DefaultOptions,
 		)
 	}
 	return collector{

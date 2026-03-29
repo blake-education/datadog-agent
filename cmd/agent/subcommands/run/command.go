@@ -101,7 +101,7 @@ import (
 	"github.com/DataDog/datadog-agent/comp/core/sysprobeconfig/sysprobeconfigimpl"
 	tagger "github.com/DataDog/datadog-agent/comp/core/tagger/def"
 	dualTaggerfx "github.com/DataDog/datadog-agent/comp/core/tagger/fx-dual"
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	workloadfilter "github.com/DataDog/datadog-agent/comp/core/workloadfilter/def"
 	workloadfilterfx "github.com/DataDog/datadog-agent/comp/core/workloadfilter/fx"
 	wmcatalog "github.com/DataDog/datadog-agent/comp/core/workloadmeta/collectors/catalog-core"
@@ -264,7 +264,7 @@ func Commands(globalParams *command.GlobalParams) []*cobra.Command {
 func run(log log.Component,
 	cfg config.Component,
 	flare flare.Component,
-	telemetry telemetrydef.Component,
+	telemetry telemetry.Component,
 	sysprobeConf sysprobeconfig.Component,
 	server dogstatsdServer.Component,
 	_ dogstatsdhttp.Component,
@@ -584,7 +584,7 @@ func getSharedFxOption() fx.Option {
 func startAgent(
 	log log.Component,
 	flare flare.Component,
-	telemetry telemetrydef.Component,
+	telemetry telemetry.Component,
 	server dogstatsdServer.Component,
 	wmeta workloadmeta.Component,
 	filterStore workloadfilter.Component,
@@ -680,7 +680,7 @@ func startAgent(
 	// Setup stats telemetry handler
 	if sender, err := demultiplexer.GetDefaultSender(); err == nil {
 		// TODO: to be removed when default telemetry is enabled.
-		telemetrydef.RegisterStatsSender(sender)
+		telemetry.RegisterStatsSender(sender)
 	}
 
 	// Append version and timestamp to version history log file if this Agent is different than the last run version

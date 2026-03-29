@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"github.com/DataDog/datadog-agent/comp/core/tagger/types"
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	"github.com/DataDog/datadog-agent/pkg/aggregator/sender"
 	"github.com/DataDog/datadog-agent/pkg/metrics/servicecheck"
@@ -28,7 +28,7 @@ var (
 		"events",
 		[]string{"action"},
 		"Number of Docker events received by the check.",
-		telemetrydef.Options{NoDoubleUnderscoreSep: true},
+		telemetry.Options{NoDoubleUnderscoreSep: true},
 	)
 
 	emittedEvents = telemetryimpl.GetCompatComponent().NewCounterWithOpts(
@@ -36,7 +36,7 @@ var (
 		"emitted_events",
 		[]string{"type"},
 		"Number of events emitted by the check.",
-		telemetrydef.Options{NoDoubleUnderscoreSep: true},
+		telemetry.Options{NoDoubleUnderscoreSep: true},
 	)
 )
 

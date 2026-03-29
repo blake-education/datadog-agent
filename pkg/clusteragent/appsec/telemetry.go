@@ -8,7 +8,7 @@
 package appsec
 
 import (
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 )
 
@@ -20,6 +20,6 @@ var (
 		"watched_changes",
 		[]string{"proxy_type", "operation", "success"},
 		"Tracks the number of changes detected by the appsec injector for the watched resources",
-		telemetrydef.DefaultOptions,
+		telemetry.DefaultOptions,
 	)
 )

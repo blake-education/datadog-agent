@@ -19,7 +19,7 @@ import (
 	"sync"
 	"time"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	"github.com/DataDog/datadog-agent/comp/logs/agent/config"
 	pkgconfigmodel "github.com/DataDog/datadog-agent/pkg/config/model"
@@ -52,7 +52,7 @@ var (
 	tlmSend    = telemetryimpl.GetCompatComponent().NewCounter("logs_client_http_destination", "send", []string{"endpoint_host", "error"}, "Payloads sent")
 	tlmInUse   = telemetryimpl.GetCompatComponent().NewCounter("logs_client_http_destination", "in_use_ms", []string{"sender"}, "Time spent sending payloads in ms")
 	tlmIdle    = telemetryimpl.GetCompatComponent().NewCounter("logs_client_http_destination", "idle_ms", []string{"sender"}, "Time spent idle while not sending payloads in ms")
-	tlmDropped = telemetryimpl.GetCompatComponent().NewCounterWithOpts("logs_client_http_destination", "payloads_dropped", []string{}, "Number of payloads dropped because of unrecoverable errors", telemetrydef.Options{DefaultMetric: true})
+	tlmDropped = telemetryimpl.GetCompatComponent().NewCounterWithOpts("logs_client_http_destination", "payloads_dropped", []string{}, "Number of payloads dropped because of unrecoverable errors", telemetry.Options{DefaultMetric: true})
 
 	expVarIdleMsMapKey  = "idleMs"
 	expVarInUseMsMapKey = "inUseMs"

@@ -16,7 +16,7 @@ import (
 	"sync"
 
 	log "github.com/DataDog/datadog-agent/comp/core/log/def"
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	"github.com/DataDog/datadog-agent/pkg/network"
 	"github.com/DataDog/datadog-agent/pkg/security/secl/model"
@@ -27,10 +27,10 @@ import (
 const dockerProxySubsystem = "sender__docker_proxy"
 
 var dockerProxyTelemetry = struct {
-	processesDetected   telemetrydef.Counter
-	ipsFound            telemetrydef.Counter
-	connectionsFiltered telemetrydef.Counter
-	activeProxies       telemetrydef.Gauge
+	processesDetected   telemetry.Counter
+	ipsFound            telemetry.Counter
+	connectionsFiltered telemetry.Counter
+	activeProxies       telemetry.Gauge
 }{
 	telemetryimpl.GetCompatComponent().NewCounter(dockerProxySubsystem, "processes_detected", nil, ""),
 	telemetryimpl.GetCompatComponent().NewCounter(dockerProxySubsystem, "ips_found", nil, ""),

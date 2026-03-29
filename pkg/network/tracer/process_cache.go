@@ -15,7 +15,7 @@ import (
 	lru "github.com/hashicorp/golang-lru/v2"
 	"github.com/prometheus/client_golang/prometheus"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	"github.com/DataDog/datadog-agent/pkg/network/events"
 	"github.com/DataDog/datadog-agent/pkg/util/log"
@@ -32,10 +32,10 @@ const (
 )
 
 var processCacheTelemetry = struct {
-	cacheEvicts   telemetrydef.Counter
+	cacheEvicts   telemetry.Counter
 	cacheLength   *prometheus.Desc
-	eventsDropped telemetrydef.Counter
-	eventsSkipped telemetrydef.Counter
+	eventsDropped telemetry.Counter
+	eventsSkipped telemetry.Counter
 }{
 	telemetryimpl.GetCompatComponent().NewCounter(processCacheModuleName, "cache_evicts", []string{}, "Counter measuring the number of evictions in the process cache"),
 	prometheus.NewDesc(processCacheModuleName+"__cache_length", "Gauge measuring the current size of the process cache", nil, nil),

@@ -10,7 +10,7 @@ import (
 	"unsafe"
 
 	tagger "github.com/DataDog/datadog-agent/comp/core/tagger/def"
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	filterlist "github.com/DataDog/datadog-agent/comp/filterlist/def"
 	"github.com/DataDog/datadog-agent/pkg/aggregator/ckey"
 	"github.com/DataDog/datadog-agent/pkg/aggregator/internal/tags"
@@ -171,7 +171,7 @@ func (cr *contextResolver) remove(expiredContextKey ckey.ContextKey) {
 	}
 }
 
-func (cr *contextResolver) updateMetrics(countsByMTypeGauge telemetrydef.Gauge, bytesByMTypeGauge telemetrydef.Gauge) {
+func (cr *contextResolver) updateMetrics(countsByMTypeGauge telemetry.Gauge, bytesByMTypeGauge telemetry.Gauge) {
 	for i := 0; i < int(metrics.NumMetricTypes); i++ {
 		count := cr.countsByMtype[i]
 		bytes := cr.bytesByMtype[i]
@@ -281,7 +281,7 @@ func (cr *timestampContextResolver) dumpContexts(dest io.Writer) error {
 	return cr.resolver.dumpContexts(dest)
 }
 
-func (cr *timestampContextResolver) updateMetrics(countsByMTypeGauge telemetrydef.Gauge, bytesByMTypeGauge telemetrydef.Gauge) {
+func (cr *timestampContextResolver) updateMetrics(countsByMTypeGauge telemetry.Gauge, bytesByMTypeGauge telemetry.Gauge) {
 	cr.resolver.updateMetrics(countsByMTypeGauge, bytesByMTypeGauge)
 }
 
@@ -306,7 +306,7 @@ func (cr *countBasedContextResolver) length() int {
 	return cr.resolver.length()
 }
 
-func (cr *countBasedContextResolver) updateMetrics(countsByMTypeGauge telemetrydef.Gauge, bytesByMTypeGauge telemetrydef.Gauge) {
+func (cr *countBasedContextResolver) updateMetrics(countsByMTypeGauge telemetry.Gauge, bytesByMTypeGauge telemetry.Gauge) {
 	cr.resolver.updateMetrics(countsByMTypeGauge, bytesByMTypeGauge)
 }
 

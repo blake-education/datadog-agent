@@ -9,13 +9,13 @@ import (
 	"expvar"
 	"strings"
 
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	"github.com/DataDog/datadog-agent/comp/forwarder/defaultforwarder/transaction"
 )
 
 type counterExpvar struct {
-	counter telemetrydef.Counter
+	counter telemetry.Counter
 	expvar  expvar.Int
 }
 
@@ -34,7 +34,7 @@ func (c *counterExpvar) add(v float64, tagsValue ...string) {
 }
 
 type gaugeExpvar struct {
-	gauge  telemetrydef.Gauge
+	gauge  telemetry.Gauge
 	expvar expvar.Int
 }
 

@@ -8,7 +8,7 @@
 package languagedetection
 
 import (
-	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	"github.com/DataDog/datadog-agent/comp/core/telemetry/def"
 	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
 	workqueuetelemetry "github.com/DataDog/datadog-agent/pkg/util/workqueue/telemetry"
 )
@@ -16,7 +16,7 @@ import (
 const subsystem = "language_detection_patcher"
 
 var (
-	commonOpts = telemetrydef.Options{NoDoubleUnderscoreSep: true}
+	commonOpts = telemetry.Options{NoDoubleUnderscoreSep: true}
 )
 
 var (
