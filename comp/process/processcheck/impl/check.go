@@ -8,7 +8,7 @@ package processcheckimpl
 
 import (
 	"github.com/DataDog/datadog-go/v5/statsd"
-	"go.uber.org/fx"
+	compdef "github.com/DataDog/datadog-agent/comp/def"
 
 	"github.com/DataDog/datadog-agent/comp/core/config"
 	ipc "github.com/DataDog/datadog-agent/comp/core/ipc/def"
@@ -19,14 +19,7 @@ import (
 	processcheck "github.com/DataDog/datadog-agent/comp/process/processcheck/def"
 	"github.com/DataDog/datadog-agent/comp/process/types"
 	"github.com/DataDog/datadog-agent/pkg/process/checks"
-	"github.com/DataDog/datadog-agent/pkg/util/fxutil"
 )
-
-// Module defines the fx options for this component.
-func Module() fxutil.Module {
-	return fxutil.Component(
-		fx.Provide(newCheck))
-}
 
 var _ types.CheckComponent = (*check)(nil)
 
@@ -35,7 +28,7 @@ type check struct {
 }
 
 type dependencies struct {
-	fx.In
+	compdef.In
 
 	Config        config.Component
 	Sysconfig     sysprobeconfig.Component
@@ -47,13 +40,14 @@ type dependencies struct {
 }
 
 type result struct {
-	fx.Out
+	compdef.Out
 
 	Check     types.ProvidesCheck
 	Component processcheck.Component
 }
 
-func newCheck(deps dependencies) result {
+// NewCheck creates a new processcheck component.
+func NewCheck(deps dependencies) result {
 	c := &check{
 		processCheck: checks.NewProcessCheck(deps.Config, deps.Sysconfig, deps.WMmeta, deps.GpuSubscriber, deps.Statsd, deps.IPC.GetTLSServerConfig(), deps.Tagger),
 	}
