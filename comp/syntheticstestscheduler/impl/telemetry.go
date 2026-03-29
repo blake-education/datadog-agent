@@ -5,7 +5,10 @@
 
 package syntheticstestschedulerimpl
 
-import telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+import (
+	telemetrydef "github.com/DataDog/datadog-agent/comp/core/telemetry/def"
+	telemetryimpl "github.com/DataDog/datadog-agent/comp/core/telemetry/impl"
+)
 
 const subsystem = "synthetics_agent"
 
@@ -21,6 +24,9 @@ type syntheticsTelemetry struct {
 	// SendResultFailure tracks errors when sending results to the event platform
 	SendResultFailure telemetrydef.Counter
 }
+
+// defaultTelemetry is a package-level singleton to avoid re-registering metrics on each component instantiation.
+var defaultTelemetry = newSyntheticsTelemetry(telemetryimpl.GetCompatComponent())
 
 func newSyntheticsTelemetry(comp telemetrydef.Component) *syntheticsTelemetry {
 	return &syntheticsTelemetry{
