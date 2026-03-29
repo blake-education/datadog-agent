@@ -16,7 +16,7 @@ import (
 	taggerdef "github.com/DataDog/datadog-agent/comp/core/tagger/def"
 	workloadmeta "github.com/DataDog/datadog-agent/comp/core/workloadmeta/def"
 	gpusubscriber "github.com/DataDog/datadog-agent/comp/process/gpusubscriber/def"
-	"github.com/DataDog/datadog-agent/comp/process/processcheck"
+	processcheck "github.com/DataDog/datadog-agent/comp/process/processcheck/def"
 	"github.com/DataDog/datadog-agent/comp/process/types"
 	"github.com/DataDog/datadog-agent/pkg/process/checks"
 	"github.com/DataDog/datadog-agent/pkg/util/fxutil"
