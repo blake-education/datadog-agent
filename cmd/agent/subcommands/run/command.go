@@ -264,7 +264,7 @@ func Commands(globalParams *command.GlobalParams) []*cobra.Command {
 func run(log log.Component,
 	cfg config.Component,
 	flare flare.Component,
-	telemetry telemetry.Component,
+	tlm telemetry.Component,
 	sysprobeConf sysprobeconfig.Component,
 	server dogstatsdServer.Component,
 	_ dogstatsdhttp.Component,
@@ -355,7 +355,7 @@ func run(log log.Component,
 	if err := startAgent(
 		log,
 		flare,
-		telemetry,
+		tlm,
 		server,
 		wmeta,
 		filterStore,
@@ -380,13 +380,13 @@ func run(log log.Component,
 		return err
 	}
 
-	agentStarted := telemetry.NewCounter(
+	agentStarted := tlm.NewCounter(
 		"runtime",
 		"started",
 		[]string{},
 		"Establish if the agent has started",
 	)
-	agentRunning := telemetry.NewGauge(
+	agentRunning := tlm.NewGauge(
 		"runtime",
 		"running",
 		[]string{},
@@ -584,7 +584,7 @@ func getSharedFxOption() fx.Option {
 func startAgent(
 	log log.Component,
 	flare flare.Component,
-	telemetry telemetry.Component,
+	tlm telemetry.Component,
 	server dogstatsdServer.Component,
 	wmeta workloadmeta.Component,
 	filterStore workloadfilter.Component,
@@ -634,7 +634,7 @@ func startAgent(
 	ctx, _ := pkgcommon.GetMainCtxCancel()
 
 	// Setup expvar server
-	telemetryHandler := telemetry.Handler()
+	telemetryHandler := tlm.Handler()
 
 	http.Handle("/telemetry", telemetryHandler)
 
@@ -694,7 +694,7 @@ func startAgent(
 	jmxfetch.RegisterWith(ac)
 
 	// Set up check collector
-	commonchecks.RegisterChecks(wmeta, filterStore, tagger, cfg, telemetry, rcclient, flare, snmpScanManager, traceroute)
+	commonchecks.RegisterChecks(wmeta, filterStore, tagger, cfg, tlm, rcclient, flare, snmpScanManager, traceroute)
 	ac.AddScheduler("check", pkgcollector.InitCheckScheduler(option.New(collectorComponent), demultiplexer, logReceiver, tagger, filterStore), true)
 
 	demultiplexer.AddAgentStartupTelemetry(version.AgentVersion)
