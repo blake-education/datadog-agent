@@ -455,7 +455,7 @@ func getSharedFxOption() fx.Option {
 		traceagentStatusImpl.Module(),
 		processagentstatusfx.Module(),
 		statsdFx.Module(),
-		processstatusfx.Module(),
+		statusimpl.Module(),
 		apiimpl.Module(),
 		grpcAgentfx.Module(),
 		commonendpoints.Module(),
