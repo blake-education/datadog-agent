@@ -16,11 +16,10 @@ import (
 	"github.com/DataDog/datadog-agent/comp/core/hostname"
 	log "github.com/DataDog/datadog-agent/comp/core/log/def"
 	"github.com/DataDog/datadog-agent/comp/metadata/host/hostimpl/hosttags"
-	"github.com/DataDog/datadog-agent/comp/remote-config/rcservice"
+	rcservice "github.com/DataDog/datadog-agent/comp/remote-config/rcservice/def"
 	"github.com/DataDog/datadog-agent/comp/remote-config/rctelemetryreporter"
 	remoteconfig "github.com/DataDog/datadog-agent/pkg/config/remote/service"
 	configUtils "github.com/DataDog/datadog-agent/pkg/config/utils"
-	"github.com/DataDog/datadog-agent/pkg/util/fxutil"
 	"github.com/DataDog/datadog-agent/pkg/util/option"
 	"github.com/DataDog/datadog-agent/pkg/version"
 
@@ -37,14 +36,8 @@ func init() {
 	rcExpvars.Set("startupFailureReason", &rcStartupFailureReason)
 }
 
-// Module conditionally provides the remote config service.
-func Module() fxutil.Module {
-	return fxutil.Component(
-		fx.Provide(newRemoteConfigServiceOptional),
-	)
-}
-
-type dependencies struct {
+// Dependencies defines the dependencies for the rcservice component.
+type Dependencies struct {
 	fx.In
 
 	Lc fx.Lifecycle
@@ -56,8 +49,8 @@ type dependencies struct {
 	Logger                log.Component
 }
 
-// newRemoteConfigServiceOptional conditionally creates and configures a new remote config service, based on whether RC is enabled.
-func newRemoteConfigServiceOptional(deps dependencies) option.Option[rcservice.Component] {
+// NewRemoteConfigServiceOptional conditionally creates and configures a new remote config service, based on whether RC is enabled.
+func NewRemoteConfigServiceOptional(deps Dependencies) option.Option[rcservice.Component] {
 	none := option.None[rcservice.Component]()
 	if !configUtils.IsRemoteConfigEnabled(deps.Cfg) {
 		return none
@@ -72,8 +65,8 @@ func newRemoteConfigServiceOptional(deps dependencies) option.Option[rcservice.C
 	return option.New[rcservice.Component](configService)
 }
 
-// newRemoteConfigServiceOptional creates and configures a new remote config service
-func newRemoteConfigService(deps dependencies) (rcservice.Component, error) {
+// newRemoteConfigService creates and configures a new remote config service
+func newRemoteConfigService(deps Dependencies) (rcservice.Component, error) {
 	apiKey := deps.Cfg.GetString("api_key")
 	if deps.Cfg.IsSet("remote_configuration.api_key") {
 		apiKey = deps.Cfg.GetString("remote_configuration.api_key")
