@@ -3,7 +3,7 @@
 // This product includes software developed at Datadog (https://www.datadoghq.com/).
 // Copyright 2016-present Datadog, Inc.
 
-package submitterimpl
+package submitterimpl_test
 
 import (
 	"testing"
