@@ -12,7 +12,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"net"
 	"os"
 	"os/user"
 	"strings"
@@ -23,8 +22,6 @@ import (
 	awsec2types "github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	awseks "github.com/aws/aws-sdk-go-v2/service/eks"
 	awsekstypes "github.com/aws/aws-sdk-go-v2/service/eks/types"
-	"golang.org/x/crypto/ssh"
-	"golang.org/x/crypto/ssh/agent"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
@@ -36,6 +33,7 @@ import (
 	kubectlutil "k8s.io/kubectl/pkg/cmd/util"
 
 	"github.com/DataDog/datadog-agent/pkg/util/pointer"
+	"github.com/DataDog/datadog-agent/test/e2e-framework/testing/utils/infra"
 )
 
 func DumpEKSClusterState(ctx context.Context, name string) (ret string, err error) {
@@ -144,37 +142,7 @@ func DumpKindClusterState(ctx context.Context, name string) (ret string, err err
 		return ret, errors.New("failed to get private IP of instance")
 	}
 
-	auth := []ssh.AuthMethod{}
-
-	if sshAgentSocket, found := os.LookupEnv("SSH_AUTH_SOCK"); found {
-		sshAgent, err := net.Dial("unix", sshAgentSocket)
-		if err != nil {
-			return "", fmt.Errorf("failed to dial SSH agent: %v", err)
-		}
-		defer sshAgent.Close()
-
-		auth = append(auth, ssh.PublicKeysCallback(agent.NewClient(sshAgent).Signers))
-	}
-
-	if sshKeyPath, found := os.LookupEnv("E2E_AWS_PRIVATE_KEY_PATH"); found {
-		sshKey, err := os.ReadFile(sshKeyPath)
-		if err != nil {
-			return ret, fmt.Errorf("failed to read SSH key: %v", err)
-		}
-
-		signer, err := ssh.ParsePrivateKey(sshKey)
-		if err != nil {
-			return ret, fmt.Errorf("failed to parse SSH key: %v", err)
-		}
-
-		auth = append(auth, ssh.PublicKeys(signer))
-	}
-
-	sshClient, err := ssh.Dial("tcp", *instanceIP+":22", &ssh.ClientConfig{
-		User:            "ubuntu",
-		Auth:            auth,
-		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-	})
+	sshClient, err := infra.SshConnectToInstance(*instanceIP, "22", "ubuntu")
 	if err != nil {
 		return ret, fmt.Errorf("failed to dial SSH server %s: %v", *instanceIP, err)
 	}
