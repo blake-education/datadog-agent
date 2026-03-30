@@ -26,7 +26,7 @@ import (
 	remotetraceroute "github.com/DataDog/datadog-agent/comp/networkpath/traceroute/fx-remote"
 	privateactionrunner "github.com/DataDog/datadog-agent/comp/privateactionrunner/def"
 	privateactionrunnerfx "github.com/DataDog/datadog-agent/comp/privateactionrunner/fx"
-	"github.com/DataDog/datadog-agent/comp/remote-config/rcclient"
+	rcclient "github.com/DataDog/datadog-agent/comp/remote-config/rcclient/def"
 	rcclientfx "github.com/DataDog/datadog-agent/comp/remote-config/rcclient/fx"
 	"github.com/DataDog/datadog-agent/comp/remote-config/rcservice/rcserviceimpl"
 	logscompressionfx "github.com/DataDog/datadog-agent/comp/serializer/logscompression/fx"
