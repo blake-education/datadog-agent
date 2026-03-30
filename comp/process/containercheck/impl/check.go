@@ -33,7 +33,8 @@ type dependencies struct {
 	Statsd    statsd.ClientInterface
 }
 
-type result struct {
+// Provides is the output of the containercheck component constructor.
+type Provides struct {
 	compdef.Out
 
 	Check     types.ProvidesCheck
@@ -41,11 +42,11 @@ type result struct {
 }
 
 // NewCheck creates a new containercheck component.
-func NewCheck(deps dependencies) result {
+func NewCheck(deps dependencies) Provides {
 	c := &check{
 		containerCheck: checks.NewContainerCheck(deps.Config, deps.Sysconfig, deps.WMmeta, deps.Statsd),
 	}
-	return result{
+	return Provides{
 		Check: types.ProvidesCheck{
 			CheckComponent: c,
 		},
