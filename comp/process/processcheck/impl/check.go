@@ -39,7 +39,7 @@ type dependencies struct {
 	Tagger        taggerdef.Component
 }
 
-type result struct {
+type Provides struct {
 	compdef.Out
 
 	Check     types.ProvidesCheck
@@ -47,11 +47,11 @@ type result struct {
 }
 
 // NewCheck creates a new processcheck component.
-func NewCheck(deps dependencies) result {
+func NewCheck(deps dependencies) Provides {
 	c := &check{
 		processCheck: checks.NewProcessCheck(deps.Config, deps.Sysconfig, deps.WMmeta, deps.GpuSubscriber, deps.Statsd, deps.IPC.GetTLSServerConfig(), deps.Tagger),
 	}
-	return result{
+	return Provides{
 		Check: types.ProvidesCheck{
 			CheckComponent: c,
 		},
