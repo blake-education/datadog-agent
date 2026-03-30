@@ -9,8 +9,8 @@ package rcservice
 import (
 	"context"
 
-	pbgo "github.com/DataDog/datadog-agent/pkg/proto/pbgo/core"
 	remoteconfig "github.com/DataDog/datadog-agent/pkg/config/remote/service"
+	pbgo "github.com/DataDog/datadog-agent/pkg/proto/pbgo/core"
 )
 
 // team: remote-config
