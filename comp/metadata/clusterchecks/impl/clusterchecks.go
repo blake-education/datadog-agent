@@ -15,6 +15,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/DataDog/datadog-agent/comp/core/autodiscovery/integration"
 	"github.com/DataDog/datadog-agent/comp/core/config"
 	log "github.com/DataDog/datadog-agent/comp/core/log/def"
 	clusterchecksmetadata "github.com/DataDog/datadog-agent/comp/metadata/clusterchecks/def"
@@ -268,8 +269,12 @@ func (cc *clusterChecksImpl) collectClusterCheckMetadata(payload *Payload) {
 				initConfig = string(config.InitConfig)
 			}
 
+			var firstInstance integration.Data
+			if len(config.Instances) > 0 {
+				firstInstance = config.Instances[0]
+			}
 			checkMetadata := metadata{
-				"config.hash":     checkid.BuildID(checkName, config.IntDigest(), config.Instances[0], config.InitConfig),
+				"config.hash":     checkid.BuildID(checkName, config.IntDigest(), firstInstance, config.InitConfig),
 				"config.provider": config.Provider,
 				"config.source":   config.Source,
 				"init_config":     initConfig,
@@ -304,8 +309,12 @@ func (cc *clusterChecksImpl) collectClusterCheckMetadata(payload *Payload) {
 			initConfig = string(config.InitConfig)
 		}
 
+		var firstInstance integration.Data
+		if len(config.Instances) > 0 {
+			firstInstance = config.Instances[0]
+		}
 		checkMetadata := metadata{
-			"config.hash":     checkid.BuildID(checkName, config.IntDigest(), config.Instances[0], config.InitConfig),
+			"config.hash":     checkid.BuildID(checkName, config.IntDigest(), firstInstance, config.InitConfig),
 			"config.provider": config.Provider,
 			"config.source":   config.Source,
 			"init_config":     initConfig,
